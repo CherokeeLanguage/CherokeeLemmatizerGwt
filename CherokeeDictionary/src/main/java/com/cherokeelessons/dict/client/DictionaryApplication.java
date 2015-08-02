@@ -6,7 +6,9 @@ import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;
 import org.fusesource.restygwt.client.REST;
 
+import com.cherokeelessons.dict.shared.DictEntry;
 import com.cherokeelessons.dict.shared.RestApi;
+import com.cherokeelessons.dict.shared.SearchResponse;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 
@@ -23,10 +25,10 @@ public class DictionaryApplication implements ScheduledCommand {
 	@Override
 	public void execute() {
 		@SuppressWarnings("unused")
-		Object noop=REST.withCallback(console_log_it).call(api).syll("ᎤᏍᏗ");
+		Map<Integer, DictEntry> noop=REST.withCallback(console_log_it).call(api).syll("ᎤᏍᏗ");
 	}
 	
-	MethodCallback<Object> console_log_it = new MethodCallback<Object>() {
+	MethodCallback<Map<Integer, DictEntry>> console_log_it = new MethodCallback<Map<Integer, DictEntry>>() {
 
 		@Override
 		public void onFailure(Method method, Throwable exception) {
@@ -34,18 +36,21 @@ public class DictionaryApplication implements ScheduledCommand {
 		}
 
 		@Override
-		public void onSuccess(Method method, Object _response) {
+		public void onSuccess(Method method, Map<Integer, DictEntry> _response) {
 			if (_response==null) {
+				GWT.log("ᎤᏲᏳ!");
+				return;
+			}
+			if (!(_response instanceof Map)) {
 				GWT.log("ᎤᏲᏒ!");
 				return;
 			}
-			if (_response instanceof Map) {
-				for (Object obj: ((Map)_response).values()) {
-					GWT.log(obj.getClass().getSimpleName()+": "+String.valueOf(obj));
-				}
+			SearchResponse sr = new SearchResponse();
+			sr.results.addAll(((Map<Integer, DictEntry>)_response).values());
+			GWT.log("COUNT: "+sr.results.size());
+			for (DictEntry entry: sr.results) {
+				GWT.log(entry.id+": "+entry.syllabaryb);
 			}
-//			SearchResponse sr = _CodecSearchResponse.decode("{"+_response.toString()+"}");
-//			GWT.log("COUNT: "+sr.size());
 		}
 	};
 

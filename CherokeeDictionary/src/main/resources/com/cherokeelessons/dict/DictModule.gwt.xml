@@ -6,7 +6,14 @@
 	<source path="shared" />
 	<entry-point class="com.cherokeelessons.dict.client.DictEntryPoint">
 	</entry-point>
+	
+	<!-- Bootstrap3 -->
+ 	<inherits name="org.gwtbootstrap3.GwtBootstrap3"/>
+ 	
+ 	<!-- IE8 Bootstrap3 Support -->
+ 	<inherits name="org.gwtbootstrap3.extras.respond.Respond"/>
 
+ 	<!-- JSONP -->
 	<inherits name="org.fusesource.restygwt.RestyGWT" />
 
 	<!-- precompress into gzip -->

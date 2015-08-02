@@ -1,8 +1,10 @@
 package com.cherokeelessons.dict.shared;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
-public class SearchResponse extends ArrayList<DictEntry> {
-
+public class SearchResponse implements Serializable {
+	public List<DictEntry> results=new ArrayList<DictEntry>();
 }
