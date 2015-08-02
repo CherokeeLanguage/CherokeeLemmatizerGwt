@@ -3,6 +3,7 @@
 <module rename-to="gwt">
 	<inherits name="com.google.gwt.user.User" />
 	<source path="client" />
+	<source path="shared" />
 	<entry-point class="com.cherokeelessons.dict.client.DictEntryPoint">
 	</entry-point>
 

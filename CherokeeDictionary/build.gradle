@@ -40,7 +40,7 @@ war {
 gretty {
 	port = 8080;
 	servletContainer = 'tomcat7'
-	managedClassReload = false
+	managedClassReload = true
 	extraResourceBase 'build/gwt/out'
 }
 
