@@ -86,8 +86,8 @@ configurations {
 dependencies {
 	providedCompile 'javax.servlet:javax.servlet-api:3.0.1'
 	providedCompile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
-	compile 'org.fusesource.restygwt:restygwt:2.0.3'
-	compile 'org.gwtbootstrap3:gwtbootstrap3:0.9.1'
+	providedCompile 'org.fusesource.restygwt:restygwt:2.0.3'
+	providedCompile 'org.gwtbootstrap3:gwtbootstrap3:0.9.1'
 }
  
 sourceSets {
