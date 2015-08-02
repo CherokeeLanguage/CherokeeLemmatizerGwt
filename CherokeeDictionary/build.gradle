@@ -63,7 +63,7 @@ gwt {
 
 	gwtVersion='2.7.0'
 
-	modules 'com.newsrx.ri.RI'
+	modules 'com.cherokeelessons.dict.DictModule'
 	
 	jsInteropMode = "JS"
 	
