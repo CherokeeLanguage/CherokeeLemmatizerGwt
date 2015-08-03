@@ -1,0 +1,21 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:b='urn:import:org.gwtbootstrap3.client.ui'>
+	<ui:style>
+	</ui:style>
+	<b:Panel>
+		<b:PageHeader ui:field="pageHeader" text="CherokeeDictionary.net" subText="Translator's Assistant" />
+		<b:Form>
+			<b:FieldSet>
+				<b:FormGroup ui:field="formGroup">
+					<b:FormLabel for="formSuccess">
+						Input Cherokee Syllabary Text</b:FormLabel>
+					<b:TextBox ui:field="textBox" b:id="formSuccess" />
+					<b:Button ui:field="btn_analyze" type="PRIMARY">ANALYZE</b:Button>
+					<b:Button ui:field="btn_search" type="PRIMARY">SEARCH</b:Button>
+					<b:Button type="PRIMARY">CANCEL</b:Button>
+				</b:FormGroup>
+			</b:FieldSet>
+		</b:Form>
+	</b:Panel>
+</ui:UiBinder> 

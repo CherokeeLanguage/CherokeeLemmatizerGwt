@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.7.0//EN" "http://google-web-toolkit.googlecode.com/svn/tags/2.7.0/distro-source/core/src/gwt-module.dtd">
 <module rename-to="gwt">
+    
 	<inherits name="com.google.gwt.user.User" />
+	<inherits name="com.google.gwt.uibinder.UiBinder"/>
+	<inherits name='com.google.gwt.user.theme.clean.Clean'/>
+	
 	<source path="client" />
+	<source path="ui" />
 	<source path="shared" />
 	<entry-point class="com.cherokeelessons.dict.client.DictEntryPoint">
 	</entry-point>

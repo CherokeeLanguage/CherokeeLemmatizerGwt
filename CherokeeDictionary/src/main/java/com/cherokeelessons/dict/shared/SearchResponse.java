@@ -6,5 +6,5 @@ import java.util.List;
 
 @SuppressWarnings("serial")
 public class SearchResponse implements Serializable {
-	public List<DictEntry> results=new ArrayList<DictEntry>();
+	public List<DictEntry> data=new ArrayList<DictEntry>();
 }
