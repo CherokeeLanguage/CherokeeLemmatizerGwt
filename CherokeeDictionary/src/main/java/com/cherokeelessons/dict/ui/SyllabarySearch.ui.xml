@@ -13,9 +13,10 @@
 					<b:TextBox ui:field="textBox" b:id="formSuccess" />
 					<b:Button ui:field="btn_analyze" type="PRIMARY">ANALYZE</b:Button>
 					<b:Button ui:field="btn_search" type="PRIMARY">SEARCH</b:Button>
-					<b:Button type="PRIMARY">CANCEL</b:Button>
+					<b:Button ui:field="btn_reset" type="PRIMARY">CLEAR RESULTS</b:Button>
 				</b:FormGroup>
 			</b:FieldSet>
 		</b:Form>
+	    <g:HTMLPanel>Example 0: [[:&lt;:]]ᎤᏍᏗ[[:&gt;:]]<br/>Example 1: ᎶᏍ(Ꭺ|Ꭼ|Ꭸ)(Ꭲ)?[[:&gt;:]]<br/>Example 2: ᎶᏍᎬ[[:&gt;:]]<br/>Example 3: ᎶᏍᎨ[[:&gt;:]]</g:HTMLPanel>
 	</b:Panel>
 </ui:UiBinder> 

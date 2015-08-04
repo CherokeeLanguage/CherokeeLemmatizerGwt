@@ -1,35 +1,21 @@
 package com.cherokeelessons.dict.client;
 
-import java.util.Map;
-
-import org.fusesource.restygwt.client.Method;
-import org.fusesource.restygwt.client.MethodCallback;
-import org.fusesource.restygwt.client.REST;
-
-import com.cherokeelessons.dict.shared.DictEntry;
 import com.cherokeelessons.dict.shared.RestApi;
-import com.cherokeelessons.dict.shared.SearchResponse;
-import com.cherokeelessons.dict.ui.MainMenu;
+import com.cherokeelessons.dict.shared.SuffixGuesser;
+import com.cherokeelessons.dict.ui.SyllabarySearch;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dev.shell.BrowserChannel;
-import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Window.Navigator;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class DictionaryApplication implements ScheduledCommand {
 
-	private static final CodecSearchResponse _CodecSearchResponse;
-	
-	private static final RestApi api;
+	public static final RestApi api;
 	static {
 		api = GWT.create(RestApi.class);
-		_CodecSearchResponse=GWT.create(CodecSearchResponse.class);
 	}
 	
 	private Timer doResizeTimer;
@@ -59,6 +45,7 @@ public class DictionaryApplication implements ScheduledCommand {
 		}
 		GWT.log("SCALE: "+scaleby);
 		rp.getElement().getStyle().setProperty("transform", "scale("+scaleby+")");
+		new SuffixGuesser();
 	}
 	
 	private RootPanel rp;
@@ -69,40 +56,9 @@ public class DictionaryApplication implements ScheduledCommand {
 		rp = RootPanel.get("root");
 		doResize();
 		
-		MainMenu mainwindow = new MainMenu();
+		SyllabarySearch mainwindow = new SyllabarySearch(rp);
 		rp.add(mainwindow);
 		
 		Window.addResizeHandler(resize);
-		
-		@SuppressWarnings("unused")
-		Map<Integer, DictEntry> noop=REST.withCallback(console_log_it).call(api).syll("ᎤᏍᏗ");
 	}
-	
-	MethodCallback<Map<Integer, DictEntry>> console_log_it = new MethodCallback<Map<Integer, DictEntry>>() {
-
-		@Override
-		public void onFailure(Method method, Throwable exception) {
-			GWT.log("ᎤᏲᏳ!");
-			GWT.log(exception.getMessage());
-		}
-
-		@Override
-		public void onSuccess(Method method, Map<Integer, DictEntry> _response) {
-			if (_response==null) {
-				GWT.log("ᎤᏲᏳ!");
-				return;
-			}
-			if (!(_response instanceof Map)) {
-				GWT.log("ᎤᏲᏒ!");
-				return;
-			}
-			SearchResponse sr = new SearchResponse();
-			sr.data.addAll(((Map<Integer, DictEntry>)_response).values());
-			GWT.log("COUNT: "+sr.data.size());
-			for (DictEntry entry: sr.data) {
-				GWT.log(entry.id+": "+entry.syllabaryb);
-			}
-		}
-	};
-
 }
