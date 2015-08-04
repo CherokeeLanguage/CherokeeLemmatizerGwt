@@ -17,6 +17,9 @@
 				</b:FormGroup>
 			</b:FieldSet>
 		</b:Form>
-	    <g:HTMLPanel>Example 0: [[:&lt;:]]ᎤᏍᏗ[[:&gt;:]]<br/>Example 1: ᎶᏍ(Ꭺ|Ꭼ|Ꭸ)(Ꭲ)?[[:&gt;:]]<br/>Example 2: ᎶᏍᎬ[[:&gt;:]]<br/>Example 3: ᎶᏍᎨ[[:&gt;:]]</g:HTMLPanel>
+	    <g:HTMLPanel>Whole Word: [[:&lt;:]]ᎤᏍᏗ[[:&gt;:]]
+	        <br/>Over and Over Ending (progressive): (Ꭲ|Ꭹ|Ꭿ|Ꮅ|Ꮋ|Ꮒ|Ꮘ|Ꮟ|Ꮧ|Ꮨ|Ꮯ|Ꮵ|Ꮻ|Ᏹ)ᎶᏍ((Ꭺ|Ꭼ|Ꭸ)(Ꭲ)?|Ꭹ)[[:&gt;:]]
+	        <br/>Over and Over Ending (completive): (Ꭲ|Ꭹ|Ꭿ|Ꮅ|Ꮋ|Ꮒ|Ꮘ|Ꮟ|Ꮧ|Ꮨ|Ꮯ|Ꮵ|Ꮻ|Ᏹ)Ꮆ(ᎥᎢ|ᎥᎩ|ᎡᎢ?)[[:&gt;:]]
+	        </g:HTMLPanel>
 	</b:Panel>
 </ui:UiBinder> 
