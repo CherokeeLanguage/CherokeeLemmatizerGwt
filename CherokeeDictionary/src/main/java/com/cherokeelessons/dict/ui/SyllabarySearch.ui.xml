@@ -3,7 +3,6 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:b='urn:import:org.gwtbootstrap3.client.ui'
 	xmlns:b.html="urn:import:org.gwtbootstrap3.client.ui.html" xmlns:b.gwt="urn:import:org.gwtbootstrap3.client.ui.gwt">
 	<ui:style>
-		
 	</ui:style>
 	<b:Panel>
 		<b:PageHeader ui:field="pageHeader" text="CherokeeDictionary.net"

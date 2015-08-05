@@ -28,7 +28,7 @@
 	<!-- Fallback User Agent for use by CRAWLERS -->
 	<set-property-fallback name="user.agent" value="gecko1_8" />
 	
-	<stylesheet src="css/main.css" />
+	<stylesheet src="css/cherokeelessons.css" />
 
 	<!-- SDM on more than just localhost -->
 	<set-configuration-property name="devModeUrlWhitelistRegexp"
