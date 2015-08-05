@@ -6,6 +6,7 @@
 	<inherits name="com.google.gwt.uibinder.UiBinder"/>
 	<inherits name='com.google.gwt.user.theme.clean.Clean'/>
 	<inherits name="com.google.gwt.resources.Resources" />
+	<inherits name="commons.Commons" />
 	
 	<source path="client" />
 	<source path="ui" />

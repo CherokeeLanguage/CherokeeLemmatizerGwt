@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package apachecommons.codec;
+package commons.codec;
 
 /**
  * Provides the highest level of abstraction for Encoders.

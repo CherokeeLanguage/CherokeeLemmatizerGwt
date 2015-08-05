@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package apachecommons.codec;
+package commons.codec;
 
 /**
  * Defines common encoding methods for String encoders.

@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-package apachecommons.codec.language;
+package commons.codec.language;
 
-import apachecommons.codec.EncoderException;
-import apachecommons.codec.StringEncoder;
-import apachecommons.lang.StringUtils;
+import commons.codec.EncoderException;
+import commons.codec.StringEncoder;
+import commons.lang.StringUtils;
 
 /**
  * Encodes a string into a double metaphone value. This Implementation is based on the algorithm by <CITE>Lawrence
