@@ -1,11 +1,14 @@
 package com.cherokeelessons.dict.shared;
 
 import com.google.gwt.core.shared.GWT;
+import commons.lang.StringUtils;
 
 public class Pronunciaton {
 	
 	public static String asUtf8(String rawDbText) {
-		
+		if (StringUtils.isBlank(rawDbText)) {
+			return rawDbText;
+		}
 		rawDbText = rawDbText.replace("a.", "ạ");
 		rawDbText = rawDbText.replace("e.", "ẹ");
 		rawDbText = rawDbText.replace("i.", "ị");
