@@ -5,6 +5,7 @@
 	<inherits name="com.google.gwt.user.User" />
 	<inherits name="com.google.gwt.uibinder.UiBinder"/>
 	<inherits name='com.google.gwt.user.theme.clean.Clean'/>
+	<inherits name="com.google.gwt.resources.Resources" />
 	
 	<source path="client" />
 	<source path="ui" />
@@ -26,6 +27,8 @@
 
 	<!-- Fallback User Agent for use by CRAWLERS -->
 	<set-property-fallback name="user.agent" value="gecko1_8" />
+	
+	<stylesheet src="css/main.css" />
 
 	<!-- SDM on more than just localhost -->
 	<set-configuration-property name="devModeUrlWhitelistRegexp"

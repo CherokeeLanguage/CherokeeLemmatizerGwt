@@ -1,4 +1,4 @@
-package com.cherokeelessons.dict.client;
+package com.cherokeelessons.dict.shared;
 
 import java.util.HashMap;
 import java.util.Iterator;

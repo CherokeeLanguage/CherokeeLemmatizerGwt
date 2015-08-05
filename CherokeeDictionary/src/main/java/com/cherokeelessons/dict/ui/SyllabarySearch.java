@@ -20,6 +20,7 @@ import org.gwtbootstrap3.client.ui.gwt.HTMLPanel;
 
 import com.cherokeelessons.dict.client.DictionaryApplication;
 import com.cherokeelessons.dict.shared.DictEntry;
+import com.cherokeelessons.dict.shared.FormattedEntry;
 import com.cherokeelessons.dict.shared.SearchResponse;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -27,12 +28,13 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class SyllabarySearch extends Composite {
-
+	
 	@UiField
 	protected PageHeader pageHeader;
 
@@ -47,7 +49,7 @@ public class SyllabarySearch extends Composite {
 
 	@UiField
 	protected Button btn_search;
-
+	
 	private static MainMenuUiBinder uiBinder = GWT
 			.create(MainMenuUiBinder.class);
 
@@ -100,12 +102,15 @@ public class SyllabarySearch extends Composite {
 			}
 			GWT.log("COUNT: "+sr.data.size());
 			for (DictEntry entry: sr.data) {
+				if (!entry.source.equals("ced")){
+					continue;
+				}
 				final Panel p = new Panel(PanelType.SUCCESS);
 				PanelHeader ph = new PanelHeader();
 				Heading h = new Heading(HeadingSize.H3);
 				h.setText(entry.definitiond);
 				PanelBody pb = new PanelBody();
-				HTMLPanel hp = new HTMLPanel(entry.toString().replace(", ", "<br/>").replace("=", ": ")+"<br/>");
+				HTMLPanel hp = new HTMLPanel(new FormattedEntry(entry).getHtml());
 				Button dismiss = new Button("DISMISS");
 				dismiss.addClickHandler(new ClickHandler() {
 					@Override

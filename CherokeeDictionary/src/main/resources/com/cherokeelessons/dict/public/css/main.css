@@ -1,0 +1,602 @@
+@charset "UTF-8";
+
+/* freeserif */
+@font-face {
+	font-family: freeserif;
+	src: url("../fonts/freeserif.woff") format('woff'),
+		url("../fonts/freeserif.ttf") format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: freeserif;
+	src: url("../fonts/freeserifbold.woff") format('woff'),
+		url("../fonts/freeserifbold.ttf") format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: freeserif;
+	src: url("../fonts/freeserifbolditalic.woff") format('woff'),
+		url("../fonts/freeserifbolditalic.ttf") format('truetype');
+	font-weight: bold;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: freeserif;
+	src: url("../fonts/freeserifitalic.woff") format('woff'),
+		url("../fonts/freeserifitalic.ttf") format('truetype');
+	font-weight: normal;
+	font-style: italic;
+}
+
+body {
+	font-size: 100%;
+	text-align: justify;
+}
+
+body * {
+	font-family: inherit;
+}
+
+.rightblock {
+	display: inline-block;
+	float: right;
+	clear: none;
+	margin: .1em;
+}
+
+.floatblock {
+	display: inline-block;
+	clear: none;
+	margin: .1em;
+}
+
+.leftblock {
+	display: inline-block;
+	float: right;
+	clear: none;
+	margin: .1em;
+}
+
+.svg_outer {
+	left: 0px;
+	top: 0px;
+	display: block;
+	margin: 0px;
+	padding: 0px;
+	text-align: center;
+	width: 95%;
+	height: 95%;
+	z-index: -1;
+}
+
+.svg_inner {
+	left: 0px;
+	top: 0px;
+	display: block;
+	margin: 0px;
+	padding: 0px;
+	text-align: center;
+	width: 100%;
+	height: 100%;
+}
+
+.color_none {
+	color: black;
+}
+
+.color_inherit {
+	color: inherit;
+}
+
+.lyximg {
+	vertical-align: middle;
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
+	display: inline-block;
+	width: 100%;
+}
+
+.autowidth {
+	width: auto;
+}
+
+.lyximgdiv {
+	vertical-align: top;
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
+	display: inline-block;
+}
+
+.dice {
+	height: 0.8em;
+}
+
+.dt {
+	font-weight: bold;
+	font-size: 125%;
+	text-decoration: none;
+}
+
+.nested .ul_dl .li_dt {
+	margin-top: auto;
+	list-style: none;
+}
+
+.ul_dl .li_dt {
+	margin-top: .75em;
+	list-style: none;
+}
+
+.Labeling .li_dd {
+	margin-left: 2em;
+	list-style: none;
+}
+
+.ul_dl .li_dd {
+	margin-left: 1em;
+	list-style: none;
+}
+
+.ul_dl .ul_dl {
+	border-left: none;
+	/* 	border-left-style: dashed; */
+/* 	border-left-width: thin; */
+}
+
+.ul_dl {
+	list-style: none;
+}
+
+.img {
+	border: 0px;
+	border-style: none;
+	margin: 0px;
+	padding: 0px;
+	outline-style: none;
+	vertical-align: top;
+}
+
+.inline {
+	display: inline;
+	width: auto;
+	height: auto;
+	float: none;
+	clear: none;
+}
+
+.shape_default {
+	font-variant: normal;
+}
+
+.nested {
+	list-style-type: none;
+}
+
+.align_center {
+	text-align: center;
+}
+
+.align_right {
+	text-align: right;
+}
+
+.noindent {
+	text-indent: 0px;
+}
+
+.fs_tiny {
+	font-size: 68%;
+}
+
+.fs_smallest {
+	font-size: 79%;
+}
+
+.fs_smaller {
+	font-size: 85%;
+}
+
+.fs_small {
+	font-size: 92%;
+}
+
+.fs_normal {
+	font-size: 100%;
+}
+
+.fs_large {
+	font-size: 117%;
+}
+
+.fs_larger {
+	font-size: 141%;
+}
+
+.fs_largest {
+	font-size: 158%;
+}
+
+.fs_huge {
+	font-size: 190%;
+}
+
+.fs_giant {
+	font-size: 228%;
+}
+
+ul ul ul ul {
+	list-style: lower-roman;
+}
+
+ul ul ul {
+	list-style: square;
+}
+
+ul ul {
+	list-style: circle;
+}
+
+ul {
+	list-style: disc;
+}
+
+.Standard {
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	text-indent: 0px;
+	margin-bottom: .25em;
+	margin-top: .25em;
+}
+
+.Quotation {
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	text-indent: 2em;
+	margin-left: 5%;
+	margin-right: 5%;
+	margin-bottom: 1em;
+	margin-top: 1em;
+	font-size: 85%;
+	display: inline-block;
+}
+
+.Title {
+	font-size: 158%;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+	text-indent: 0px;
+	width: auto;
+	text-align: center;
+	clear: both;
+	font-size: 158%;
+}
+
+.Author {
+	font-size: 117%;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+	text-indent: 0px;
+	width: auto;
+	text-align: center;
+	clear: both;
+}
+
+.Chapter {
+	font-size: 190%;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+	text-indent: 0px;
+	margin-bottom: .25em;
+	margin-top: .25em;
+}
+
+.Section {
+	font-size: 141%;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+	text-indent: 0px;
+	margin-bottom: .25em;
+	margin-top: .25em;
+}
+
+.Subsection {
+	font-size: 117%;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+	text-indent: 0px;
+	margin-bottom: .25em;
+	margin-top: .25em;
+}
+
+.Subsubsection {
+	font-size: 100%;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+	text-indent: 0px;
+	margin-bottom: .25em;
+	margin-top: .25em;
+}
+
+.Paragraph {
+	font-size: 100%;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+	text-indent: 0px;
+	text-decoration: underline;
+	margin-right: .5em;
+}
+
+.Subparagraph {
+	font-size: 100%;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+	text-indent: 0px;
+	text-decoration: underline;
+	margin-right: .5em;
+}
+
+.Chapter_ {
+	font-size: 190%;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+	text-indent: 0px;
+	margin-bottom: .25em;
+	margin-top: .25em;
+}
+
+.Section_ {
+	font-size: 141%;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+	text-indent: 0px;
+	margin-bottom: .25em;
+	margin-top: .25em;
+}
+
+.Subsection_ {
+	font-size: 117%;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+	text-indent: 0px;
+	margin-bottom: .25em;
+	margin-top: .25em;
+}
+
+.Subsubsection_ {
+	font-size: 100%;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+	text-indent: 0px;
+	margin-bottom: .25em;
+	margin-top: .25em;
+}
+
+.Paragraph_ {
+	font-size: 100%;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+	text-indent: 0px;
+	text-decoration: underline;
+	margin-right: .5em;
+}
+
+.Subparagraph_ {
+	font-size: 100%;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: bold;
+	text-indent: 0px;
+	text-decoration: underline;
+	margin-right: .5em;
+}
+
+.hfill {
+	display: inline;
+	width: auto;
+	float: right;
+	clear: right;
+}
+
+.noun_on {
+	font-variant: small-caps;
+}
+
+.noun_default {
+	font-variant: normal;
+}
+
+.noun_off {
+	font-variant: normal;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.italic {
+	font-style: italic;
+}
+
+.oblique {
+	font-style: oblique;
+}
+
+td {
+	font-size: .9em;
+	background-color: white;
+}
+
+table {
+	margin-top: 2em;
+	margin-bottom: 2em;
+	margin-left: auto;
+	margin-right: auto;
+	table-layout: auto;
+	background-color: lightgray;
+}
+
+.box {
+	display: inline-block;
+}
+
+.answer_slot {
+	width: 75%;
+	border-style: solid;
+	border-width: 0.5pt;
+	float: right;
+	display: inline-block;
+}
+
+.floating_foot {
+	width: 30%;
+	font-size: 68%;
+	font-weight: normal;
+	font-style: italic;
+	display: inline-block;
+	float: right;
+	border-color: gray;
+	border-style: dotted;
+	border-width: thin;
+	margin: .5em;
+}
+
+.cap {
+	font-style: normal;
+	font-variant: normal;
+	font-weight: normal;
+	font-size: 125%;
+}
+
+.verse_number {
+	font-style: italic;
+	font-variant: normal;
+	font-weight: normal;
+	font-size: 75%;
+}
+
+.dropcap {
+	float: left;
+	font-size: 125%;
+	padding: .1em;
+	margin: .1em;
+}
+
+.series_medium {
+	font-weight: normal;
+}
+
+.shape_up {
+	text-decoration: none;
+}
+
+.bar_default {
+	text-decoration: none;
+}
+
+.emph_on {
+	font-style: italic;
+}
+
+.bar_under {
+	text-decoration: underline;
+}
+
+.noun_on {
+	font-variant: small-caps;
+}
+
+.noun_default {
+	font-variant: normal;
+}
+
+.Labeling {
+	margin-left: 1em;
+}
+
+div.Labeling div {
+	margin-left: 2em;
+}
+
+div.Standard+div.Standard {
+	text-indent: .75em;
+}
+
+.Date {
+	text-align: center;
+}
+
+div {
+	text-align: inherit;
+}
+
+ol {
+	list-style: decimal;
+}
+
+ol ol {
+	list-style: lower-alpha;
+}
+
+ol ol ol {
+	list-style: lower-roman;
+}
+
+ol ol ol ol {
+	list-style: lower-greek;
+}
+
+.Plain_Layout {
+	display: inline;
+	text-align: inherit;
+	font-size: inherit;
+	text-indent: 0px;
+}
+
+.Text {
+	display: inline;
+	text-align: inherit;
+	font-size: inherit;
+	text-indent: 0px;
+}
+
+.chrserif {
+	font-family: freeserif;
+}
+
+.family_default {
+	font-family: freeserif;
+}
+
+.Title {
+	font-family: freeserif;
+}
+
+.Author {
+	font-family: freeserif;
+}
+
+body {
+	font-family: freeserif;
+}
