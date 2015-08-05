@@ -1,12 +1,19 @@
 package com.cherokeelessons.dict.shared;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 public class FormattedEntry {
-	private final DictEntry entry; 
+	private final DictEntry entry;
+	private final List<DisplayPair> pairs=new ArrayList<DisplayPair>();
 	public FormattedEntry(DictEntry entry) {
 		this.entry=entry;
+		
+		
+		
 	}
 	
 	public SafeHtml getHtml(){
@@ -28,10 +35,6 @@ public class FormattedEntry {
 		shb.appendHtmlConstant("&rdquo;");
 		
 		shb.appendHtmlConstant("</li>");
-//		shb.appendEscaped(entry.vfirstpresh);
-//		shb.appendEscaped(" [");
-//		shb.appendEscaped(Pronunciaton.asUtf8(entry.vfirstprestone));
-//		shb.appendEscaped("] ");
 		
 		shb.appendHtmlConstant("<br/>");
 		shb.appendEscaped(entry.toString());

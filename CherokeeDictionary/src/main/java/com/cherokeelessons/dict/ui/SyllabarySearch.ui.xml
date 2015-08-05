@@ -5,8 +5,8 @@
 	<ui:style>
 	</ui:style>
 	<b:Panel>
-		<b:PageHeader ui:field="pageHeader" text="CherokeeDictionary.net"
-			subText="Translator's Assistant" />
+		<b:PageHeader ui:field="pageHeader" text="ᏣᎳᎩ ᏗᏕᏠᏆᏍᏙᏗ"
+			subText="" />
 		<b:Form>
 			<b:FieldSet>
 				<b:FormGroup ui:field="formGroup">
