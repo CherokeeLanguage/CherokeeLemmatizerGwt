@@ -13,7 +13,7 @@ import com.cherokeelessons.dict.shared.Suffixes.Around;
 import com.cherokeelessons.dict.shared.Suffixes.CausativePast;
 import com.cherokeelessons.dict.shared.Suffixes.ComeForDoing;
 import com.cherokeelessons.dict.shared.Suffixes.Completely;
-import com.cherokeelessons.dict.shared.Suffixes.ForTo;
+import com.cherokeelessons.dict.shared.Suffixes.ToFor;
 import com.cherokeelessons.dict.shared.Suffixes.Repeatedly;
 import com.cherokeelessons.dict.shared.Suffixes.WentForDoing;
 import com.google.gwt.core.client.Scheduler;
@@ -95,7 +95,7 @@ public enum SuffixGuesser {
 		case OverAndOver:
 			return new Repeatedly(null);
 		case ToFor:
-			return new ForTo(null);
+			return new ToFor(null);
 		case WentTo:
 			return new WentForDoing(null);
 		default:
@@ -134,7 +134,7 @@ public enum SuffixGuesser {
 			list.addAll(combine(affix.isFollowedBy, new Repeatedly(prepend)));
 			break;
 		case ToFor:
-			list.addAll(combine(affix.isFollowedBy, new ForTo(prepend)));
+			list.addAll(combine(affix.isFollowedBy, new ToFor(prepend)));
 			break;
 		case WentTo:
 			list.addAll(combine(affix.isFollowedBy, new WentForDoing(prepend)));

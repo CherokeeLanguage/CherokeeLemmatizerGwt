@@ -99,7 +99,7 @@ public class Suffixes {
 			String s;
 			String prepend = StringUtils.defaultString(_prepend);
 			if (StringUtils.isBlank(prepend)){
-				s="(Ꮝ)?";
+				s="Ꮝ";
 			} else {
 				String x = Syllabary.changeForm(prepend, Vowel.Ꭲ);
 				if ("ᎢᏫᏱᏂᎵ".contains(x.substring(x.length()-1))){
@@ -116,9 +116,9 @@ public class Suffixes {
 		}
 	}
 
-	public static class ForTo extends Suffixes {
+	public static class ToFor extends Suffixes {
 
-		public ForTo(final String _prepend) {
+		public ToFor(final String _prepend) {
 
 			if (_prepend != null) {
 				patterns.add(Syllabary.UnderX + "Ꮟ");
@@ -139,21 +139,24 @@ public class Suffixes {
 				if (prepend != null) {
 					e = prepend;
 				}
+				//prc
 				patterns.add(e + "Ꭽ");
+				//past
 				patterns.add(e + "Ꮈ*");
 				patterns.add(e + "ᎸᎩ");
 				patterns.add(e + "ᎸᎢ");
-				patterns.add(e + "Ꮄ");
 				patterns.add(e + "ᎴᎢ");
-				patterns.add(e + "ᎯᎮᏍᏗ");
-				patterns.add(e + "ᎯᎲ");
-				patterns.add(e + "ᎯᎲᎩ");
-				patterns.add(e + "ᎯᎲᎢ");
-				patterns.add(e + "ᎯᎮ");
-				patterns.add(e + "ᎯᎮᎢ");
-				patterns.add(e + "ᎯᎰ");
-				patterns.add(e + "ᎯᎰᎢ");
-				patterns.add(e + "ᎯᎯ");
+				patterns.add(e + "Ꮄ");
+				//progressive
+				patterns.add(e + "ᎮᏍᏗ");
+				patterns.add(e + "Ꮂ");
+				patterns.add(e + "ᎲᎩ");
+				patterns.add(e + "ᎲᎢ");
+				patterns.add(e + "Ꭾ");
+				patterns.add(e + "ᎮᎢ");
+				patterns.add(e + "Ꮀ");
+				patterns.add(e + "ᎰᎢ");
+				patterns.add(e + "Ꭿ");
 				patterns.add(e + "Ꮅ");
 				patterns.add(e + "Ꮧ");
 			}
@@ -210,16 +213,26 @@ public class Suffixes {
 				if (prepend != null) {
 					i = prepend;
 				}
+				//present
 				patterns.add(i + "Ꮧ");
+				//past
 				patterns.add(i + "ᏗᏒ*");
 				patterns.add(i + "ᏗᏒᎩ");
 				patterns.add(i + "ᏗᏒᎢ");
 				patterns.add(i + "ᏗᏎ");
 				patterns.add(i + "ᏗᏎᎢ");
-				patterns.add(i + "ᏗᏎᏍᏗ");
-				patterns.add(i + "ᏗᏐ");
-				patterns.add(i + "ᏗᏐᎢ");
-				patterns.add(i + "ᏗᏏ");
+				//progressive
+				patterns.add(i + "ᏗᏍᎨᏍᏗ");
+				patterns.add(i + "ᏗᏍᎬᎩ");
+				patterns.add(i + "ᏗᏍᎬᎢ");
+				patterns.add(i + "ᏗᏍᎬ");
+				patterns.add(i + "ᏗᏍᎨᎢ");
+				patterns.add(i + "ᏗᏍᎨ");
+				patterns.add(i + "ᏗᏍᎪᎢ");
+				patterns.add(i + "ᏗᏍᎪ");
+				patterns.add(i + "ᏗᏍᎩ");
+				//immeidate
+				patterns.add(i + "ᏕᎾ");
 			}
 		}
 	};
@@ -276,6 +289,16 @@ public class Suffixes {
 				}
 				patterns.add(e + "Ꭶ");
 				patterns.add(e + "Ꮎ");
+				
+				patterns.add(e + "ᎨᏍᏗ");
+				patterns.add(e + "Ꭼ");
+				patterns.add(e + "ᎬᎩ");
+				patterns.add(e + "ᎬᎢ");
+				patterns.add(e + "ᎨᎢ");
+				patterns.add(e + "Ꭸ");
+				patterns.add(e + "ᎪᎢ");
+				patterns.add(e + "Ꭺ");
+				patterns.add(e + "Ꭹ");
 			}
 
 			prepend = Syllabary.changeForm(_prepend, Vowel.Ꭴ);
@@ -289,15 +312,6 @@ public class Suffixes {
 				if (prepend != null) {
 					u = prepend;
 				}
-				patterns.add(u + "ᎦᎮᏍᏗ");
-				patterns.add(u + "ᎦᎲ");
-				patterns.add(u + "ᎦᎲᎩ");
-				patterns.add(u + "ᎦᎲᎢ");
-				patterns.add(u + "ᎮᎢ");
-				patterns.add(u + "Ꭾ");
-				patterns.add(u + "ᎰᎢ");
-				patterns.add(u + "Ꮀ");
-				patterns.add(u + "Ꭿ");
 				patterns.add(u + "Ꭶ");
 			}
 
@@ -317,8 +331,8 @@ public class Suffixes {
 				patterns.add(v + "ᏒᎢ");
 				patterns.add(v + "Ꮞ");
 				patterns.add(v + "ᏎᎢ");
+				patterns.add(v + "ᏍᏗ");
 			}
-			GWT.log("WentTo: "+patterns.toString());
 		}
 	}
 
@@ -380,18 +394,18 @@ public class Suffixes {
 				patterns.add(i + "ᏙᎸᎩ");
 				patterns.add(i + "ᏙᎸᎢ");
 				patterns.add(i + "ᏙᎴᎢ");
-				patterns.add(i + "ᎢᏙᎴ");
-				patterns.add(i + "ᎢᏙᎰᎢ");
-				patterns.add(i + "ᎢᏙᎰ");
-				patterns.add(i + "ᎢᏙᎲᎢ");
-				patterns.add(i + "ᎢᏙᎲᎩ");
-				patterns.add(i + "ᎢᏙᎲ");
-				patterns.add(i + "ᎢᏙᎮᎢ");
-				patterns.add(i + "ᎢᏙᎮ");
-				patterns.add(i + "ᎢᏙᎮᏍᏗ");
-				patterns.add(i + "ᎢᏙᎯ");
-				patterns.add(i + "ᎢᏓ");
-				patterns.add(i + "ᎢᏓᏍᏗ");
+				patterns.add(i + "ᏙᎴ");
+				patterns.add(i + "ᏙᎰᎢ");
+				patterns.add(i + "ᏙᎰ");
+				patterns.add(i + "ᏙᎲᎢ");
+				patterns.add(i + "ᏙᎲᎩ");
+				patterns.add(i + "ᏙᎲ");
+				patterns.add(i + "ᏙᎮᎢ");
+				patterns.add(i + "ᏙᎮ");
+				patterns.add(i + "ᏙᎮᏍᏗ");
+				patterns.add(i + "ᏙᎯ");
+				patterns.add(i + "Ꮣ");
+				patterns.add(i + "ᏓᏍᏗ");
 			}
 		}
 	}
