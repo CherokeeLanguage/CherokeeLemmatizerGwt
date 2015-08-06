@@ -12,10 +12,11 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
 public class DictionaryApplication implements ScheduledCommand {
-
+	
 	public static final RestApi api;
 	static {
 		api = GWT.create(RestApi.class);
+		SuffixGuesser x = SuffixGuesser.INSTANCE;
 	}
 	
 	private Timer doResizeTimer;
@@ -44,7 +45,6 @@ public class DictionaryApplication implements ScheduledCommand {
 			scaleby=1f;
 		}
 		rp.getElement().getStyle().setProperty("transform", "scale("+scaleby+")");
-		new SuffixGuesser();
 	}
 	
 	private RootPanel rp;

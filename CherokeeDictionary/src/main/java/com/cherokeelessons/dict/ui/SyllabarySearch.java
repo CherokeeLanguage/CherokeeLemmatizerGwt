@@ -21,9 +21,14 @@ import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.gwt.HTMLPanel;
 
 import com.cherokeelessons.dict.client.DictionaryApplication;
+import com.cherokeelessons.dict.shared.Affix;
 import com.cherokeelessons.dict.shared.DictEntry;
 import com.cherokeelessons.dict.shared.FormattedEntry;
 import com.cherokeelessons.dict.shared.SearchResponse;
+import com.cherokeelessons.dict.shared.SuffixGuesser;
+import com.cherokeelessons.dict.shared.Suffixes;
+import com.cherokeelessons.dict.shared.Syllabary;
+import com.cherokeelessons.dict.shared.Syllabary.Vowel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -38,6 +43,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+
 import commons.lang.StringUtils;
 
 public class SyllabarySearch extends Composite {
@@ -82,10 +88,55 @@ public class SyllabarySearch extends Composite {
 	
 	@UiHandler("btn_analyze")
 	public void onAnalyze(final ClickEvent event) {
-		//btn_analyze.state().loading();
+		btn_analyze.state().loading();
+		alert.removeFromParent();
+		String value = textBox.getValue();
+		if (StringUtils.isBlank(value)) {
+			alert.setDismissable(true);
+			alert.setText("NOTHING TO ANALYZE.");
+			rp.add(alert);
+			btn_analyze.state().reset();
+			return;
+		}
+		value = StringUtils.strip(value);
+		if (!value.matches("^[Ꭰ-Ᏼ]+$")){
+			alert.setDismissable(true);
+			alert.setText("CAN ONLY ANALYZE SINGLE SYLLABARY WORDS.");
+			rp.add(alert);
+			btn_analyze.state().reset();
+			return;
+		}
+		textBox.setEnabled(false);
+		Scheduler.get().scheduleDeferred(doAnalysis);
 	}
 	
-	Alert alert = new Alert("EMPTY SEARCHES ARE NOT ALLOWED.", AlertType.DANGER);
+	private ScheduledCommand doAnalysis=new ScheduledCommand() {
+		@Override
+		public void execute() {
+			String value = StringUtils.strip(textBox.getValue());
+			List<String> newvalues = new ArrayList<>();
+			newvalues.add("("+value+")[[:>:]]");
+			
+			boolean matched=false;
+			for (Affix affix: Affix.values()) {
+				Suffixes s = SuffixGuesser.getSuffixMatcher(affix);
+				String match = s.match(value);
+				if (!StringUtils.isBlank(match)){
+					value=StringUtils.removeEnd(value, match);
+					newvalues.add("("+match+":"+affix.name()+")");
+					value += Syllabary.changeForm(match.substring(0, 1), Vowel.Ꭵ) + "Ꭲ";
+					newvalues.add("("+value+")");
+					 
+				}
+			}
+			
+			textBox.setValue("("+StringUtils.join(newvalues, "|")+")");
+			textBox.setEnabled(true);
+			btn_analyze.state().reset();
+		}
+	};
+	
+	Alert alert = new Alert("", AlertType.DANGER);
 	
 	@UiHandler("btn_search")
 	public void onSearch(final ClickEvent event) {
@@ -94,6 +145,7 @@ public class SyllabarySearch extends Composite {
 		String value = textBox.getValue();
 		if (StringUtils.isBlank(value)) {
 			alert.setDismissable(true);
+			alert.setText("EMPTY SEARCHES ARE NOT ALLOWED.");
 			rp.add(alert);
 			btn_search.state().reset();
 			return;

@@ -1,12 +1,52 @@
 package com.cherokeelessons.dict.shared;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.ListIterator;
 
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
+import com.google.gwt.core.shared.GWT;
+
+import commons.lang.StringUtils;
 
 public class Suffixes {
 
+	private Comparator<String> byLengthDesc=new Comparator<String>() {
+		@Override
+		public int compare(String o1, String o2) {
+			if (o1==o2) {
+				return 0;
+			}
+			if (o1==null) {
+				return 1;
+			}
+			if (o1.length()!=o2.length()) {
+				return o2.length()-o1.length();
+			}
+			return o1.compareTo(o2);
+		}
+	};
+
+	public String match(String syllabary) {
+		List<String> xpan = new ArrayList<String>(patterns);
+		ListIterator<String> l = xpan.listIterator();
+		while(l.hasNext()) {
+			String n = l.next();
+			if (n.endsWith("*")) {
+				l.set(n.replace("*", ""));
+			}
+		}
+		Collections.sort(xpan, byLengthDesc);
+		for (String ending: xpan) {
+			if (syllabary.endsWith(ending)) {
+				return ending;
+			}
+		}
+		return "";
+	}
+	
 	public List<String>  getPatterns() {
 		return patterns;
 	}
@@ -23,6 +63,9 @@ public class Suffixes {
 			String prepend = Syllabary.changeForm(_prepend, Vowel.Ꭲ);
 			String[] ilist = "ᎢᎩᎯᎵᎻᏂᏈᏏᏗᏘᏟᏥᏫᏱ".split("");
 			for (String i : ilist) {
+				if (StringUtils.isBlank(i)){
+					continue;
+				}
 				if (prepend != null && !prepend.endsWith(i)) {
 					continue;
 				}
@@ -49,6 +92,29 @@ public class Suffixes {
 			}
 		}
 	}
+	
+	public static class CausativePast extends Suffixes {
+
+		public CausativePast(final String _prepend) {
+			String s;
+			String prepend = StringUtils.defaultString(_prepend);
+			if (StringUtils.isBlank(prepend)){
+				s="(Ꮝ)?";
+			} else {
+				String x = Syllabary.changeForm(prepend, Vowel.Ꭲ);
+				if ("ᎢᏫᏱᏂᎵ".contains(x.substring(x.length()-1))){
+					s="Ꮝ";
+				} else {
+					s="";
+				}
+			}
+			patterns.add(prepend+s+"ᏓᏅ*");
+			patterns.add(prepend+s+"ᏓᏅᎩ");
+			patterns.add(prepend+s+"ᏓᏅᎢ");
+			patterns.add(prepend+s+"ᏓᏁᎢ");
+			patterns.add(prepend+s+"ᏓᏁ");
+		}
+	}
 
 	public static class ForTo extends Suffixes {
 
@@ -64,6 +130,9 @@ public class Suffixes {
 			
 			String[] elist = "ᎡᎨᎮᎴᎺᏁᏇᏎᏕᏖᏞᏤᏪᏰ".split("");
 			for (String e : elist) {
+				if (StringUtils.isBlank(e)){
+					continue;
+				}
 				if (prepend != null && !prepend.endsWith(e)) {
 					continue;
 				}
@@ -97,6 +166,9 @@ public class Suffixes {
 			String prepend = Syllabary.changeForm(_prepend, Vowel.Ꭲ);
 			String[] ilist = "ᎢᎩᎯᎵᎻᏂᏈᏏᏗᏘᏟᏥᏫᏱ".split("");
 			for (String i : ilist) {
+				if (StringUtils.isBlank(i)){
+					continue;
+				}
 				if (prepend != null && !prepend.endsWith(i)) {
 					continue;
 				}
@@ -125,11 +197,13 @@ public class Suffixes {
 	}
 
 	public static class AboutTo extends Suffixes {
-
 		public AboutTo(String _prepend) {
 			String prepend = Syllabary.changeForm(_prepend, Vowel.Ꭲ);
 			String[] ilist = "ᎢᎩᎯᎵᎻᏂᏈᏏᏗᏘᏟᏥᏫᏱ".split("");
 			for (String i : ilist) {
+				if (StringUtils.isBlank(i)){
+					continue;
+				}
 				if (prepend != null && !prepend.endsWith(i)) {
 					continue;
 				}
@@ -156,6 +230,9 @@ public class Suffixes {
 			String prepend = Syllabary.changeForm(_prepend, Vowel.Ꭲ);
 			String[] ilist = "ᎢᎩᎯᎵᎻᏂᏈᏏᏗᏘᏟᏥᏫᏱ".split("");
 			for (String i : ilist) {
+				if (StringUtils.isBlank(i)){
+					continue;
+				}
 				if (prepend != null && !prepend.endsWith(i)) {
 					continue;
 				}
@@ -185,6 +262,12 @@ public class Suffixes {
 
 			String prepend = Syllabary.changeForm(_prepend, Vowel.Ꭱ);
 			for (String e : elist) {
+				if (StringUtils.isBlank(e)){
+					continue;
+				}
+				if (StringUtils.isBlank(e)){
+					continue;
+				}
 				if (prepend != null && !prepend.endsWith(e)) {
 					continue;
 				}
@@ -197,6 +280,9 @@ public class Suffixes {
 
 			prepend = Syllabary.changeForm(_prepend, Vowel.Ꭴ);
 			for (String u : ulist) {
+				if (StringUtils.isBlank(u)){
+					continue;
+				}
 				if (prepend != null && !prepend.endsWith(u)) {
 					continue;
 				}
@@ -217,6 +303,9 @@ public class Suffixes {
 
 			prepend = Syllabary.changeForm(_prepend, Vowel.Ꭵ);
 			for (String v : vlist) {
+				if (StringUtils.isBlank(v)){
+					continue;
+				}
 				if (prepend != null && !prepend.endsWith(v)) {
 					continue;
 				}
@@ -229,6 +318,7 @@ public class Suffixes {
 				patterns.add(v + "Ꮞ");
 				patterns.add(v + "ᏎᎢ");
 			}
+			GWT.log("WentTo: "+patterns.toString());
 		}
 	}
 
@@ -240,6 +330,9 @@ public class Suffixes {
 			
 			String[] ilist = "ᎢᎩᎯᎵᎻᏂᏈᏏᏗᏘᏟᏥᏫᏱ".split("");
 			for (String i : ilist) {
+				if (StringUtils.isBlank(i)){
+					continue;
+				}
 				if (prepend != null && !prepend.endsWith(i)) {
 					continue;
 				}
@@ -273,6 +366,9 @@ public class Suffixes {
 			String prepend = Syllabary.changeForm(_prepend, Vowel.Ꭲ);
 			String[] ilist = "ᎢᎩᎯᎵᎻᏂᏈᏏᏗᏘᏟᏥᏫᏱ".split("");
 			for (String i : ilist) {
+				if (StringUtils.isBlank(i)){
+					continue;
+				}
 				if (prepend != null && !prepend.endsWith(i)) {
 					continue;
 				}
@@ -306,6 +402,9 @@ public class Suffixes {
 			String prepend = Syllabary.changeForm(_prepend, Vowel.Ꭳ);
 			String[] olist = "ᎣᎪᎰᎶᎼᏃᏉᏐᏙᏠᏦᏬᏲ".split("");
 			for (String o : olist) {
+				if (StringUtils.isBlank(o)){
+					continue;
+				}
 				if (prepend != null && !prepend.endsWith(o)) {
 					continue;
 				}
@@ -343,6 +442,9 @@ public class Suffixes {
 			String[] vlist = "ᎥᎬᎲᎸᏅᏋᏒᏛᏢᏨᏮᏴ".split("");
 
 			for (String v : vlist) {
+				if (StringUtils.isBlank(v)){
+					continue;
+				}
 				if (prepend != null && !prepend.endsWith(v)) {
 					continue;
 				}

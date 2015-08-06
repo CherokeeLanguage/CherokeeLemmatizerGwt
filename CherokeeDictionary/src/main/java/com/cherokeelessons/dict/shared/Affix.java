@@ -4,14 +4,14 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.gwt.core.shared.GWT;
-
 public enum Affix {
-	// these entries are order dependent!
+	/**
+	 * These entries are order dependent and are listed from word END to ROOT
+	 * ending start order!
+	 */
 	AboutTo(), WentTo(AboutTo), CameFor(AboutTo), Around(CameFor, WentTo), ToFor(
 			Around), Completely(ToFor), ByAccident(Completely), Causative(
-			Completely), OverAndOver(Causative, ByAccident), Again(
-			OverAndOver);
+			Completely), OverAndOver(Causative, ByAccident), Again(OverAndOver);
 	private Affix(Affix... affixs) {
 		if (affixs == null) {
 			return;
@@ -20,7 +20,6 @@ public enum Affix {
 		for (Affix affix : affixs) {
 			isFollowedBy.addAll(affix.isFollowedBy);
 		}
-//		GWT.log("AFFIX: " + this.name() + " -> " + isFollowedBy.toString());
 	}
 
 	public Set<Affix> isFollowedBy = new HashSet<>();

@@ -10,19 +10,25 @@ import com.cherokeelessons.dict.shared.Suffixes.AboutTo;
 import com.cherokeelessons.dict.shared.Suffixes.Accidental;
 import com.cherokeelessons.dict.shared.Suffixes.Again;
 import com.cherokeelessons.dict.shared.Suffixes.Around;
+import com.cherokeelessons.dict.shared.Suffixes.CausativePast;
 import com.cherokeelessons.dict.shared.Suffixes.ComeForDoing;
 import com.cherokeelessons.dict.shared.Suffixes.Completely;
 import com.cherokeelessons.dict.shared.Suffixes.ForTo;
 import com.cherokeelessons.dict.shared.Suffixes.Repeatedly;
 import com.cherokeelessons.dict.shared.Suffixes.WentForDoing;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.core.shared.GWT;
-import commons.lang.StringUtils;
 
-public class SuffixGuesser {
+public enum SuffixGuesser {
+
+	INSTANCE;
 
 	public static enum Stem {
 		Present, Past, Progressive, Immediate, Deverbal
 	}
+
+	public boolean isReady = false;
 
 	public static class FullSuffixEntry {
 		public FullSuffixEntry(String desc, String suffix) {
@@ -36,23 +42,70 @@ public class SuffixGuesser {
 		public boolean appendable;
 	}
 
-	public SuffixGuesser() {
+	private SuffixGuesser() {
+//		init();
+	}
+
+	private final List<FullSuffixEntry> suffixes = new ArrayList<>();
+
+	private void init() {
 		GWT.log("SuffixGuesser: INIT START: " + String.valueOf(new Date()));
-		GWT.log("COUNT: " + getSuffixes().size());
-		GWT.log("SuffixGuesser: INIT DONE: " + String.valueOf(new Date()));
+		Scheduler.get().scheduleIncremental(new RepeatingCommand() {
+			private int i = 0;
+
+			@Override
+			public boolean execute() {
+				if (i < Affix.values().length) {
+					final Affix a = Affix.values()[i++];
+					GWT.log("BUILDING SUFFIX ENTRIES FOR: " + a.name()+" ("+i+")");
+					final List<String> entries = generateRecursive(null, a);
+					GWT.log("\tEntries: " + entries.size());
+					for (String entry : entries) {
+						FullSuffixEntry fse = new FullSuffixEntry(a.name(),
+								entry);
+						suffixes.add(fse);
+					}
+					return true;
+				}
+				INSTANCE.isReady = true;
+				GWT.log("SuffixGuesser: INIT DONE: "
+						+ String.valueOf(new Date()));
+				return false;
+			}
+		});
 	}
+	
+	public static Suffixes getSuffixMatcher(Affix affix) {
+		switch (affix) {
+		case AboutTo:
+			return new AboutTo(null);
+		case Again:
+			return new Again(null);
+		case Around:
+			return new Around(null);
+		case ByAccident:
+			return new Accidental(null);
+		case CameFor:
+			return new ComeForDoing(null);
+		case Causative:
+			// TODO: Causative, not past tense is special
+			return new CausativePast(null);
+		case Completely:
+			return new Completely(null);
+		case OverAndOver:
+			return new Repeatedly(null);
+		case ToFor:
+			return new ForTo(null);
+		case WentTo:
+			return new WentForDoing(null);
+		default:
+			break;
 
-	public List<FullSuffixEntry> getSuffixes() {
-		List<FullSuffixEntry> result = new ArrayList<>();
-
-		for (Affix a: Affix.values()) {
-			GWT.log("PROCESSED ROOT: ["+a.name()+"] "+generateRecursive(null, a).size());
 		}
-
-		return result;
+		return null;
 	}
 
-	public List<String> generateRecursive(String prepend, Affix affix) {
+	private List<String> generateRecursive(String prepend, Affix affix) {
 		List<String> list = new ArrayList<String>();
 		switch (affix) {
 		case AboutTo:
@@ -71,17 +124,8 @@ public class SuffixGuesser {
 			list.addAll(combine(affix.isFollowedBy, new ComeForDoing(prepend)));
 			break;
 		case Causative:
-			// i = new Causative(prepend).patterns.iterator();
-			// while (i.hasNext()) {
-			// String suffix = i.next();
-			// if (suffix.endsWith("*")){
-			// suffix=suffix.replace("*", "");
-			// for (Affix followedBy: affix.beFollowedBy){
-			// list.addAll(generatedRecursive(suffix, followedBy));
-			// }
-			// list.add(suffix);
-			// }
-			// }
+			// TODO: Causative, not past tense is special
+			list.addAll(combine(affix.isFollowedBy, new CausativePast(prepend)));
 			break;
 		case Completely:
 			list.addAll(combine(affix.isFollowedBy, new Completely(prepend)));
