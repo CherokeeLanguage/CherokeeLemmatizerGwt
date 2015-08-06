@@ -4,12 +4,34 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class Syllabary {
-	public static Map<String, String> chr2lat() {
-		Map<String, String> syl2lat = new HashMap<String, String>();
-		Map<String, String> lat2chr = lat2chr();
+import commons.lang.StringUtils;
 
-		Iterator<String> ikey = lat2chr.keySet().iterator();
+public class Syllabary {
+	
+	public static final String UpperMark="\u0332";//combining underline
+	public static final String Overline = "\u203e";
+	public static final String UnderX = "\u0353";
+	
+	public static String chr2lat(String chr) {
+		return _chr2lat.get(chr);
+	}
+	
+	public static String lat2chr(String latin) {
+		return _lat2chr.get(latin);
+	}
+	
+	private static final Map<String, String> _chr2lat;
+	private static final Map<String, String> _lat2chr;
+	static {
+		_lat2chr=_lat2chr();
+		_chr2lat=_chr2lat();
+	}
+	
+	private static Map<String, String> _chr2lat() {
+		Map<String, String> syl2lat = new HashMap<String, String>();
+		//Map<String, String> lat2chr = lat2chr();
+
+		Iterator<String> ikey = _lat2chr.keySet().iterator();
 		while (ikey.hasNext()) {
 			String key = ikey.next();
 			if (key.startsWith("hl")) {
@@ -27,12 +49,12 @@ public class Syllabary {
 			if (key.startsWith("k") && !key.startsWith("ka")) {
 				continue;
 			}
-			syl2lat.put(lat2chr.get(key), key);
+			syl2lat.put(_lat2chr.get(key), key);
 		}
 		return syl2lat;
 	}
 
-	public static Map<String, String> lat2chr() {
+	private static Map<String, String> _lat2chr() {
 		int ix = 0;
 		String letter;
 		String prefix;
@@ -190,5 +212,25 @@ public class Syllabary {
 			latin2syllabary.put(prefix + vowels[ix], letter);
 		}
 		return latin2syllabary;
+	}
+
+	public static enum Vowel {
+		Ꭰ("a"), Ꭱ("e"), Ꭲ("i"), Ꭳ("o"), Ꭴ("u"), Ꭵ("v");
+		public final String latin;
+		private Vowel(String latin) {
+			this.latin=latin;
+		}
+	}
+	
+	public static String changeForm(String prepend, Vowel vowel) {
+		if (StringUtils.isBlank(prepend)) {
+			return prepend;
+		}
+		String p1 = prepend.substring(0, prepend.length()-1);
+		String p2 = prepend.substring(prepend.length()-1, prepend.length());
+		String x3 = chr2lat(p2);
+		x3=x3.substring(0, x3.length()-1)+vowel.latin;
+		return p1 + lat2chr(x3);
+//		return prepend;
 	}
 }

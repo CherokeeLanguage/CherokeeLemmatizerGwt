@@ -43,7 +43,6 @@ public class DictionaryApplication implements ScheduledCommand {
 		if (scaleby<1f) {
 			scaleby=1f;
 		}
-		GWT.log("SCALE: "+scaleby);
 		rp.getElement().getStyle().setProperty("transform", "scale("+scaleby+")");
 		new SuffixGuesser();
 	}
