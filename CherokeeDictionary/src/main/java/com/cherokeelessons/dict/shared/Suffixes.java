@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.ListIterator;
 
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
-import com.google.gwt.core.shared.GWT;
-
 import commons.lang.StringUtils;
 
 public class Suffixes {
@@ -233,6 +231,31 @@ public class Suffixes {
 				patterns.add(i + "ᏗᏍᎩ");
 				//immeidate
 				patterns.add(i + "ᏕᎾ");
+			}
+		}
+	};
+	
+	public static class IntendTo extends Suffixes {
+		public IntendTo(String _prepend) {
+			String prepend = Syllabary.changeForm(_prepend, Vowel.Ꭲ);
+			String[] ilist = "ᎢᎩᎯᎵᎻᏂᏈᏏᏗᏘᏟᏥᏫᏱ".split("");
+			for (String i : ilist) {
+				if (StringUtils.isBlank(i)){
+					continue;
+				}
+				if (prepend != null && !prepend.endsWith(i)) {
+					continue;
+				}
+				if (prepend != null) {
+					i = prepend;
+				}
+				//progressive
+				patterns.add(i + "ᏎᏍᏗ");
+				patterns.add(i + "Ꮢ");
+				patterns.add(i + "ᏒᎩ");
+				patterns.add(i + "ᏒᎢ");
+				patterns.add(i + "ᏎᎢ");
+				patterns.add(i + "Ꮞ");
 			}
 		}
 	};

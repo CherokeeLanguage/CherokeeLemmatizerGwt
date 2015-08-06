@@ -44,7 +44,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import commons.lang.StringUtils;
 
 public class SyllabarySearch extends Composite {
@@ -124,7 +123,7 @@ public class SyllabarySearch extends Composite {
 				String match = s.match(value);
 				if (!StringUtils.isBlank(match)){
 					value=StringUtils.removeEnd(value, match);
-					newvalues.add("("+match+":"+affix.name()+")");
+					newvalues.add("("+affix.name()+")");
 					value += Syllabary.changeForm(match.substring(0, 1), Vowel.Ꭵ) + "Ꭲ";
 					newvalues.add("("+value+")");
 				}
@@ -134,6 +133,9 @@ public class SyllabarySearch extends Composite {
 			while (l.hasNext()) {
 				String xvalue =l.next();
 				String p = xvalue.substring(1, 2);
+				if (!p.matches("[Ꭰ-Ᏼ]")) {
+					continue;
+				}
 				if (p.equals("Ꮧ")||p.equals("Ꮒ")||p.equals("Ꮻ")){
 					xvalue=xvalue.substring(2);
 					xvalue = "("+p+"?"+xvalue;
@@ -161,7 +163,6 @@ public class SyllabarySearch extends Composite {
 					continue;
 				}
 			}
-			
 			textBox.setValue("("+StringUtils.join(newvalues, "[[:>:]]|")+"[[:>:]])");
 			textBox.setEnabled(true);
 			btn_analyze.state().reset();

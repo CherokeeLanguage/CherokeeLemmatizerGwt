@@ -13,8 +13,9 @@ import com.cherokeelessons.dict.shared.Suffixes.Around;
 import com.cherokeelessons.dict.shared.Suffixes.CausativePast;
 import com.cherokeelessons.dict.shared.Suffixes.ComeForDoing;
 import com.cherokeelessons.dict.shared.Suffixes.Completely;
-import com.cherokeelessons.dict.shared.Suffixes.ToFor;
+import com.cherokeelessons.dict.shared.Suffixes.IntendTo;
 import com.cherokeelessons.dict.shared.Suffixes.Repeatedly;
+import com.cherokeelessons.dict.shared.Suffixes.ToFor;
 import com.cherokeelessons.dict.shared.Suffixes.WentForDoing;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
@@ -98,9 +99,8 @@ public enum SuffixGuesser {
 			return new ToFor(null);
 		case WentTo:
 			return new WentForDoing(null);
-		default:
-			break;
-
+		case IntendTo:
+			return new IntendTo(null);
 		}
 		return null;
 	}
