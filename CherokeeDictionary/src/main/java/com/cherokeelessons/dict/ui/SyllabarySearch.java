@@ -2,6 +2,7 @@ package com.cherokeelessons.dict.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;
@@ -115,9 +116,9 @@ public class SyllabarySearch extends Composite {
 		public void execute() {
 			String value = StringUtils.strip(textBox.getValue());
 			List<String> newvalues = new ArrayList<>();
-			newvalues.add("("+value+")[[:>:]]");
 			
-			boolean matched=false;
+			newvalues.add("("+value+")");
+			
 			for (Affix affix: Affix.values()) {
 				Suffixes s = SuffixGuesser.getSuffixMatcher(affix);
 				String match = s.match(value);
@@ -126,11 +127,42 @@ public class SyllabarySearch extends Composite {
 					newvalues.add("("+match+":"+affix.name()+")");
 					value += Syllabary.changeForm(match.substring(0, 1), Vowel.Ꭵ) + "Ꭲ";
 					newvalues.add("("+value+")");
-					 
 				}
 			}
 			
-			textBox.setValue("("+StringUtils.join(newvalues, "|")+")");
+			ListIterator<String> l = newvalues.listIterator();
+			while (l.hasNext()) {
+				String xvalue =l.next();
+				String p = xvalue.substring(1, 2);
+				if (p.equals("Ꮧ")||p.equals("Ꮒ")||p.equals("Ꮻ")){
+					xvalue=xvalue.substring(2);
+					xvalue = "("+p+"?"+xvalue;
+					l.set(xvalue);
+					continue;
+				}
+				String q = Syllabary.chr2lat(p);
+				GWT.log("PREFIX: "+p+", "+q);
+				if (q.startsWith("n")){
+					xvalue=xvalue.substring(2);
+					xvalue = "(("+Syllabary.lat2chr(q.substring(1))+"|"+p+")"+xvalue;
+					l.set(xvalue);
+					continue;
+				}
+				if (q.startsWith("d")||q.startsWith("t")){
+					xvalue=xvalue.substring(2);
+					xvalue = "(("+Syllabary.lat2chr(q.substring(1))+"|"+p+")"+xvalue;
+					l.set(xvalue);
+					continue;
+				}
+				if (q.startsWith("j")){
+					xvalue=xvalue.substring(2);
+					xvalue = "(("+Syllabary.lat2chr(q.substring(1))+"|"+p+")"+xvalue;
+					l.set(xvalue);
+					continue;
+				}
+			}
+			
+			textBox.setValue("("+StringUtils.join(newvalues, "[[:>:]]|")+"[[:>:]])");
 			textBox.setEnabled(true);
 			btn_analyze.state().reset();
 		}
