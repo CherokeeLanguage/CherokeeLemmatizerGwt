@@ -1,7 +1,12 @@
 package com.cherokeelessons.dict.shared;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
+
+import com.google.gwt.core.shared.GWT;
 
 public enum Affix {
 	/**
@@ -21,6 +26,17 @@ public enum Affix {
 			x.follows.add(this);
 		}
 	}
-
-	public Set<Affix> follows = new HashSet<>();
+	
+	private final Set<Affix> follows = new HashSet<>();
+	
+	public Set<Affix> getFollows() {
+		return new HashSet<Affix>(follows);
+	}
+	
+	public static List<Affix> getValidChains() {
+		List<Affix> list = new ArrayList<Affix>();
+		list.add(Affix.values()[0]);
+		ListIterator<Affix> li = list.listIterator();
+		return list;
+	}
 }

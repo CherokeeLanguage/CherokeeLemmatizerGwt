@@ -1,8 +1,11 @@
 package com.cherokeelessons.dict.shared;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
 
 import com.cherokeelessons.dict.shared.Suffixes.AboutTo;
 import com.cherokeelessons.dict.shared.Suffixes.Accidental;
@@ -37,7 +40,6 @@ public enum SuffixGuesser {
 
 	private List<MatchResult> getMatchesStartingFrom(Affix affix,
 			String syllabary) {
-		GWT.log("\tTRYING: "+affix.name());
 		List<MatchResult> list = new ArrayList<Suffixes.MatchResult>();
 		Suffixes s = SuffixGuesser.getSuffixMatcher(affix);
 		MatchResult matchResult = s.match(syllabary);
@@ -45,19 +47,24 @@ public enum SuffixGuesser {
 			GWT.log("MATCHED: " + syllabary + " " + affix.name());
 			matchResult.desc = affix.name();
 			list.add(matchResult);
-			//TODO: THIS PART IS NOT WORKING RIGHT
-			for (Affix nextAffix: affix.follows) {
-				list.addAll(getMatchesStartingFrom(nextAffix, matchResult.stem));
+			for (Affix nextAffix : affix.getFollows()) {
+				list.addAll(getBestMatch(nextAffix, matchResult.stem));
+			}
+		} else {
+			GWT.log("NOT MATCHED: " + syllabary + " " + affix.name());
+			for (Affix nextAffix : affix.getFollows()) {
+				list.addAll(getBestMatch(nextAffix, syllabary));
 			}
 		}
 		return list;
 	}
-
 	public List<MatchResult> getMatches(String syllabary) {
+		return getBestMatch(Affix.SoAnd, syllabary);
+	}
+	
+	private List<MatchResult> getBestMatch(Affix start, String syllabary) {
 		List<List<MatchResult>> lists = new ArrayList<>();
-		for (Affix affix : Affix.values()) {
-			lists.add(getMatchesStartingFrom(affix, syllabary));
-		}
+		lists.add(getMatchesStartingFrom(start, syllabary));
 		Iterator<List<MatchResult>> xx = lists.iterator();
 		while (xx.hasNext()) {
 			if (xx.next().size() == 0) {
@@ -80,18 +87,10 @@ public enum SuffixGuesser {
 		GWT.log("COMPARING MATCH COUNT SIZES.");
 		while (il.hasNext()) {
 			List<MatchResult> tmp = il.next();
-			// int listsize = list.size();
-			// int tmpsize = tmp.size();
-			// if (tmpsize>listsize){
-			// list=tmp;
-			// continue;
-			// }
-			// if (tmpsize==listsize) {
 			if (tmp.get(0).suffix.length() > list.get(0).suffix.length()) {
 				list = tmp;
 				continue;
 			}
-			// }
 		}
 		return list;
 	}
@@ -134,6 +133,7 @@ public enum SuffixGuesser {
 		case But:
 			return new But();
 		}
-		throw new RuntimeException("SPECIFIED SUFFIX MATCHER IS NOT IMPLEMENTED.");
+		throw new RuntimeException(
+				"SPECIFIED SUFFIX MATCHER IS NOT IMPLEMENTED.");
 	}
 }
