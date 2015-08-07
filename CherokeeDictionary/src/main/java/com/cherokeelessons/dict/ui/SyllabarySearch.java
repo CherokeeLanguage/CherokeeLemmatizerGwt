@@ -28,6 +28,7 @@ import com.cherokeelessons.dict.shared.FormattedEntry;
 import com.cherokeelessons.dict.shared.SearchResponse;
 import com.cherokeelessons.dict.shared.SuffixGuesser;
 import com.cherokeelessons.dict.shared.Suffixes;
+import com.cherokeelessons.dict.shared.Suffixes.MatchResult;
 import com.cherokeelessons.dict.shared.Syllabary;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
 import com.google.gwt.core.client.GWT;
@@ -44,6 +45,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+
 import commons.lang.StringUtils;
 
 public class SyllabarySearch extends Composite {
@@ -120,11 +122,10 @@ public class SyllabarySearch extends Composite {
 			
 			for (Affix affix: Affix.values()) {
 				Suffixes s = SuffixGuesser.getSuffixMatcher(affix);
-				String match = s.match(value);
-				if (!StringUtils.isBlank(match)){
-					value=StringUtils.removeEnd(value, match);
+				MatchResult matchResult = s.match(value);
+				if (matchResult.isMatch){
 					newvalues.add("("+affix.name()+")");
-					value += Syllabary.changeForm(match.substring(0, 1), Vowel.Ꭵ) + "Ꭲ";
+					value += Syllabary.changeForm(matchResult.stem.substring(0, 1), Vowel.Ꭵ) + "Ꭲ";
 					newvalues.add("("+value+")");
 				}
 			}

@@ -14,6 +14,7 @@ import com.cherokeelessons.dict.shared.Suffixes.CausativePast;
 import com.cherokeelessons.dict.shared.Suffixes.ComeForDoing;
 import com.cherokeelessons.dict.shared.Suffixes.Completely;
 import com.cherokeelessons.dict.shared.Suffixes.IntendTo;
+import com.cherokeelessons.dict.shared.Suffixes.Just;
 import com.cherokeelessons.dict.shared.Suffixes.Repeatedly;
 import com.cherokeelessons.dict.shared.Suffixes.ToFor;
 import com.cherokeelessons.dict.shared.Suffixes.WentForDoing;
@@ -101,6 +102,8 @@ public enum SuffixGuesser {
 			return new WentForDoing(null);
 		case IntendTo:
 			return new IntendTo(null);
+		case Just:
+			return new Just(null);
 		}
 		return null;
 	}

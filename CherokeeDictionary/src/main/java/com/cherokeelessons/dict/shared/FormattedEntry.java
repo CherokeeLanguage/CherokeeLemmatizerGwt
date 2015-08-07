@@ -23,9 +23,9 @@ public class FormattedEntry {
 				entry.nounadjpluraltone));
 		pairs.add(new DisplayPair(entry.vfirstpresh, entry.vfirstprestone));
 		pairs.add(new DisplayPair(entry.vthirdpastsyllj, entry.vthirdpasttone));
+		pairs.add(new DisplayPair(entry.vthirdpressylll, entry.vthirdprestone));
 		pairs.add(new DisplayPair(entry.vsecondimpersylln,
 				entry.vsecondimpertone));
-		pairs.add(new DisplayPair(entry.vthirdpressylll, entry.vthirdprestone));
 		pairs.add(new DisplayPair(entry.vthirdinfsyllp, entry.vthirdinftone));
 
 		Iterator<DisplayPair> idp = pairs.iterator();
