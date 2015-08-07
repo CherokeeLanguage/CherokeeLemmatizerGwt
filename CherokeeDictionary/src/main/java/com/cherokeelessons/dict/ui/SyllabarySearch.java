@@ -95,9 +95,9 @@ public class SyllabarySearch extends Composite {
 			return;
 		}
 		value = StringUtils.strip(value);
-		if (!value.matches("^[Ꭰ-Ᏼ]+$")){
+		if (!value.matches("^[Ꭰ-Ᏼ][Ꭰ-Ᏼ .,;:!?]*$")){
 			alert.setDismissable(true);
-			alert.setText("CAN ONLY ANALYZE SINGLE SYLLABARY WORDS.");
+			alert.setText("CAN ONLY ANALYZE SYLLABARY WORDS.");
 			rp.add(alert);
 			btn_analyze.state().reset();
 			return;
@@ -110,50 +110,17 @@ public class SyllabarySearch extends Composite {
 		@Override
 		public void execute() {
 			String value = StringUtils.strip(textBox.getValue());
+			value = value.replaceAll("[^Ꭰ-Ᏼ ]", "");
 			List<String> newvalues = new ArrayList<>();
-			
-			newvalues.add(value);
-			
-			List<MatchResult> matched = SuffixGuesser.INSTANCE.getMatches(value);
-			
-			for (MatchResult match: matched) {
-				newvalues.add(match.stem+"+"+match.suffix+":"+match.desc);
+			for (String word: StringUtils.split(value)) {
+				newvalues.add(word);
+				List<MatchResult> matched = SuffixGuesser.INSTANCE.getMatches(word);
+				
+				for (MatchResult match: matched) {
+					newvalues.add(match.stem+"+"+match.suffix+":"+match.desc);
+				}
 			}
 			
-//			ListIterator<String> l = newvalues.listIterator();
-//			while (l.hasNext()) {
-//				String xvalue =l.next();
-//				String p = xvalue.substring(0, 1);
-//				if (!p.matches("[Ꭰ-Ᏼ]")) {
-//					continue;
-//				}
-//				if (p.equals("Ꮧ")||p.equals("Ꮒ")||p.equals("Ꮻ")){
-//					xvalue=xvalue.substring(1);
-//					xvalue = p+"?"+xvalue;
-//					l.set(xvalue);
-//					continue;
-//				}
-//				String q = Syllabary.chr2lat(p);
-//				GWT.log("PREFIX: "+p+", "+q);
-//				if (q.startsWith("n")){
-//					xvalue=xvalue.substring(1);
-//					xvalue = "("+Syllabary.lat2chr(q.substring(1))+"|"+p+")"+xvalue;
-//					l.set(xvalue);
-//					continue;
-//				}
-//				if (q.startsWith("d")||q.startsWith("t")){
-//					xvalue=xvalue.substring(1);
-//					xvalue = "("+Syllabary.lat2chr(q.substring(1))+"|"+p+")"+xvalue;
-//					l.set(xvalue);
-//					continue;
-//				}
-//				if (q.startsWith("j")){
-//					xvalue=xvalue.substring(1);
-//					xvalue = "("+Syllabary.lat2chr(q.substring(1))+"|"+p+")"+xvalue;
-//					l.set(xvalue);
-//					continue;
-//				}
-//			}
 			textBox.setValue(StringUtils.join(newvalues, ", "));
 			textBox.setEnabled(true);
 			btn_analyze.state().reset();

@@ -1,12 +1,14 @@
 package com.cherokeelessons.dict.shared;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.cherokeelessons.dict.shared.Suffixes.AboutTo;
 import com.cherokeelessons.dict.shared.Suffixes.Accidental;
 import com.cherokeelessons.dict.shared.Suffixes.Again;
 import com.cherokeelessons.dict.shared.Suffixes.Around;
+import com.cherokeelessons.dict.shared.Suffixes.But;
 import com.cherokeelessons.dict.shared.Suffixes.CausativePast;
 import com.cherokeelessons.dict.shared.Suffixes.ComeForDoing;
 import com.cherokeelessons.dict.shared.Suffixes.Completely;
@@ -32,18 +34,64 @@ public enum SuffixGuesser {
 
 	private SuffixGuesser() {
 	}
-	
-	public List<MatchResult> getMatches(String syllabary) {
-		List<MatchResult> list = new ArrayList<Suffixes.MatchResult>(); 
-		for (Affix affix: Affix.values()) {
-			GWT.log("Trying: "+affix.name()+" for '"+syllabary+"'");
-			Suffixes s = SuffixGuesser.getSuffixMatcher(affix);
-			MatchResult matchResult = s.match(syllabary);
-			if (matchResult.isMatch){
-				matchResult.desc=affix.name();
-				list.add(matchResult);
-				syllabary=matchResult.stem;
+
+	private List<MatchResult> getMatchesStartingFrom(Affix affix,
+			String syllabary) {
+		GWT.log("\tTRYING: "+affix.name());
+		List<MatchResult> list = new ArrayList<Suffixes.MatchResult>();
+		Suffixes s = SuffixGuesser.getSuffixMatcher(affix);
+		MatchResult matchResult = s.match(syllabary);
+		if (matchResult.isMatch) {
+			GWT.log("MATCHED: " + syllabary + " " + affix.name());
+			matchResult.desc = affix.name();
+			list.add(matchResult);
+			//TODO: THIS PART IS NOT WORKING RIGHT
+			for (Affix nextAffix: affix.follows) {
+				list.addAll(getMatchesStartingFrom(nextAffix, matchResult.stem));
 			}
+		}
+		return list;
+	}
+
+	public List<MatchResult> getMatches(String syllabary) {
+		List<List<MatchResult>> lists = new ArrayList<>();
+		for (Affix affix : Affix.values()) {
+			lists.add(getMatchesStartingFrom(affix, syllabary));
+		}
+		Iterator<List<MatchResult>> xx = lists.iterator();
+		while (xx.hasNext()) {
+			if (xx.next().size() == 0) {
+				xx.remove();
+			}
+		}
+		if (lists.size() == 0) {
+			GWT.log("NO MATCHES.");
+			return new ArrayList<MatchResult>();
+		}
+		/*
+		 * pick the one with the most matches
+		 */
+		Iterator<List<MatchResult>> il = lists.iterator();
+		List<MatchResult> list = il.next();
+		if (!il.hasNext()) {
+			GWT.log("ONLY ONE MATCH.");
+			return list;
+		}
+		GWT.log("COMPARING MATCH COUNT SIZES.");
+		while (il.hasNext()) {
+			List<MatchResult> tmp = il.next();
+			// int listsize = list.size();
+			// int tmpsize = tmp.size();
+			// if (tmpsize>listsize){
+			// list=tmp;
+			// continue;
+			// }
+			// if (tmpsize==listsize) {
+			if (tmp.get(0).suffix.length() > list.get(0).suffix.length()) {
+				list = tmp;
+				continue;
+			}
+			// }
 		}
 		return list;
 	}
@@ -83,7 +131,9 @@ public enum SuffixGuesser {
 			return new YesNo();
 		case YesYes:
 			return new YesYes();
+		case But:
+			return new But();
 		}
-		return null;
+		throw new RuntimeException("SPECIFIED SUFFIX MATCHER IS NOT IMPLEMENTED.");
 	}
 }

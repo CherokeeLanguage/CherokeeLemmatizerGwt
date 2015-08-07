@@ -261,6 +261,13 @@ public abstract class Suffixes {
 		}
 	};
 	
+	public static class But extends Suffixes {
+		public But() {
+			vowelFixStem=false;
+			addSet("", "ᏍᎩᏂ");
+		}
+	};
+	
 	public static class YesNo extends Suffixes {
 		public YesNo() {
 			vowelFixStem=false;

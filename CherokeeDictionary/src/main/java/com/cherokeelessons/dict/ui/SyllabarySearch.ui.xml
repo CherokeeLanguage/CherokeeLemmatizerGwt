@@ -13,7 +13,7 @@
 					<b:FormLabel for="formSuccess">
 						Input Cherokee Syllabary Text</b:FormLabel>
 					<b:TextBox ui:field="textBox" b:id="formSuccess"
-						b:value="ᏚᏂᎩᏒᏒᎢ" />
+						b:value="ᎡᏣᎪᎵᏰᎦᏍ ᏚᏂᎩᏒᏒᎢ ᎢᎯᏍᏓᏲᏟᏏᏍᎪ ᏅᎭᏛᏁᎵᏌ ᏚᏴᏍᏙᎯᏌᏅ ᎠᏥᏃᏎᎵᎶᎠ ᎤᏩᎫᏯᏍᏓᏂᎶᏍᎬᎢ ᏓᎾᏓᏲᏍᏙᏗᏍᎪᎢ ᎬᏰᏥᏙᏔᏅ ᏥᏍᏕᏲᎶᎲᏍᎦ ᎠᏍᏙᎣᎲᏍᎪ ᎤᏬᏍᏓᏁᎵᏙᎭ ᎠᏁᏙ ᎨᎩᎾᎦᏙᏍᏔᏂᎯᎰ ᎤᏬᏂᏏᏗ" />
 					<b:Button ui:field="btn_analyze" type="PRIMARY">ANALYZE</b:Button>
 					<b:Button ui:field="btn_search" type="PRIMARY">SEARCH</b:Button>
 					<b:Button ui:field="btn_reset" type="PRIMARY">CLEAR RESULTS</b:Button>
