@@ -2,7 +2,6 @@ package com.cherokeelessons.dict.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;
@@ -22,15 +21,11 @@ import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.gwt.HTMLPanel;
 
 import com.cherokeelessons.dict.client.DictionaryApplication;
-import com.cherokeelessons.dict.shared.Affix;
 import com.cherokeelessons.dict.shared.DictEntry;
 import com.cherokeelessons.dict.shared.FormattedEntry;
 import com.cherokeelessons.dict.shared.SearchResponse;
 import com.cherokeelessons.dict.shared.SuffixGuesser;
-import com.cherokeelessons.dict.shared.Suffixes;
 import com.cherokeelessons.dict.shared.Suffixes.MatchResult;
-import com.cherokeelessons.dict.shared.Syllabary;
-import com.cherokeelessons.dict.shared.Syllabary.Vowel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -45,7 +40,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import commons.lang.StringUtils;
 
 public class SyllabarySearch extends Composite {
@@ -118,53 +112,49 @@ public class SyllabarySearch extends Composite {
 			String value = StringUtils.strip(textBox.getValue());
 			List<String> newvalues = new ArrayList<>();
 			
-			newvalues.add("("+value+")");
+			newvalues.add(value);
 			
-			for (Affix affix: Affix.values()) {
-				Suffixes s = SuffixGuesser.getSuffixMatcher(affix);
-				MatchResult matchResult = s.match(value);
-				if (matchResult.isMatch){
-					newvalues.add("("+affix.name()+")");
-					value += Syllabary.changeForm(matchResult.stem.substring(0, 1), Vowel.Ꭵ) + "Ꭲ";
-					newvalues.add("("+value+")");
-				}
+			List<MatchResult> matched = SuffixGuesser.INSTANCE.getMatches(value);
+			
+			for (MatchResult match: matched) {
+				newvalues.add(match.stem+"+"+match.suffix+":"+match.desc);
 			}
 			
-			ListIterator<String> l = newvalues.listIterator();
-			while (l.hasNext()) {
-				String xvalue =l.next();
-				String p = xvalue.substring(1, 2);
-				if (!p.matches("[Ꭰ-Ᏼ]")) {
-					continue;
-				}
-				if (p.equals("Ꮧ")||p.equals("Ꮒ")||p.equals("Ꮻ")){
-					xvalue=xvalue.substring(2);
-					xvalue = "("+p+"?"+xvalue;
-					l.set(xvalue);
-					continue;
-				}
-				String q = Syllabary.chr2lat(p);
-				GWT.log("PREFIX: "+p+", "+q);
-				if (q.startsWith("n")){
-					xvalue=xvalue.substring(2);
-					xvalue = "(("+Syllabary.lat2chr(q.substring(1))+"|"+p+")"+xvalue;
-					l.set(xvalue);
-					continue;
-				}
-				if (q.startsWith("d")||q.startsWith("t")){
-					xvalue=xvalue.substring(2);
-					xvalue = "(("+Syllabary.lat2chr(q.substring(1))+"|"+p+")"+xvalue;
-					l.set(xvalue);
-					continue;
-				}
-				if (q.startsWith("j")){
-					xvalue=xvalue.substring(2);
-					xvalue = "(("+Syllabary.lat2chr(q.substring(1))+"|"+p+")"+xvalue;
-					l.set(xvalue);
-					continue;
-				}
-			}
-			textBox.setValue("("+StringUtils.join(newvalues, "[[:>:]]|")+"[[:>:]])");
+//			ListIterator<String> l = newvalues.listIterator();
+//			while (l.hasNext()) {
+//				String xvalue =l.next();
+//				String p = xvalue.substring(0, 1);
+//				if (!p.matches("[Ꭰ-Ᏼ]")) {
+//					continue;
+//				}
+//				if (p.equals("Ꮧ")||p.equals("Ꮒ")||p.equals("Ꮻ")){
+//					xvalue=xvalue.substring(1);
+//					xvalue = p+"?"+xvalue;
+//					l.set(xvalue);
+//					continue;
+//				}
+//				String q = Syllabary.chr2lat(p);
+//				GWT.log("PREFIX: "+p+", "+q);
+//				if (q.startsWith("n")){
+//					xvalue=xvalue.substring(1);
+//					xvalue = "("+Syllabary.lat2chr(q.substring(1))+"|"+p+")"+xvalue;
+//					l.set(xvalue);
+//					continue;
+//				}
+//				if (q.startsWith("d")||q.startsWith("t")){
+//					xvalue=xvalue.substring(1);
+//					xvalue = "("+Syllabary.lat2chr(q.substring(1))+"|"+p+")"+xvalue;
+//					l.set(xvalue);
+//					continue;
+//				}
+//				if (q.startsWith("j")){
+//					xvalue=xvalue.substring(1);
+//					xvalue = "("+Syllabary.lat2chr(q.substring(1))+"|"+p+")"+xvalue;
+//					l.set(xvalue);
+//					continue;
+//				}
+//			}
+			textBox.setValue(StringUtils.join(newvalues, ", "));
 			textBox.setEnabled(true);
 			btn_analyze.state().reset();
 		}

@@ -231,6 +231,19 @@ public class Syllabary {
 		String x3 = chr2lat(p2);
 		x3=x3.substring(0, x3.length()-1)+vowel.latin;
 		return p1 + lat2chr(x3);
-//		return prepend;
+	}
+
+	public static String changeForm(String syllabary, String vowel) {
+		if (StringUtils.isBlank(syllabary)) {
+			return syllabary;
+		}
+		if (!"ᎠᎡᎢᎣᎤᎥ".contains(vowel)) {
+			throw new RuntimeException("NOT A VALID SYLLABARY VOWEL!");
+		}
+		String p1 = syllabary.substring(0, syllabary.length()-1);
+		String p2 = syllabary.substring(syllabary.length()-1, syllabary.length());
+		String x3 = chr2lat(p2);
+		x3=x3.substring(0, x3.length()-1)+chr2lat(vowel);
+		return p1 + lat2chr(x3);
 	}
 }

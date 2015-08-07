@@ -9,9 +9,11 @@ public enum Affix {
 	 * These entries are order dependent and are listed from word END to ROOT
 	 * ending start order!
 	 */
-	Just(), AboutTo(Just), IntendTo(Just), WentTo(AboutTo, IntendTo), CameFor(AboutTo, IntendTo), Around(CameFor, WentTo), ToFor(
-			Around), Completely(ToFor), ByAccident(Completely), Causative(
-			Completely), OverAndOver(Causative, ByAccident), Again(OverAndOver);
+	SoAnd(), Place(SoAnd), YesYes(Place), YesNo(Place), Just(YesNo, YesYes), AboutTo(
+			Just), IntendTo(Just), WentTo(AboutTo, IntendTo), CameFor(AboutTo,
+			IntendTo), Around(CameFor, WentTo), ToFor(Around), Completely(ToFor), ByAccident(
+			Completely), Causative(Completely), OverAndOver(Causative,
+			ByAccident), Again(OverAndOver);
 	private Affix(Affix... affixs) {
 		if (affixs == null) {
 			return;
