@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import commons.lang.StringUtils;
+import commons.lang3.StringUtils;
 
 public class SyllabarySearch extends Composite {
 
@@ -100,14 +100,6 @@ public class SyllabarySearch extends Composite {
 			btn_analyze.state().reset();
 			return;
 		}
-//		value = StringUtils.strip(value);
-//		if (!value.matches("^[Ꭰ-Ᏼ0-9][Ꭰ-Ᏼ0-9\\s.,;:!?]*$")) {
-//			alert.setDismissable(true);
-//			alert.setText("CAN ONLY ANALYZE SYLLABARY WORDS.");
-//			rp.add(alert);
-//			btn_analyze.state().reset();
-//			return;
-//		}
 		textBox.setEnabled(false);
 		Scheduler.get().scheduleDeferred(doAnalysis);
 	}
@@ -138,6 +130,12 @@ public class SyllabarySearch extends Composite {
 						for (MatchResult match : matched) {
 							shb.appendEscaped(match.stem + "+" + match.suffix + ":"
 									+ match.desc);
+							String info = DictionaryApplication.lookup.guessed(match.stem);
+							if (!StringUtils.isBlank(info)){
+								shb.appendHtmlConstant("<br/><span style='color: navy; font-weight: bold;'>");
+								shb.appendEscapedLines(info.replace("|", "\n"));
+								shb.appendHtmlConstant("</span><br/>");
+							}
 							shb.appendHtmlConstant("<br />");
 							if (match.desc.contains("*")){
 								type=PanelType.DANGER;
@@ -148,12 +146,21 @@ public class SyllabarySearch extends Composite {
 						}
 						affixedStem.insert(0, innerstem);
 						SafeHtmlBuilder affixedStemHtml = new SafeHtmlBuilder();
+						
+						String info = DictionaryApplication.lookup.guessed(word);
+						if (!StringUtils.isBlank(info)){
+							affixedStemHtml.appendHtmlConstant("<span style='color: navy; font-weight: bold;'>");
+							affixedStemHtml.appendEscapedLines(info.replace("|", "\n"));
+							affixedStemHtml.appendHtmlConstant("</span><br/>");
+						}
+						
 						if (affixedStem.length()!=0) {
 							affixedStemHtml.appendHtmlConstant("<span style='font-style: italic; font-weight: bold;'>");
 							affixedStemHtml.appendEscaped(affixedStem.toString());
 							affixedStemHtml.appendHtmlConstant("</span><br/>");
 						}
 						affixedStemHtml.append(shb.toSafeHtml());
+						
 						final Panel p = new Panel(type);
 						Style style = p.getElement().getStyle();
 						style.setWidth((DictionaryApplication.WIDTH-20)/3-5, Unit.PX);

@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import commons.lang.StringUtils;
+import commons.lang3.StringUtils;
 
 public class Syllabary {
 	

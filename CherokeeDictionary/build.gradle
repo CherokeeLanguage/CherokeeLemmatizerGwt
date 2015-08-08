@@ -78,7 +78,7 @@ gwt {
 	}
 	
 	eclipse {
-		addGwtContainer = false;
+		addGwtContainer = true;
 	}
 }
 
@@ -90,10 +90,10 @@ configurations {
 dependencies {
 	providedCompile 'javax.servlet:javax.servlet-api:3.0.1'
 	providedCompile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
-	providedCompile 'org.fusesource.restygwt:restygwt:2.0.3'
-	providedCompile 'org.gwtbootstrap3:gwtbootstrap3:0.9.1'
 	providedCompile 'com.google.gwt:gwt-servlet:2.7.0'
-	//providedCompile 'com.google.guava:guava-gwt:+'
+	gwt 'org.fusesource.restygwt:restygwt:2.0.3'
+	gwt 'org.gwtbootstrap3:gwtbootstrap3:0.9.1'
+	//gwt 'com.google.guava:guava-gwt:+'
 }
  
 sourceSets {
@@ -129,9 +129,9 @@ eclipse {
 		webAppDirName = 'src/main/webapp'
 	}
 
-	classpath {
-		plusConfigurations += [configurations.provided]
-	}
+	//classpath {
+	//	plusConfigurations += [configurations.provided]
+	//}
 
 	jdt {
 		sourceCompatibility=1.7

@@ -21,6 +21,7 @@ import com.cherokeelessons.dict.shared.Suffixes.Repeatedly;
 import com.cherokeelessons.dict.shared.Suffixes.SoAnd;
 import com.cherokeelessons.dict.shared.Suffixes.ToFor;
 import com.cherokeelessons.dict.shared.Suffixes.ToForᏏ;
+import com.cherokeelessons.dict.shared.Suffixes.Towards;
 import com.cherokeelessons.dict.shared.Suffixes.Truly;
 import com.cherokeelessons.dict.shared.Suffixes.Very;
 import com.cherokeelessons.dict.shared.Suffixes.WentForDoing;
@@ -145,6 +146,8 @@ public enum SuffixGuesser {
 			return new Truly();
 		case Very:
 			return new Very();
+		case Towards:
+			return new Towards();
 		}
 		throw new RuntimeException(
 				"SPECIFIED SUFFIX MATCHER IS NOT IMPLEMENTED.");

@@ -10,13 +10,10 @@ public class DictEntryPoint implements EntryPoint {
 
 	static {
 		Defaults.setRequestTimeout(120*1000);
-		Defaults.setServiceRoot("http://www.cherokeedictionary.net/jsonsearch/");
 	}
 	
 	@Override
 	public void onModuleLoad() {
-		GWT.log("onModuleLoad");
 		Scheduler.get().scheduleDeferred(new DictionaryApplication());
 	}
-
 }

@@ -1,7 +1,8 @@
 package com.cherokeelessons.dict.shared;
 
 import com.google.gwt.core.shared.GWT;
-import commons.lang.StringUtils;
+
+import commons.lang3.StringUtils;
 
 public class Pronunciaton {
 	

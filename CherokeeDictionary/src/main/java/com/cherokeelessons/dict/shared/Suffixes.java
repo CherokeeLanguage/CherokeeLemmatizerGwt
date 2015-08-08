@@ -9,7 +9,7 @@ import java.util.Map;
 
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
 
-import commons.lang.StringUtils;
+import commons.lang3.StringUtils;
 
 public abstract class Suffixes {
 
@@ -17,6 +17,10 @@ public abstract class Suffixes {
 	
 	private static final Map<String, String> vowelSets;
 
+	public static String getVowelSet(Vowel vowel) {
+		return vowelSets.get(vowel.name());
+	}
+	
 	static {
 		vowelSets = new HashMap<>();
 		vowelSets.put("Ꭰ", "ᎠᎦᎧᎭᎳᎾᎿᏀᏆᏌᏓᏔᏜᏝᏣᏩᏯ");
@@ -290,6 +294,16 @@ public abstract class Suffixes {
 			vowelFixStem=false;
 			addSet("", "Ꮿ");
 			addSet("", "ᏯᎢ");
+		}
+	};
+	
+	public static class Towards extends Suffixes {
+		public Towards() {
+			vowelFixStem=false;
+			//1844
+			addSet("", "ᏗᏢ");
+			//CED
+			addSet("", "ᏗᏜ");
 		}
 	};
 	

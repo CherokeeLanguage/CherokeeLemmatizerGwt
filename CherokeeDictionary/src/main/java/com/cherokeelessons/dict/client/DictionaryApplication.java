@@ -1,7 +1,13 @@
 package com.cherokeelessons.dict.client;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+import com.cherokeelessons.dict.shared.ClientLookup;
 import com.cherokeelessons.dict.shared.RestApi;
-import com.cherokeelessons.dict.shared.SuffixGuesser;
 import com.cherokeelessons.dict.ui.SyllabarySearch;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -10,16 +16,30 @@ import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.opencsv.CSVParser;
 
 public class DictionaryApplication implements ScheduledCommand {
 	
 	public static final int WIDTH=800;
 	
+	public static ClientLookup lookup;
 	public static final RestApi api;
 	static {
 		api = GWT.create(RestApi.class);
-		SuffixGuesser x = SuffixGuesser.INSTANCE;
+		String[] lines = ClientResources.INSTANCE.stopwords().getText().split("\n");
+		CSVParser parser = new CSVParser();
+		Iterator<String> iline = Arrays.asList(lines).iterator();
+		List<String[]> data=new ArrayList<>();
+		while (iline.hasNext()) {
+			try {
+				data.add(parser.parseLine(iline.next()));
+			} catch (IOException e) {
+			}
+		}
+		lookup = new ClientLookup(data);
+		GWT.log("LOOKUP: ᎣᏍᏛ "+lookup.guessed("ᎣᏍᏛ"));
 	}
+	
 	
 	private Timer doResizeTimer;
 	private final ResizeHandler resize = new ResizeHandler() {
@@ -47,7 +67,6 @@ public class DictionaryApplication implements ScheduledCommand {
 			scaleby=1f;
 		}
 		rp.getElement().getStyle().setProperty("transform", "scale("+scaleby+")");
-		GWT.log("scale("+scaleby+")");
 	}
 	
 	private RootPanel rp;
