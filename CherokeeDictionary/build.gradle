@@ -76,6 +76,10 @@ gwt {
 		noPrecompile = false;
 		failOnError = false;
 	}
+	
+	eclipse {
+		addGwtContainer = false;
+	}
 }
 
 
