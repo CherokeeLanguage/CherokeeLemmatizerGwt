@@ -9,6 +9,7 @@ import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.Heading;
+import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.PageHeader;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
@@ -17,6 +18,7 @@ import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.AlertType;
 import org.gwtbootstrap3.client.ui.constants.HeadingSize;
+import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.gwt.HTMLPanel;
 
@@ -98,14 +100,14 @@ public class SyllabarySearch extends Composite {
 			btn_analyze.state().reset();
 			return;
 		}
-		value = StringUtils.strip(value);
-		if (!value.matches("^[Ꭰ-Ᏼ][Ꭰ-Ᏼ .,;:!?]*$")) {
-			alert.setDismissable(true);
-			alert.setText("CAN ONLY ANALYZE SYLLABARY WORDS.");
-			rp.add(alert);
-			btn_analyze.state().reset();
-			return;
-		}
+//		value = StringUtils.strip(value);
+//		if (!value.matches("^[Ꭰ-Ᏼ0-9][Ꭰ-Ᏼ0-9\\s.,;:!?]*$")) {
+//			alert.setDismissable(true);
+//			alert.setText("CAN ONLY ANALYZE SYLLABARY WORDS.");
+//			rp.add(alert);
+//			btn_analyze.state().reset();
+//			return;
+//		}
 		textBox.setEnabled(false);
 		Scheduler.get().scheduleDeferred(doAnalysis);
 	}
@@ -114,59 +116,86 @@ public class SyllabarySearch extends Composite {
 		@Override
 		public void execute() {
 			String value = StringUtils.strip(textBox.getValue());
-			value = value.replaceAll("[^Ꭰ-Ᏼ ]", "");
-			for (String word : StringUtils.split(value)) {
-				PanelType type = PanelType.DEFAULT;
-				SafeHtmlBuilder shb = new SafeHtmlBuilder();
-				List<MatchResult> matched = SuffixGuesser.INSTANCE
-						.getMatches(word);
-				if (matched.size()!=0) {
-					type=PanelType.SUCCESS;
-				}
-				for (MatchResult match : matched) {
-					shb.appendEscaped(match.stem + "+" + match.suffix + ":"
-							+ match.desc);
-					shb.appendHtmlConstant("<br />");
-					if (match.desc.contains("*")){
-						type=PanelType.DANGER;
-					}
-				}
-				
-				final Panel p = new Panel(type);
-				Style style = p.getElement().getStyle();
-				style.setWidth(242, Unit.PX);
-				style.setDisplay(Display.INLINE_BLOCK);
-				style.setMarginRight(5, Unit.PX);
-				style.setVerticalAlign(Style.VerticalAlign.TOP);
-				PanelHeader ph = new PanelHeader();
-				Heading h = new Heading(HeadingSize.H5);
-				h.setText(word);
-				ph.add(h);
-				PanelBody pb = new PanelBody();
-				
-				HTMLPanel hp = new HTMLPanel(shb.toSafeHtml());
-				Button dismiss = new Button("DISMISS");
-				dismiss.addClickHandler(new ClickHandler() {
+			value = value.replaceAll("[^Ꭰ-Ᏼ0-9\\s]", "");
+			final List<ScheduledCommand> cmds = new ArrayList<>();
+			String[] words = StringUtils.split(value);
+			if (words.length!=0) {
+				onClearResults(null);
+			}
+			for (final String word : words) {
+				cmds.add(new ScheduledCommand() {
 					@Override
-					public void onClick(ClickEvent event) {
-						p.clear();
-						p.removeFromParent();
-						GWT.log("Panel Removed: "
-								+ Boolean.valueOf(panels.remove(p)));
+					public void execute() {
+						PanelType type = PanelType.DEFAULT;
+						SafeHtmlBuilder shb = new SafeHtmlBuilder();
+						List<MatchResult> matched = SuffixGuesser.INSTANCE
+								.getMatches(word);
+						if (matched.size()!=0) {
+							type=PanelType.SUCCESS;
+						}
+						for (MatchResult match : matched) {
+							shb.appendEscaped(match.stem + "+" + match.suffix + ":"
+									+ match.desc);
+							shb.appendHtmlConstant("<br />");
+							if (match.desc.contains("*")){
+								type=PanelType.DANGER;
+							}
+						}
+						
+						final Panel p = new Panel(type);
+						Style style = p.getElement().getStyle();
+						style.setWidth((DictionaryApplication.WIDTH-10)/3-5, Unit.PX);
+						style.setDisplay(Display.INLINE_BLOCK);
+						style.setMarginRight(5, Unit.PX);
+						style.setVerticalAlign(Style.VerticalAlign.TOP);
+						PanelHeader ph = new PanelHeader();
+						Heading h = new Heading(HeadingSize.H5);
+						h.setText(word);
+						ph.add(h);
+						h.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
+						Label source = new Label(LabelType.INFO);
+						ph.add(source);
+						source.getElement().getStyle().setFloat(Style.Float.RIGHT);
+						source.setText("[analysis]");
+						PanelBody pb = new PanelBody();
+						
+						HTMLPanel hp = new HTMLPanel(shb.toSafeHtml());
+						Button dismiss = new Button("DISMISS");
+						dismiss.addClickHandler(new ClickHandler() {
+							@Override
+							public void onClick(ClickEvent event) {
+								p.clear();
+								p.removeFromParent();
+								GWT.log("Panel Removed: "
+										+ Boolean.valueOf(panels.remove(p)));
+							}
+						});
+						PanelFooter pf = new PanelFooter();
+						pf.add(dismiss);
+						p.add(ph);
+						p.add(pb);
+						p.add(pf);
+
+						pb.add(hp);
+						rp.add(p);
+						panels.add(p);
 					}
 				});
-				PanelFooter pf = new PanelFooter();
-				pf.add(dismiss);
-				p.add(ph);
-				p.add(pb);
-				p.add(pf);
-
-				pb.add(hp);
-				rp.add(p);
-				panels.add(p);
 			}
-			textBox.setEnabled(true);
-			btn_analyze.state().reset();
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+				@Override
+				public void execute() {
+					if (cmds.size()>0) {
+						ScheduledCommand cmd = cmds.get(0);
+						cmds.remove(0);
+						Scheduler.get().scheduleDeferred(cmd);
+						Scheduler.get().scheduleDeferred(this);
+						return;
+					}
+					textBox.setEnabled(true);
+					btn_analyze.state().reset();
+				}
+			});
 		}
 	};
 
@@ -202,8 +231,13 @@ public class SyllabarySearch extends Composite {
 			style.setVerticalAlign(Style.VerticalAlign.TOP);
 			PanelHeader ph = new PanelHeader();
 			Heading h = new Heading(HeadingSize.H5);
-			h.setText(entry.definitiond);
 			ph.add(h);
+			h.setText(entry.definitiond);
+			h.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
+			Label source = new Label(LabelType.INFO);
+			ph.add(source);
+			source.getElement().getStyle().setFloat(Style.Float.RIGHT);
+			source.setText("["+entry.source+"]");
 			PanelBody pb = new PanelBody();
 			HTMLPanel hp = new HTMLPanel(new FormattedEntry(entry).getHtml());
 			Button dismiss = new Button("DISMISS");

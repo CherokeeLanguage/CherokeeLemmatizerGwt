@@ -13,6 +13,8 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 public class DictionaryApplication implements ScheduledCommand {
 	
+	public static final int WIDTH=800;
+	
 	public static final RestApi api;
 	static {
 		api = GWT.create(RestApi.class);
@@ -39,19 +41,23 @@ public class DictionaryApplication implements ScheduledCommand {
 
 	private void doResize() {
 		float width = Window.getClientWidth();
-		float wanted = 1024;
+		float wanted = WIDTH;
 		float scaleby=width/wanted;
 		if (scaleby<1f) {
 			scaleby=1f;
 		}
 		rp.getElement().getStyle().setProperty("transform", "scale("+scaleby+")");
+		GWT.log("scale("+scaleby+")");
 	}
 	
 	private RootPanel rp;
 	@Override
 	public void execute() {
 		RootPanel.get().clear(true);
-		RootPanel.getBodyElement().setInnerHTML("<div id='root' style='margin-right: auto; margin-left: auto; margin-top: 10px; transform-origin: center top; max-width: 1004px; padding: 5px; border: solid 2px;'></div>");
+		RootPanel.getBodyElement().setInnerHTML("<div id='root'"
+				+ " style='margin-right: auto; margin-left: auto; margin-top: 10px; transform-origin: center top; max-width:"
+				+ " " + WIDTH
+				+ "px; padding: 5px; border: none;'></div>");
 		rp = RootPanel.get("root");
 		doResize();
 		

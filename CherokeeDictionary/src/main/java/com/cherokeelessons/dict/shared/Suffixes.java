@@ -19,11 +19,11 @@ public abstract class Suffixes {
 
 	static {
 		vowelSets = new HashMap<>();
-		vowelSets.put("Ꭰ", "ᎠᎦᎧᎭᎳᎹᎾᎿᏀᏆᏌᏓᏔᏜᏝᏣᏩᏯ");
-		vowelSets.put("Ꭱ", "ᎡᎨᎮᎴᎺᏁᏇᏎᏕᏖᏞᏤᏪᏰ");
-		vowelSets.put("Ꭲ", "ᎢᎩᎯᎵᎻᏂᏈᏏᏗᏘᏟᏥᏫᏱ");
-		vowelSets.put("Ꭳ", "ᎣᎪᎰᎶᎼᏃᏉᏐᏙᏠᏦᏬᏲ");
-		vowelSets.put("Ꭴ", "ᎤᎫᎱᎷᎽᏄᏊᏑᏚᏡᏧᏭᏳ");
+		vowelSets.put("Ꭰ", "ᎠᎦᎧᎭᎳᎾᎿᏀᏆᏌᏓᏔᏜᏝᏣᏩᏯ");
+		vowelSets.put("Ꭱ", "ᎡᎨᎮᎴᏁᏇᏎᏕᏖᏞᏤᏪᏰ");
+		vowelSets.put("Ꭲ", "ᎢᎩᎯᎵᏂᏈᏏᏗᏘᏟᏥᏫᏱ");
+		vowelSets.put("Ꭳ", "ᎣᎪᎰᎶᏃᏉᏐᏙᏠᏦᏬᏲ");
+		vowelSets.put("Ꭴ", "ᎤᎫᎱᎷᏄᏊᏑᏚᏡᏧᏭᏳ");
 		vowelSets.put("Ꭵ", "ᎥᎬᎲᎸᏅᏋᏒᏛᏢᏨᏮᏴ");
 	}
 
@@ -162,12 +162,14 @@ public abstract class Suffixes {
 		}
 	}
 
-	public static class ToFor extends Suffixes {
-
-		public ToFor() {
-
+	public static class ToForᏏ extends Suffixes {
+		public ToForᏏ() {
+			vowelFixStem=false;
 			addSet("", "Ꮟ");
-
+		}
+	}
+	public static class ToFor extends Suffixes {
+		public ToFor() {
 			// prc
 			addSet("Ꭱ", "Ꭽ");
 			// past
