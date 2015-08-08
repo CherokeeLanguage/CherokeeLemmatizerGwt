@@ -262,6 +262,7 @@ public abstract class Suffixes {
 
 	public static class IntendTo extends Suffixes {
 		public IntendTo() {
+			vowelFixStem=true;
 			// progressive
 			addSet("Ꭲ", "ᏎᏍᏗ");
 			addSet("Ꭲ", "Ꮢ");
