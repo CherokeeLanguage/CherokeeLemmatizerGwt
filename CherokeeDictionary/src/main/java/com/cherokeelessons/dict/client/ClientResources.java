@@ -14,4 +14,7 @@ public interface ClientResources extends ClientBundle {
 	@Source("text/ᎹᎦᎵ.csv")
 	public TextResource ᎹᎦᎵ();
 
+	@Source("text/CED.csv")
+	public TextResource CED();
+
 }

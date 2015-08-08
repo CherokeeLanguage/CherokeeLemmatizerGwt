@@ -26,6 +26,13 @@ public class DictionaryApplication implements ScheduledCommand {
 	public static final RestApi api;
 	static {
 		api = GWT.create(RestApi.class);
+		lookup = new ClientLookup();
+		loadᎹᎦᎵ();
+		loadCED();
+		loadRaven();
+		GWT.log("LOOKUP: ᎣᏍᏛ "+lookup.guessed("ᎣᏍᏛ"));
+	}
+	private static void loadRaven() {
 		String[] lines = ClientResources.INSTANCE.ᎪᎸᏅᏱ().getText().split("\n");
 		CSVParser parser = new CSVParser();
 		Iterator<String> iline = Arrays.asList(lines).iterator();
@@ -36,8 +43,40 @@ public class DictionaryApplication implements ScheduledCommand {
 			} catch (IOException e) {
 			}
 		}
-		lookup = new ClientLookup(data);
-		GWT.log("LOOKUP: ᎣᏍᏛ "+lookup.guessed("ᎣᏍᏛ"));
+		lookup.addEntries(data);
+	}
+	
+	private static void loadᎹᎦᎵ() {
+		String[] lines = ClientResources.INSTANCE.ᎹᎦᎵ().getText().split("\n");
+		CSVParser parser = new CSVParser();
+		Iterator<String> iline = Arrays.asList(lines).iterator();
+		List<String[]> data=new ArrayList<>();
+		while (iline.hasNext()) {
+			try {
+				String next = iline.next();
+				if (!next.contains("[ᎹᎦᎵ]")){
+					next += " [ᎹᎦᎵ]";
+				}
+				data.add(parser.parseLine(next));
+			} catch (IOException e) {
+			}
+		}
+		lookup.addEntries(data);
+	}
+	
+	private static void loadCED() {
+		String[] lines = ClientResources.INSTANCE.CED().getText().split("\n");
+		CSVParser parser = new CSVParser();
+		Iterator<String> iline = Arrays.asList(lines).iterator();
+		List<String[]> data=new ArrayList<>();
+		while (iline.hasNext()) {
+			try {
+				String next = iline.next();
+				data.add(parser.parseLine(next));
+			} catch (IOException e) {
+			}
+		}
+		lookup.addEntries(data);
 	}
 	
 	

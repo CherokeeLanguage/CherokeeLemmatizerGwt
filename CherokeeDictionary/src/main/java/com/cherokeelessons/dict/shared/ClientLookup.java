@@ -10,14 +10,7 @@ import commons.lang3.StringUtils;
 
 public class ClientLookup {
 	
-	public ClientLookup(List<String[]> words) {
-		for (String[] data: words) {
-			String prev=StringUtils.defaultString(this.words.get(data[0]));
-			if (!StringUtils.isBlank(prev)) {
-				prev="|"+prev;
-			}
-			this.words.put(data[0], data[1]+prev);
-		}
+	public ClientLookup() {
 	}
 	
 	public void addEntries(List<String[]> words) {
