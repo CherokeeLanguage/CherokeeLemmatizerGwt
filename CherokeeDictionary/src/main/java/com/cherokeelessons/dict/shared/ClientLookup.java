@@ -46,18 +46,21 @@ public class ClientLookup {
 		if (!StringUtils.isBlank(definition)) {
 			return definition;
 		}
+		
+		// put any without forms into past tense forms and try
+		
 
 		// put any conscious forms... into dictionary forms and try
 		if (word.matches(".*[" + Suffixes.getVowelSet(Vowel.Ꭵ) + "]Ꭹ")) {
 			String tmp = StringUtils.left(word, word.length() - 1);
 			tmp = Syllabary.changeForm(tmp, Vowel.Ꭳ) + "Ꭲ";
-			String maybe = StringUtils.defaultString(words.get(tmp));
+			String maybe = _guessed(tmp);
 			if (!StringUtils.isBlank(maybe)) {
 				return "(?ᎥᎩ=>ᎣᎢ=>" + tmp + ")|" + maybe;
 			}
 			tmp = StringUtils.left(word, word.length() - 1);
 			tmp = Syllabary.changeForm(tmp, Vowel.Ꭵ) + "Ꭲ";
-			maybe = StringUtils.defaultString(words.get(tmp));
+			maybe =  _guessed(tmp);
 			if (!StringUtils.isBlank(maybe)) {
 				return "(?ᎥᎩ=>ᎥᎢ=>" + tmp + ")|" + maybe;
 			}

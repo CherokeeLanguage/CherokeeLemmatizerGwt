@@ -337,6 +337,14 @@ public abstract class Suffixes {
 		}
 	};
 	
+	public static class InOnAt extends Suffixes {
+		public InOnAt() {
+			vowelFixStem=false;
+			// 1844
+			addSet("", "Ꭿ");
+		}
+	};
+	
 	public static class SoAnd extends Suffixes {
 		public SoAnd() {
 			vowelFixStem=false;
