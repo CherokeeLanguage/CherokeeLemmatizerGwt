@@ -22,6 +22,7 @@ import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.gwt.HTMLPanel;
 
+import com.cherokeelessons.dict.client.ClientDictionary;
 import com.cherokeelessons.dict.client.DictionaryApplication;
 import com.cherokeelessons.dict.shared.DictEntry;
 import com.cherokeelessons.dict.shared.FormattedEntry;
@@ -43,7 +44,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import commons.lang3.StringUtils;
 
 public class SyllabarySearch extends Composite {
@@ -130,7 +130,7 @@ public class SyllabarySearch extends Composite {
 						for (MatchResult match : matched) {
 							shb.appendEscaped(match.stem + "+" + match.suffix + ":"
 									+ match.desc);
-							String info = DictionaryApplication.lookup.guessed(match.stem);
+							String info = ClientDictionary.INSTANCE.guessed(match.stem);
 							if (!StringUtils.isBlank(info)){
 								shb.appendHtmlConstant("<br/><span style='color: navy; font-weight: bold;'>");
 								shb.appendEscapedLines(info.replace("|", "\n"));
@@ -147,7 +147,7 @@ public class SyllabarySearch extends Composite {
 						affixedStem.insert(0, innerstem);
 						SafeHtmlBuilder affixedStemHtml = new SafeHtmlBuilder();
 						
-						String info = DictionaryApplication.lookup.guessed(word);
+						String info = ClientDictionary.INSTANCE.guessed(word);
 						if (!StringUtils.isBlank(info)){
 							affixedStemHtml.appendHtmlConstant("<span style='color: navy; font-weight: bold;'>");
 							affixedStemHtml.appendEscapedLines(info.replace("|", "\n"));
