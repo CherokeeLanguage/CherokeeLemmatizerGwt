@@ -133,6 +133,8 @@ public class SyllabarySearch extends Composite {
 						if (matched.size()!=0) {
 							type=PanelType.SUCCESS;
 						}
+						StringBuilder affixedStem=new StringBuilder();
+						String innerstem="";
 						for (MatchResult match : matched) {
 							shb.appendEscaped(match.stem + "+" + match.suffix + ":"
 									+ match.desc);
@@ -140,8 +142,18 @@ public class SyllabarySearch extends Composite {
 							if (match.desc.contains("*")){
 								type=PanelType.DANGER;
 							}
+							affixedStem.insert(0, match.suffix);
+							affixedStem.insert(0, "+");
+							innerstem=match.stem;
 						}
-						
+						affixedStem.insert(0, innerstem);
+						SafeHtmlBuilder affixedStemHtml = new SafeHtmlBuilder();
+						if (affixedStem.length()!=0) {
+							affixedStemHtml.appendHtmlConstant("<span style='font-style: italic; font-weight: bold;'>");
+							affixedStemHtml.appendEscaped(affixedStem.toString());
+							affixedStemHtml.appendHtmlConstant("</span><br/>");
+						}
+						affixedStemHtml.append(shb.toSafeHtml());
 						final Panel p = new Panel(type);
 						Style style = p.getElement().getStyle();
 						style.setWidth((DictionaryApplication.WIDTH-20)/3-5, Unit.PX);
@@ -159,7 +171,9 @@ public class SyllabarySearch extends Composite {
 						source.setText("[analysis]");
 						PanelBody pb = new PanelBody();
 						
-						HTMLPanel hp = new HTMLPanel(shb.toSafeHtml());
+						HTMLPanel hp = new HTMLPanel(affixedStemHtml.toSafeHtml());
+						
+						PanelFooter pf = new PanelFooter();
 						Button dismiss = new Button("DISMISS");
 						dismiss.addClickHandler(new ClickHandler() {
 							@Override
@@ -170,7 +184,6 @@ public class SyllabarySearch extends Composite {
 										+ Boolean.valueOf(panels.remove(p)));
 							}
 						});
-						PanelFooter pf = new PanelFooter();
 						pf.add(dismiss);
 						p.add(ph);
 						p.add(pb);
