@@ -34,16 +34,18 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+
 import commons.lang.StringUtils;
 
 public class SyllabarySearch extends Composite {
-	
+
 	@UiField
 	protected PageHeader pageHeader;
 
@@ -58,30 +60,32 @@ public class SyllabarySearch extends Composite {
 
 	@UiField
 	protected Button btn_search;
-	
+
 	private static MainMenuUiBinder uiBinder = GWT
 			.create(MainMenuUiBinder.class);
 
-	protected interface MainMenuUiBinder extends UiBinder<Widget, SyllabarySearch> {
+	protected interface MainMenuUiBinder extends
+			UiBinder<Widget, SyllabarySearch> {
 	}
 
 	private final RootPanel rp;
+
 	public SyllabarySearch(RootPanel rp) {
 		initWidget(uiBinder.createAndBindUi(this));
-		this.rp=rp;
+		this.rp = rp;
 	}
 
 	@UiHandler("btn_reset")
 	public void onClearResults(final ClickEvent event) {
-		for (Panel panel: panels) {
+		for (Panel panel : panels) {
 			panel.clear();
 			panel.removeFromParent();
 		}
 		panels.clear();
 	}
-	
-	private final List<Panel> panels=new ArrayList<Panel>();
-	
+
+	private final List<Panel> panels = new ArrayList<Panel>();
+
 	@UiHandler("btn_analyze")
 	public void onAnalyze(final ClickEvent event) {
 		btn_analyze.state().loading();
@@ -95,7 +99,7 @@ public class SyllabarySearch extends Composite {
 			return;
 		}
 		value = StringUtils.strip(value);
-		if (!value.matches("^[Ꭰ-Ᏼ][Ꭰ-Ᏼ .,;:!?]*$")){
+		if (!value.matches("^[Ꭰ-Ᏼ][Ꭰ-Ᏼ .,;:!?]*$")) {
 			alert.setDismissable(true);
 			alert.setText("CAN ONLY ANALYZE SYLLABARY WORDS.");
 			rp.add(alert);
@@ -105,30 +109,69 @@ public class SyllabarySearch extends Composite {
 		textBox.setEnabled(false);
 		Scheduler.get().scheduleDeferred(doAnalysis);
 	}
-	
-	private ScheduledCommand doAnalysis=new ScheduledCommand() {
+
+	private ScheduledCommand doAnalysis = new ScheduledCommand() {
 		@Override
 		public void execute() {
 			String value = StringUtils.strip(textBox.getValue());
 			value = value.replaceAll("[^Ꭰ-Ᏼ ]", "");
-			List<String> newvalues = new ArrayList<>();
-			for (String word: StringUtils.split(value)) {
-				newvalues.add(word);
-				List<MatchResult> matched = SuffixGuesser.INSTANCE.getMatches(word);
-				
-				for (MatchResult match: matched) {
-					newvalues.add(match.stem+"+"+match.suffix+":"+match.desc);
+			for (String word : StringUtils.split(value)) {
+				PanelType type = PanelType.DEFAULT;
+				SafeHtmlBuilder shb = new SafeHtmlBuilder();
+				List<MatchResult> matched = SuffixGuesser.INSTANCE
+						.getMatches(word);
+				if (matched.size()!=0) {
+					type=PanelType.SUCCESS;
 				}
+				for (MatchResult match : matched) {
+					shb.appendEscaped(match.stem + "+" + match.suffix + ":"
+							+ match.desc);
+					shb.appendHtmlConstant("<br />");
+					if (match.desc.contains("*")){
+						type=PanelType.DANGER;
+					}
+				}
+				
+				final Panel p = new Panel(type);
+				Style style = p.getElement().getStyle();
+				style.setWidth(242, Unit.PX);
+				style.setDisplay(Display.INLINE_BLOCK);
+				style.setMarginRight(5, Unit.PX);
+				style.setVerticalAlign(Style.VerticalAlign.TOP);
+				PanelHeader ph = new PanelHeader();
+				Heading h = new Heading(HeadingSize.H5);
+				h.setText(word);
+				ph.add(h);
+				PanelBody pb = new PanelBody();
+				
+				HTMLPanel hp = new HTMLPanel(shb.toSafeHtml());
+				Button dismiss = new Button("DISMISS");
+				dismiss.addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						p.clear();
+						p.removeFromParent();
+						GWT.log("Panel Removed: "
+								+ Boolean.valueOf(panels.remove(p)));
+					}
+				});
+				PanelFooter pf = new PanelFooter();
+				pf.add(dismiss);
+				p.add(ph);
+				p.add(pb);
+				p.add(pf);
+
+				pb.add(hp);
+				rp.add(p);
+				panels.add(p);
 			}
-			
-			textBox.setValue(StringUtils.join(newvalues, ", "));
 			textBox.setEnabled(true);
 			btn_analyze.state().reset();
 		}
 	};
-	
+
 	Alert alert = new Alert("", AlertType.DANGER);
-	
+
 	@UiHandler("btn_search")
 	public void onSearch(final ClickEvent event) {
 		alert.removeFromParent();
@@ -143,22 +186,20 @@ public class SyllabarySearch extends Composite {
 		}
 		DictionaryApplication.api.syll(StringUtils.strip(value), display_it);
 	}
-	
+
 	private void process(SearchResponse sr) {
-		GWT.log("COUNT: "+sr.data.size());
-		for (DictEntry entry: sr.data) {
-			GWT.log("Entry: "+entry.id);
-//				if (!entry.source.equals("ced")){
-//					continue;
-//				}
+		GWT.log("COUNT: " + sr.data.size());
+		for (DictEntry entry : sr.data) {
+			GWT.log("Entry: " + entry.id);
+			// if (!entry.source.equals("ced")){
+			// continue;
+			// }
 			final Panel p = new Panel(PanelType.SUCCESS);
 			Style style = p.getElement().getStyle();
-			style.setWidth(480, Unit.PX);
+			style.setWidth(490, Unit.PX);
 			style.setDisplay(Display.INLINE_BLOCK);
-			style.setFloat(Style.Float.LEFT);
-			style.setMarginTop(10, Unit.PX);
-			style.setMarginLeft(4, Unit.PX);
-			style.setMarginRight(4, Unit.PX);
+			style.setMarginRight(5, Unit.PX);
+			style.setVerticalAlign(Style.VerticalAlign.TOP);
 			PanelHeader ph = new PanelHeader();
 			Heading h = new Heading(HeadingSize.H5);
 			h.setText(entry.definitiond);
@@ -171,7 +212,8 @@ public class SyllabarySearch extends Composite {
 				public void onClick(ClickEvent event) {
 					p.clear();
 					p.removeFromParent();
-					GWT.log("Panel Removed: "+Boolean.valueOf(panels.remove(p)));
+					GWT.log("Panel Removed: "
+							+ Boolean.valueOf(panels.remove(p)));
 				}
 			});
 			PanelFooter pf = new PanelFooter();
@@ -179,7 +221,7 @@ public class SyllabarySearch extends Composite {
 			p.add(ph);
 			p.add(pb);
 			p.add(pf);
-			
+
 			pb.add(hp);
 			rp.add(p);
 			panels.add(p);
@@ -191,7 +233,8 @@ public class SyllabarySearch extends Composite {
 		@Override
 		public void onFailure(Method method, Throwable exception) {
 			btn_search.state().reset();
-			HTMLPanel panel = new HTMLPanel("onFailure: ᎤᏲᏳ!<br/>"+exception.getMessage());
+			HTMLPanel panel = new HTMLPanel("onFailure: ᎤᏲᏳ!<br/>"
+					+ exception.getMessage());
 			rp.add(panel);
 			throw new RuntimeException(exception);
 		}
@@ -199,7 +242,7 @@ public class SyllabarySearch extends Composite {
 		@Override
 		public void onSuccess(Method method, final SearchResponse sr) {
 			btn_search.state().reset();
-			if (sr==null) {
+			if (sr == null) {
 				HTMLPanel panel = new HTMLPanel("ᎤᏲᏳ! SearchResponse is NULL");
 				rp.add(panel);
 				return;
