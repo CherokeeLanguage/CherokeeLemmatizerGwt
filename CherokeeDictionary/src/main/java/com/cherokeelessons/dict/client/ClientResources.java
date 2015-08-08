@@ -8,7 +8,10 @@ public interface ClientResources extends ClientBundle {
 	
 	public static final ClientResources INSTANCE = GWT.create(ClientResources.class);
 
-	@Source("text/dictionary.csv")
-	public TextResource stopwords();
+	@Source("text/ᎪᎸᏅᏱ.csv")
+	public TextResource ᎪᎸᏅᏱ();
+	
+	@Source("text/ᎹᎦᎵ.csv")
+	public TextResource ᎹᎦᎵ();
 
 }

@@ -26,7 +26,7 @@ public class DictionaryApplication implements ScheduledCommand {
 	public static final RestApi api;
 	static {
 		api = GWT.create(RestApi.class);
-		String[] lines = ClientResources.INSTANCE.stopwords().getText().split("\n");
+		String[] lines = ClientResources.INSTANCE.ᎪᎸᏅᏱ().getText().split("\n");
 		CSVParser parser = new CSVParser();
 		Iterator<String> iline = Arrays.asList(lines).iterator();
 		List<String[]> data=new ArrayList<>();
