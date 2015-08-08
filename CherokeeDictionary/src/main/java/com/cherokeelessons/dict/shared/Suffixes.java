@@ -441,4 +441,20 @@ public abstract class Suffixes {
 			addSet("", "ᏙᏗ");
 		}
 	}
+	
+	public static class AptTo extends Suffixes {
+		public AptTo() {
+			// present
+			addSet("Ꭰ", "Ꮤ");
+			// progressive
+			addSet("Ꭰ", "Ꮩ");
+			addSet("Ꭰ", "ᏙᎢ");
+			addSet("Ꭰ", "Ꮫ");
+			addSet("Ꭰ", "ᏛᎩ");
+			addSet("Ꭰ", "ᏛᎢ");
+			addSet("Ꭰ", "Ꮥ");
+			addSet("Ꭰ", "ᏕᎢ");
+			addSet("Ꭰ", "ᏕᏍᏗ");
+		}
+	}
 }

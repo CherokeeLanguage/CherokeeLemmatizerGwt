@@ -222,28 +222,31 @@ public class Syllabary {
 		}
 	}
 	
-	public static String changeForm(String prepend, Vowel vowel) {
-		if (StringUtils.isBlank(prepend)) {
-			return prepend;
+	public static String changeForm(String word, Vowel vowel) {
+		if (StringUtils.isBlank(word)) {
+			return word;
 		}
-		String p1 = prepend.substring(0, prepend.length()-1);
-		String p2 = prepend.substring(prepend.length()-1, prepend.length());
-		String x3 = chr2lat(p2);
-		x3=x3.substring(0, x3.length()-1)+vowel.latin;
-		return p1 + lat2chr(x3);
+		String ending = StringUtils.right(word, 1);
+		String base = StringUtils.left(word, word.length()-1);
+		String x3 = chr2lat(ending);
+		if (x3.startsWith("hn") && !Vowel.Ꭰ.equals(vowel)){
+			x3=StringUtils.substring(x3, 1);
+		}
+		x3 = StringUtils.left(x3, x3.length()-1)+vowel.latin;
+		return base + lat2chr(x3);
 	}
 
-	public static String changeForm(String syllabary, String vowel) {
-		if (StringUtils.isBlank(syllabary)) {
-			return syllabary;
-		}
-		if (!"ᎠᎡᎢᎣᎤᎥ".contains(vowel)) {
-			throw new RuntimeException("NOT A VALID SYLLABARY VOWEL!");
-		}
-		String p1 = syllabary.substring(0, syllabary.length()-1);
-		String p2 = syllabary.substring(syllabary.length()-1, syllabary.length());
-		String x3 = chr2lat(p2);
-		x3=x3.substring(0, x3.length()-1)+chr2lat(vowel);
-		return p1 + lat2chr(x3);
-	}
+//	public static String changeForm(String syllabary, String vowel) {
+//		if (StringUtils.isBlank(syllabary)) {
+//			return syllabary;
+//		}
+//		if (!"ᎠᎡᎢᎣᎤᎥ".contains(vowel)) {
+//			throw new RuntimeException("NOT A VALID SYLLABARY VOWEL!");
+//		}
+//		String p1 = syllabary.substring(0, syllabary.length()-1);
+//		String p2 = syllabary.substring(syllabary.length()-1, syllabary.length());
+//		String x3 = chr2lat(p2);
+//		x3=x3.substring(0, x3.length()-1)+chr2lat(vowel);
+//		return p1 + lat2chr(x3);
+//	}
 }

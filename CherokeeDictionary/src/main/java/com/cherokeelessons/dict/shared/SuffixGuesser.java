@@ -1,15 +1,13 @@
 package com.cherokeelessons.dict.shared;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
 
 import com.cherokeelessons.dict.shared.Suffixes.AboutTo;
 import com.cherokeelessons.dict.shared.Suffixes.Accidental;
 import com.cherokeelessons.dict.shared.Suffixes.Again;
+import com.cherokeelessons.dict.shared.Suffixes.AptTo;
 import com.cherokeelessons.dict.shared.Suffixes.Around;
 import com.cherokeelessons.dict.shared.Suffixes.But;
 import com.cherokeelessons.dict.shared.Suffixes.CausativePast;
@@ -25,7 +23,6 @@ import com.cherokeelessons.dict.shared.Suffixes.ToFor;
 import com.cherokeelessons.dict.shared.Suffixes.WentForDoing;
 import com.cherokeelessons.dict.shared.Suffixes.YesNo;
 import com.cherokeelessons.dict.shared.Suffixes.YesYes;
-import com.google.gwt.core.shared.GWT;
 
 public enum SuffixGuesser {
 
@@ -38,33 +35,35 @@ public enum SuffixGuesser {
 	private SuffixGuesser() {
 	}
 
-	private List<MatchResult> getMatchesStartingFrom(Affix affix,
-			String syllabary) {
-		List<MatchResult> list = new ArrayList<Suffixes.MatchResult>();
-		Suffixes s = SuffixGuesser.getSuffixMatcher(affix);
-		MatchResult matchResult = s.match(syllabary);
-		if (matchResult.isMatch) {
-			GWT.log("MATCHED: " + syllabary + " " + affix.name());
-			matchResult.desc = affix.name();
-			list.add(matchResult);
-			for (Affix nextAffix : affix.getFollows()) {
-				list.addAll(getBestMatch(nextAffix, matchResult.stem));
+	public List<MatchResult> getMatches(final String syllabary) {
+		//TODO: Figure WHERE this should go in the infix list
+		Suffixes apt = SuffixGuesser.getSuffixMatcher(Affix.AptTo);
+		
+		Iterator<List<Affix>> iseq = Affix.getValidSequences().iterator();
+		List<List<MatchResult>> lists = new ArrayList<>();
+		while (iseq.hasNext()) {
+			List<MatchResult> list = new ArrayList<Suffixes.MatchResult>();
+			String active = syllabary;
+			for (Affix affix: iseq.next()){
+				Suffixes s = SuffixGuesser.getSuffixMatcher(affix);
+				MatchResult matchResult = s.match(active);
+				if (matchResult.isMatch) {
+					matchResult.desc = affix.name();
+					list.add(matchResult);
+					active = matchResult.stem;
+				}
 			}
-		} else {
-			GWT.log("NOT MATCHED: " + syllabary + " " + affix.name());
-			for (Affix nextAffix : affix.getFollows()) {
-				list.addAll(getBestMatch(nextAffix, syllabary));
+			MatchResult matchResult = apt.match(active);
+			if (matchResult.isMatch) {
+				matchResult.desc = "***"+Affix.AptTo.name();
+				list.add(matchResult);
+				active = matchResult.stem;
+			}
+			if (list.size()!=0) {
+				lists.add(list);
 			}
 		}
-		return list;
-	}
-	public List<MatchResult> getMatches(String syllabary) {
-		return getBestMatch(Affix.SoAnd, syllabary);
-	}
-	
-	private List<MatchResult> getBestMatch(Affix start, String syllabary) {
-		List<List<MatchResult>> lists = new ArrayList<>();
-		lists.add(getMatchesStartingFrom(start, syllabary));
+		
 		Iterator<List<MatchResult>> xx = lists.iterator();
 		while (xx.hasNext()) {
 			if (xx.next().size() == 0) {
@@ -72,7 +71,6 @@ public enum SuffixGuesser {
 			}
 		}
 		if (lists.size() == 0) {
-			GWT.log("NO MATCHES.");
 			return new ArrayList<MatchResult>();
 		}
 		/*
@@ -81,10 +79,8 @@ public enum SuffixGuesser {
 		Iterator<List<MatchResult>> il = lists.iterator();
 		List<MatchResult> list = il.next();
 		if (!il.hasNext()) {
-			GWT.log("ONLY ONE MATCH.");
 			return list;
 		}
-		GWT.log("COMPARING MATCH COUNT SIZES.");
 		while (il.hasNext()) {
 			List<MatchResult> tmp = il.next();
 			if (tmp.get(0).suffix.length() > list.get(0).suffix.length()) {
@@ -132,6 +128,8 @@ public enum SuffixGuesser {
 			return new YesYes();
 		case But:
 			return new But();
+		case AptTo:
+			return new AptTo();
 		}
 		throw new RuntimeException(
 				"SPECIFIED SUFFIX MATCHER IS NOT IMPLEMENTED.");
