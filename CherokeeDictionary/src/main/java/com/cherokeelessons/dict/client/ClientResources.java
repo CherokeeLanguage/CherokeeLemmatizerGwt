@@ -16,5 +16,8 @@ public interface ClientResources extends ClientBundle {
 
 	@Source("text/CED.csv")
 	public TextResource CED();
+	
+	@Source("text/boundpronouns.csv")
+	public TextResource boundpronouns();
 
 }

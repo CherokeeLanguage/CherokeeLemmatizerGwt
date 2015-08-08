@@ -1,5 +1,6 @@
 package com.cherokeelessons.dict.shared;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,11 +17,17 @@ public class ClientLookup {
 	
 	public void addEntries(List<String[]> words) {
 		for (String[] data: words) {
-			String prev=StringUtils.defaultString(this.words.get(data[0]));
+			String syllabary = StringUtils.strip(data[0]);
+			String definition = StringUtils.strip(data[1]);
+			if (StringUtils.isBlank(syllabary)) {
+				GWT.log("BAD PARSE? "+Arrays.toString(data));
+				continue;
+			}
+			String prev=StringUtils.defaultString(this.words.get(syllabary));
 			if (!StringUtils.isBlank(prev)) {
 				prev="|"+prev;
 			}
-			this.words.put(data[0], data[1]+prev);
+			this.words.put(syllabary, definition+prev);
 		}
 	}
 	
@@ -35,17 +42,24 @@ public class ClientLookup {
 	}
 	
 	public String guessed(String syllabary) {
+		String word=StringUtils.defaultString(words.get(syllabary));
+		if (!StringUtils.isBlank(word)){
+			return syllabary;
+		}
+		String guess = _guessed(word);
+		if (!StringUtils.isBlank(guess)){
+			return guess;
+		}
+		
+		return syllabary;
+	}
+	
+	private String _guessed(String syllabary) {
 		String exact=StringUtils.defaultString(words.get(syllabary));
 		if (!StringUtils.isBlank(exact)){
 			return exact;
 		}
-		if (syllabary.matches(".*["+Suffixes.getVowelSet(Vowel.Ꭵ)+"]")){
-			String tmp = syllabary+"Ꭲ";
-			String maybe = StringUtils.defaultString(words.get(tmp));
-			if (!StringUtils.isBlank(maybe)){
-				return "(?+Ꭲ=>"+tmp+")|"+maybe;
-			}
-		}
+		
 		if (syllabary.matches(".*["+Suffixes.getVowelSet(Vowel.Ꭳ)+"]")){
 			String tmp = syllabary+"Ꭲ";
 			String maybe = StringUtils.defaultString(words.get(tmp));
@@ -53,13 +67,21 @@ public class ClientLookup {
 				return "(?+Ꭲ=>"+tmp+")|"+maybe;
 			}
 		}
+		
 		if (syllabary.matches(".*["+Suffixes.getVowelSet(Vowel.Ꭵ)+"]")){
-			String tmp = Syllabary.changeForm(syllabary, Vowel.Ꭳ)+"Ꭲ";
+			String tmp = syllabary+"Ꭲ";
 			String maybe = StringUtils.defaultString(words.get(tmp));
+			if (!StringUtils.isBlank(maybe)){
+				return "(?+Ꭲ=>"+tmp+")|"+maybe;
+			}
+			
+			tmp = Syllabary.changeForm(syllabary, Vowel.Ꭳ)+"Ꭲ";
+			maybe = StringUtils.defaultString(words.get(tmp));
 			if (!StringUtils.isBlank(maybe)){
 				return "(?Ꭵ=>ᎣᎢ=>"+tmp+")|"+maybe;
 			}
 		}
+		
 		if (syllabary.matches(".*["+Suffixes.getVowelSet(Vowel.Ꭱ)+"]")){
 			String tmp = Syllabary.changeForm(syllabary, Vowel.Ꭳ)+"Ꭲ";
 			String maybe = StringUtils.defaultString(words.get(tmp));
@@ -72,30 +94,24 @@ public class ClientLookup {
 				return "(?Ꭱ=>ᎥᎢ=>"+tmp+")|"+maybe;
 			}
 		}
+		
 		if (syllabary.matches(".*["+Suffixes.getVowelSet(Vowel.Ꭱ)+"]Ꭲ")){
-			GWT.log("-ᎡᎢ: "+syllabary);
 			String tmp = StringUtils.left(syllabary, syllabary.length()-1);
-			GWT.log("-ᎡᎢ: "+tmp);
 			tmp = Syllabary.changeForm(tmp, Vowel.Ꭳ)+"Ꭲ";
-			GWT.log("-ᎡᎢ: "+tmp);
 			String maybe = StringUtils.defaultString(words.get(tmp));
 			if (!StringUtils.isBlank(maybe)){
 				return "(?ᎡᎢ=>ᎣᎢ=>"+tmp+")|"+maybe;
 			}
 			tmp = StringUtils.left(syllabary, syllabary.length()-1);
 			tmp = Syllabary.changeForm(tmp, Vowel.Ꭵ)+"Ꭲ";
-			GWT.log("-ᎥᎢ: "+tmp);
 			maybe = StringUtils.defaultString(words.get(tmp));
 			if (!StringUtils.isBlank(maybe)){
 				return "(?ᎡᎢ=>ᎥᎢ=>"+tmp+")|"+maybe;
 			}
 		}
 		if (syllabary.matches(".*["+Suffixes.getVowelSet(Vowel.Ꭵ)+"]Ꭲ")){
-			GWT.log("-ᎥᎢ: "+syllabary);
 			String tmp = StringUtils.left(syllabary, syllabary.length()-1);
-			GWT.log("-ᎥᎢ: "+tmp);
 			tmp = Syllabary.changeForm(tmp, Vowel.Ꭳ)+"Ꭲ";
-			GWT.log("-ᎥᎢ: "+tmp);
 			String maybe = StringUtils.defaultString(words.get(tmp));
 			if (!StringUtils.isBlank(maybe)){
 				return "(?ᎥᎢ=>ᎣᎢ=>"+tmp+")|"+maybe;
@@ -118,26 +134,28 @@ public class ClientLookup {
 		}
 		
 		//Maybe a shortening for "-Ꭿ" number or other?
-		{
-			String tmp = syllabary+"Ꭿ";
-			String maybe = StringUtils.defaultString(words.get(tmp));
-			if (!StringUtils.isBlank(maybe)){
-				return "(?+Ꭿ=>"+tmp+")|"+maybe;
-			}
-		}
+//		{
+//			String tmp = syllabary+"Ꭿ";
+//			String maybe = StringUtils.defaultString(words.get(tmp));
+//			if (!StringUtils.isBlank(maybe)){
+//				return "(?+Ꭿ=>"+tmp+")|"+maybe;
+//			}
+//		}
 		//Maybe a shortening for "-Ꭽ/-Ꭰ" present?
-		{
-			String tmp = syllabary+"Ꭽ";
-			String maybe = StringUtils.defaultString(words.get(tmp));
-			if (!StringUtils.isBlank(maybe)){
-				return "(?+Ꭽ=>"+tmp+")|"+maybe;
-			}
-			tmp = syllabary+"Ꭰ";
-			maybe = StringUtils.defaultString(words.get(tmp));
-			if (!StringUtils.isBlank(maybe)){
-				return "(?+Ꭰ=>"+tmp+")|"+maybe;
-			}
-		}
+//		{
+//			String tmp = syllabary+"Ꭽ";
+//			String maybe = StringUtils.defaultString(words.get(tmp));
+//			if (!StringUtils.isBlank(maybe)){
+//				return "(?+Ꭽ=>"+tmp+")|"+maybe;
+//			}
+//			tmp = syllabary+"Ꭰ";
+//			maybe = StringUtils.defaultString(words.get(tmp));
+//			if (!StringUtils.isBlank(maybe)){
+//				return "(?+Ꭰ=>"+tmp+")|"+maybe;
+//			}
+//		}
+		
+		
 		
 		return exact;
 	}
