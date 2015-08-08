@@ -56,7 +56,7 @@ public class DictionaryApplication implements ScheduledCommand {
 		RootPanel.get().clear(true);
 		RootPanel.getBodyElement().setInnerHTML("<div id='root'"
 				+ " style='margin-right: auto; margin-left: auto; margin-top: 10px; transform-origin: center top; max-width:"
-				+ " " + WIDTH
+				+ " " + (WIDTH-10)
 				+ "px; padding: 5px; border: none;'></div>");
 		rp = RootPanel.get("root");
 		doResize();

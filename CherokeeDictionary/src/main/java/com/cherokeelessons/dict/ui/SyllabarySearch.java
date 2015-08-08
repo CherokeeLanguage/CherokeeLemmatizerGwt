@@ -144,7 +144,7 @@ public class SyllabarySearch extends Composite {
 						
 						final Panel p = new Panel(type);
 						Style style = p.getElement().getStyle();
-						style.setWidth((DictionaryApplication.WIDTH-10)/3-5, Unit.PX);
+						style.setWidth((DictionaryApplication.WIDTH-20)/3-5, Unit.PX);
 						style.setDisplay(Display.INLINE_BLOCK);
 						style.setMarginRight(5, Unit.PX);
 						style.setVerticalAlign(Style.VerticalAlign.TOP);
@@ -225,7 +225,7 @@ public class SyllabarySearch extends Composite {
 			// }
 			final Panel p = new Panel(PanelType.SUCCESS);
 			Style style = p.getElement().getStyle();
-			style.setWidth(490, Unit.PX);
+			style.setWidth((DictionaryApplication.WIDTH-20)/2-5, Unit.PX);
 			style.setDisplay(Display.INLINE_BLOCK);
 			style.setMarginRight(5, Unit.PX);
 			style.setVerticalAlign(Style.VerticalAlign.TOP);
