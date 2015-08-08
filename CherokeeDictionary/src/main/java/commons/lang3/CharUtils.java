@@ -1,4 +1,4 @@
-package commons.lang;
+package commons.lang3;
 
 /*
     * Licensed to the Apache Software Foundation (ASF) under one or more

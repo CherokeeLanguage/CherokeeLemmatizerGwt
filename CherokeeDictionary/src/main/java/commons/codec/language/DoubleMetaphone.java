@@ -19,7 +19,7 @@ package commons.codec.language;
 
 import commons.codec.EncoderException;
 import commons.codec.StringEncoder;
-import commons.lang.StringUtils;
+import commons.lang3.StringUtils;
 
 /**
  * Encodes a string into a double metaphone value. This Implementation is based on the algorithm by <CITE>Lawrence

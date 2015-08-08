@@ -1,4 +1,4 @@
-package commons.lang;
+package commons.lang3;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7571,4 +7571,37 @@ public class StringUtils {
 		return str.regionMatches(ignoreCase, strOffset, suffix, 0,
 				suffix.length());
 	}
+	
+	/**
+     * <p>Checks if the CharSequence contains only whitespace.</p>
+     *
+     * <p>{@code null} will return {@code false}.
+     * An empty CharSequence (length()=0) will return {@code true}.</p>
+     *
+     * <pre>
+     * StringUtils.isWhitespace(null)   = false
+     * StringUtils.isWhitespace("")     = true
+     * StringUtils.isWhitespace("  ")   = true
+     * StringUtils.isWhitespace("abc")  = false
+     * StringUtils.isWhitespace("ab2c") = false
+     * StringUtils.isWhitespace("ab-c") = false
+     * </pre>
+     *
+     * @param cs  the CharSequence to check, may be null
+     * @return {@code true} if only contains whitespace, and is non-null
+     * @since 2.0
+     * @since 3.0 Changed signature from isWhitespace(String) to isWhitespace(CharSequence)
+     */
+    public static boolean isWhitespace(final CharSequence cs) {
+        if (cs == null) {
+            return false;
+        }
+        final int sz = cs.length();
+        for (int i = 0; i < sz; i++) {
+            if (Character.isSpace(cs.charAt(i)) == false) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
