@@ -21,9 +21,12 @@ import com.cherokeelessons.dict.shared.Suffixes.Repeatedly;
 import com.cherokeelessons.dict.shared.Suffixes.SoAnd;
 import com.cherokeelessons.dict.shared.Suffixes.ToFor;
 import com.cherokeelessons.dict.shared.Suffixes.ToForᏏ;
+import com.cherokeelessons.dict.shared.Suffixes.Truly;
+import com.cherokeelessons.dict.shared.Suffixes.Very;
 import com.cherokeelessons.dict.shared.Suffixes.WentForDoing;
 import com.cherokeelessons.dict.shared.Suffixes.YesNo;
 import com.cherokeelessons.dict.shared.Suffixes.YesYes;
+import com.google.gwt.core.shared.GWT;
 
 public enum SuffixGuesser {
 
@@ -77,6 +80,7 @@ public enum SuffixGuesser {
 		/*
 		 * pick the one with the most matches
 		 */
+		GWT.log("MULTIPLE MATCHES FOUND: "+lists.size());
 		Iterator<List<MatchResult>> il = lists.iterator();
 		List<MatchResult> list = il.next();
 		if (!il.hasNext()) {
@@ -84,10 +88,14 @@ public enum SuffixGuesser {
 		}
 		while (il.hasNext()) {
 			List<MatchResult> tmp = il.next();
-			if (tmp.get(0).suffix.length() > list.get(0).suffix.length()) {
-				list = tmp;
+			GWT.log("MATCH: "+tmp.toString());
+			if (tmp.get(0).suffix.length() < list.get(0).suffix.length()) {
 				continue;
 			}
+			if (tmp.size() < list.size()) {
+				continue;
+			}
+			list = tmp;
 		}
 		return list;
 	}
@@ -133,6 +141,10 @@ public enum SuffixGuesser {
 			return new AptTo();
 		case ToForᏏ:
 			return new ToForᏏ();
+		case Truly:
+			return new Truly();
+		case Very:
+			return new Very();
 		}
 		throw new RuntimeException(
 				"SPECIFIED SUFFIX MATCHER IS NOT IMPLEMENTED.");

@@ -50,6 +50,18 @@ public abstract class Suffixes {
 		public String suffix;
 		public String mode;
 		public String desc;
+		@Override
+		public String toString() {
+			StringBuilder builder = new StringBuilder();
+			builder.append("MatchResult [");
+			if (stem != null)
+				builder.append("stem=").append(stem).append(", ");
+			if (suffix != null)
+				builder.append("suffix=").append(suffix);
+			builder.append("]");
+			return builder.toString();
+		}
+		
 	}
 
 	protected String splitAsCompletive(String syllabary, String suffix) {
@@ -82,6 +94,9 @@ public abstract class Suffixes {
 		while (ipat.hasNext()) {
 			String ending = ipat.next();
 			String suffix = spat.next();
+			if (syllabary.length()<3 || syllabary.length()<=ending.length()) {
+				continue;
+			}
 			if (syllabary.endsWith(ending)) {
 				MatchResult matchResult = new MatchResult();
 				matchResult.isMatch = true;
@@ -260,6 +275,21 @@ public abstract class Suffixes {
 			addSet("", "Ꮙ");
 			// CED
 			addSet("", "Ꮚ");
+		}
+	};
+	
+	public static class Very extends Suffixes {
+		public Very() {
+			vowelFixStem=false;
+			addSet("", "Ᏻ");
+		}
+	};
+	
+	public static class Truly extends Suffixes {
+		public Truly() {
+			vowelFixStem=false;
+			addSet("", "Ꮿ");
+			addSet("", "ᏯᎢ");
 		}
 	};
 	

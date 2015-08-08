@@ -11,8 +11,8 @@ public enum Affix {
 	 * These entries are order dependent and are listed from word END to ROOT
 	 * ending start order!
 	 */
-	SoAnd(), But(SoAnd), YesYes(But), YesNo(But), Just(YesYes, YesNo), Place(
-			Just), AboutTo(Just), IntendTo(Just), WentTo(AboutTo, IntendTo), CameFor(
+	SoAnd(), But(SoAnd), YesYes(But), YesNo(But), Just(YesYes, YesNo), Very(Just), Truly(Very), Place(
+			Truly), AboutTo(Place), IntendTo(Place), WentTo(AboutTo, IntendTo), CameFor(
 			AboutTo, IntendTo), Around(CameFor, WentTo), ToForᏏ(Around), ToFor(
 			Around), Completely(ToFor, ToForᏏ), AptTo(Completely), ByAccident(
 			AptTo), Causative(AptTo), OverAndOver(Causative, ByAccident), Again(
