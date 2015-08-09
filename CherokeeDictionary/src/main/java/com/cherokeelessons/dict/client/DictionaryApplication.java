@@ -66,9 +66,16 @@ public class DictionaryApplication implements ScheduledCommand {
 	public void execute() {
 		RootPanel.get().clear(true);
 		rp = RootPanel.get();
+		// rp.getElement().setPropertyString("style",
+		// "transform-origin: center top;");
 		Style style = rp.getElement().getStyle();
-		rp.getElement().setPropertyString("style",
-				"transform-origin: center top;");
+		String[] engines = new String[] { "", "webkit", "ms", "Moz", "O",
+				"khtml" };
+		String value = "center top";
+		String name = "TransformOrigin";
+		for (String prefix : engines) {
+			style.setProperty(prefix + name, value);
+		}
 		style.setProperty("marginRight", "auto");
 		style.setProperty("marginLeft", "auto");
 		style.setProperty("marginTop", "10px");
