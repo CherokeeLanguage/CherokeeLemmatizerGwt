@@ -47,6 +47,17 @@ public enum SuffixGuesser {
 	}
 
 	public static class Without extends Suffixes {
+		@Override
+		public MatchResult match(String syllabary) {
+			if (syllabary.startsWith("Ᏹ")){
+				syllabary=syllabary.substring(1);
+			}
+			MatchResult match = super.match(syllabary);
+			if (match.isMatch && !"ᎾᎿᏁᏂᏃᏄᏅ".contains(StringUtils.left(syllabary,1))) {
+				GWT.log("BAD WITHOUT? "+syllabary);
+			}
+			return match;
+		}
 		public Without() {
 			vowelFixStem = true;
 			addSet("Ꭵ", "Ꮎ");
@@ -54,14 +65,27 @@ public enum SuffixGuesser {
 	}
 
 	public List<MatchResult> getMatches(String syllabary) {
-		GWT.log("PROCESSING: " + syllabary);
+		
 		// TODO: Figure WHERE this should go in the infix list
 		Suffixes apt = SuffixGuesser.getSuffixMatcher(Affix.AptTo);
-
-		Without withoutEnding = new Without();
-
 		Iterator<List<Affix>> iseq = Affix.getValidSequences().iterator();
 		List<List<MatchResult>> lists = new ArrayList<>();
+
+		Without withoutEnding = new Without();
+		MatchResult without = withoutEnding.match(syllabary);
+		if (without.isMatch) {
+			List<MatchResult> list = new ArrayList<Suffixes.MatchResult>();
+			without.desc = "WithOut";
+			without.suffix="Ꮒ/"+without.suffix;
+			list.add(without);
+			without.stem = removeᏂprefix(without.stem);
+			List<MatchResult> tmplist = getMatches(without.stem);
+			if (tmplist.size() > 0) {
+				list.addAll(tmplist);
+			}
+			return list;
+		}
+		
 		seq: while (iseq.hasNext()) {
 			List<MatchResult> list = new ArrayList<Suffixes.MatchResult>();
 			String active = syllabary;
@@ -74,7 +98,7 @@ public enum SuffixGuesser {
 					active = matchResult.stem;
 				}
 			}
-			MatchResult without = withoutEnding.match(active);
+			without = withoutEnding.match(active);
 			if (without.isMatch) {
 				without.desc = "WithOut";
 				list.add(without);
