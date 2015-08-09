@@ -1,6 +1,7 @@
 package com.cherokeelessons.dict.ui;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.fusesource.restygwt.client.Method;
@@ -22,31 +23,39 @@ import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.gwt.HTMLPanel;
 
-import com.cherokeelessons.dict.client.ClientDictionary;
 import com.cherokeelessons.dict.client.DictionaryApplication;
+import com.cherokeelessons.dict.events.AddPanelEvent;
+import com.cherokeelessons.dict.events.AnalysisCompleteEvent;
+import com.cherokeelessons.dict.events.AnalyzeEvent;
+import com.cherokeelessons.dict.events.ClearResultsEvent;
+import com.cherokeelessons.dict.events.RemovePanelEvent;
+import com.cherokeelessons.dict.events.ResetInputEvent;
+import com.cherokeelessons.dict.events.SearchResponseEvent;
+import com.cherokeelessons.dict.events.UiEnableEvent;
 import com.cherokeelessons.dict.shared.DictEntry;
 import com.cherokeelessons.dict.shared.FormattedEntry;
 import com.cherokeelessons.dict.shared.SearchResponse;
-import com.cherokeelessons.dict.shared.SuffixGuesser;
-import com.cherokeelessons.dict.shared.Suffixes.MatchResult;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.web.bindery.event.shared.EventBus;
+import com.google.web.bindery.event.shared.binder.EventBinder;
+import com.google.web.bindery.event.shared.binder.EventHandler;
 import commons.lang3.StringUtils;
 
 public class SyllabarySearch extends Composite {
+	public static interface AnalyzerEventBinder extends EventBinder<SyllabarySearch> {};
+	private final AnalyzerEventBinder binder = GWT.create(AnalyzerEventBinder.class);
 
 	@UiField
 	protected PageHeader pageHeader;
@@ -62,6 +71,38 @@ public class SyllabarySearch extends Composite {
 
 	@UiField
 	protected Button btn_search;
+	
+	@UiField
+	protected Button btn_reset;
+	
+	@EventHandler
+	public void enable(UiEnableEvent event) {
+		btn_analyze.setEnabled(event.enable);
+		btn_search.setEnabled(event.enable);
+		btn_reset.setEnabled(event.enable);
+		textBox.setEnabled(event.enable);
+		if (event.enable) {
+			btn_analyze.state().reset();
+			btn_search.state().reset();
+		}
+	}
+	
+	@EventHandler
+	public void onClearResults(ClearResultsEvent event) {
+		GWT.log("ClearResultsEvent");
+		Iterator<Panel> ip = panels.iterator();
+		while (ip.hasNext()) {
+			Panel next = ip.next();
+			next.clear();
+			next.removeFromParent();
+			ip.remove();
+		}
+	}
+	
+	@EventHandler
+	public void onCompletion(AnalysisCompleteEvent event) {
+		eventBus.fireEvent(new UiEnableEvent(true));
+	}
 
 	private static MainMenuUiBinder uiBinder = GWT
 			.create(MainMenuUiBinder.class);
@@ -71,19 +112,24 @@ public class SyllabarySearch extends Composite {
 	}
 
 	private final RootPanel rp;
-
-	public SyllabarySearch(RootPanel rp) {
+	private final EventBus eventBus;
+	public SyllabarySearch(EventBus eventBus, RootPanel rp) {
 		initWidget(uiBinder.createAndBindUi(this));
+		binder.bindEventHandlers(this, eventBus);
+		Document.get().setTitle("ᎤᎪᎵᏰᏗ - ᏣᎳᎩ ᏗᏕᏠᏆᏙᏗ");
 		this.rp = rp;
+		this.eventBus = eventBus;
 	}
 
 	@UiHandler("btn_reset")
 	public void onClearResults(final ClickEvent event) {
-		for (Panel panel : panels) {
-			panel.clear();
-			panel.removeFromParent();
-		}
-		panels.clear();
+		eventBus.fireEvent(new ClearResultsEvent());
+		eventBus.fireEvent(new ResetInputEvent());
+	}
+	
+	@EventHandler
+	public void onResetInput(ResetInputEvent event) {
+		textBox.setValue("");
 	}
 
 	private final List<Panel> panels = new ArrayList<Panel>();
@@ -101,125 +147,10 @@ public class SyllabarySearch extends Composite {
 			return;
 		}
 		textBox.setEnabled(false);
-		Scheduler.get().scheduleDeferred(doAnalysis);
+		eventBus.fireEvent(new AnalyzeEvent(textBox.getValue()));
 	}
 
-	private ScheduledCommand doAnalysis = new ScheduledCommand() {
-		@Override
-		public void execute() {
-			String value = StringUtils.strip(textBox.getValue());
-			value = value.replaceAll("[^Ꭰ-Ᏼ0-9\\s]", "");
-			final List<ScheduledCommand> cmds = new ArrayList<>();
-			String[] words = StringUtils.split(value);
-			if (words.length!=0) {
-				onClearResults(null);
-			}
-			for (final String word : words) {
-				cmds.add(new ScheduledCommand() {
-					@Override
-					public void execute() {
-						PanelType type = PanelType.DEFAULT;
-						SafeHtmlBuilder shb = new SafeHtmlBuilder();
-						List<MatchResult> matched = SuffixGuesser.INSTANCE
-								.getMatches(word);
-						if (matched.size()!=0) {
-							type=PanelType.SUCCESS;
-						}
-						StringBuilder affixedStem=new StringBuilder();
-						String innerstem="";
-						for (MatchResult match : matched) {
-							shb.appendEscaped(match.stem + "+" + match.suffix + ":"
-									+ match.desc);
-							String info = ClientDictionary.INSTANCE.guess(match.stem);
-							if (!StringUtils.isBlank(info)){
-								shb.appendHtmlConstant("<br/><span style='color: navy; font-weight: bold;'>");
-								shb.appendEscapedLines(info.replace("|", "\n"));
-								shb.appendHtmlConstant("</span><br/>");
-							}
-							shb.appendHtmlConstant("<br />");
-							if (match.desc.contains("*")){
-								type=PanelType.DANGER;
-							}
-							affixedStem.insert(0, match.suffix);
-							affixedStem.insert(0, "+");
-							innerstem=match.stem;
-						}
-						affixedStem.insert(0, innerstem);
-						SafeHtmlBuilder affixedStemHtml = new SafeHtmlBuilder();
-						
-						String info = ClientDictionary.INSTANCE.guess(word);
-						if (!StringUtils.isBlank(info)){
-							affixedStemHtml.appendHtmlConstant("<span style='color: navy; font-weight: bold;'>");
-							affixedStemHtml.appendEscapedLines(info.replace("|", "\n"));
-							affixedStemHtml.appendHtmlConstant("</span><br/>");
-						}
-						
-						if (affixedStem.length()!=0) {
-							affixedStemHtml.appendHtmlConstant("<span style='font-style: italic; font-weight: bold;'>");
-							affixedStemHtml.appendEscaped(affixedStem.toString());
-							affixedStemHtml.appendHtmlConstant("</span><br/>");
-						}
-						affixedStemHtml.append(shb.toSafeHtml());
-						
-						final Panel p = new Panel(type);
-						Style style = p.getElement().getStyle();
-						style.setWidth((DictionaryApplication.WIDTH-20)/3-5, Unit.PX);
-						style.setDisplay(Display.INLINE_BLOCK);
-						style.setMarginRight(5, Unit.PX);
-						style.setVerticalAlign(Style.VerticalAlign.TOP);
-						PanelHeader ph = new PanelHeader();
-						Heading h = new Heading(HeadingSize.H5);
-						h.setText(word);
-						ph.add(h);
-						h.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
-						Label source = new Label(LabelType.INFO);
-						ph.add(source);
-						source.getElement().getStyle().setFloat(Style.Float.RIGHT);
-						source.setText("[analysis]");
-						PanelBody pb = new PanelBody();
-						
-						HTMLPanel hp = new HTMLPanel(affixedStemHtml.toSafeHtml());
-						
-						PanelFooter pf = new PanelFooter();
-						Button dismiss = new Button("DISMISS");
-						dismiss.addClickHandler(new ClickHandler() {
-							@Override
-							public void onClick(ClickEvent event) {
-								p.clear();
-								p.removeFromParent();
-								GWT.log("Panel Removed: "
-										+ Boolean.valueOf(panels.remove(p)));
-							}
-						});
-						pf.add(dismiss);
-						p.add(ph);
-						p.add(pb);
-						p.add(pf);
-
-						pb.add(hp);
-						rp.add(p);
-						panels.add(p);
-					}
-				});
-			}
-			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-				@Override
-				public void execute() {
-					if (cmds.size()>0) {
-						ScheduledCommand cmd = cmds.get(0);
-						cmds.remove(0);
-						Scheduler.get().scheduleDeferred(cmd);
-						Scheduler.get().scheduleDeferred(this);
-						return;
-					}
-					textBox.setEnabled(true);
-					btn_analyze.state().reset();
-				}
-			});
-		}
-	};
-
-	Alert alert = new Alert("", AlertType.DANGER);
+	private final Alert alert = new Alert("", AlertType.DANGER);
 
 	@UiHandler("btn_search")
 	public void onSearch(final ClickEvent event) {
@@ -235,11 +166,27 @@ public class SyllabarySearch extends Composite {
 		}
 		DictionaryApplication.api.syll(StringUtils.strip(value), display_it);
 	}
+	
+	@EventHandler
+	public void removePanel(RemovePanelEvent event) {
+		Panel p = event.p;
+		p.clear();
+		p.removeFromParent();
+		GWT.log("Panel Removed: "
+				+ Boolean.valueOf(panels.remove(p)));
+	}
+	
+	@EventHandler
+	public void addPanel(AddPanelEvent event) {
+		rp.add(event.p);
+		panels.add(event.p);
+	}
 
-	private void process(SearchResponse sr) {
+	@EventHandler
+	public void process(SearchResponseEvent event) {
+		SearchResponse sr = event.response;
 		GWT.log("COUNT: " + sr.data.size());
 		for (DictEntry entry : sr.data) {
-			GWT.log("Entry: " + entry.id);
 			// if (!entry.source.equals("ced")){
 			// continue;
 			// }
@@ -264,10 +211,7 @@ public class SyllabarySearch extends Composite {
 			dismiss.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					p.clear();
-					p.removeFromParent();
-					GWT.log("Panel Removed: "
-							+ Boolean.valueOf(panels.remove(p)));
+					eventBus.fireEvent(new RemovePanelEvent(p));
 				}
 			});
 			PanelFooter pf = new PanelFooter();
@@ -301,13 +245,9 @@ public class SyllabarySearch extends Composite {
 				rp.add(panel);
 				return;
 			}
-			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-				@Override
-				public void execute() {
-					onClearResults(null);
-					process(sr);
-				}
-			});
+			GWT.log("SearchResponse");
+			eventBus.fireEvent(new ClearResultsEvent());
+			eventBus.fireEvent(new SearchResponseEvent(sr));
 		}
 	};
 

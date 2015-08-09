@@ -1,31 +1,28 @@
 package com.cherokeelessons.dict.client;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
-import com.cherokeelessons.dict.shared.ClientLookup;
+import com.cherokeelessons.dict.engine.DoAnalysis;
+import com.cherokeelessons.dict.events.AppLocationHandler;
 import com.cherokeelessons.dict.shared.RestApi;
-import com.cherokeelessons.dict.ui.SyllabarySearch;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.opencsv.CSVParser;
+import com.google.web.bindery.event.shared.ResettableEventBus;
+import com.google.web.bindery.event.shared.SimpleEventBus;
 
 public class DictionaryApplication implements ScheduledCommand {
 	
 	public static final int WIDTH=800;
-	
-	
+	public static final ResettableEventBus eventBus;
 	public static final RestApi api;
+	
 	static {
 		api = GWT.create(RestApi.class);
+		eventBus = new ResettableEventBus(new SimpleEventBus());
 	}
 	
 	private Timer doResizeTimer;
@@ -56,6 +53,12 @@ public class DictionaryApplication implements ScheduledCommand {
 		rp.getElement().getStyle().setProperty("transform", "scale("+scaleby+")");
 	}
 	
+//	private AppLocationHandler locHandler;
+	
+	public DictionaryApplication() {
+		
+	}
+	
 	private RootPanel rp;
 	@Override
 	public void execute() {
@@ -65,11 +68,11 @@ public class DictionaryApplication implements ScheduledCommand {
 				+ " " + (WIDTH-10)
 				+ "px; padding: 5px; border: none;'></div>");
 		rp = RootPanel.get("root");
+		new AppLocationHandler(rp, eventBus);
+		new DoAnalysis(eventBus);
+		History.addValueChangeHandler(new HistoryChangeHandler(eventBus));
 		doResize();
-		
-		SyllabarySearch mainwindow = new SyllabarySearch(rp);
-		rp.add(mainwindow);
-		
 		Window.addResizeHandler(resize);
+		History.fireCurrentHistoryState();
 	}
 }

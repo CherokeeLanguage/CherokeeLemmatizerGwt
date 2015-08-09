@@ -32,13 +32,9 @@ public class FormattedEntry {
 		Iterator<DisplayPair> idp = pairs.iterator();
 		while (idp.hasNext()) {
 			DisplayPair next = idp.next();
-			GWT.log("PAIR: " + next.syll + " -> "
-					+ Pronunciaton.asUtf8(next.pron));
 			if (StringUtils.isBlank(next.pron) != StringUtils
 					.isBlank(next.syll)) {
 				// TODO: Dialog Box
-				GWT.log("BAD SYLL/PRONOUNCE PAIRING: " + entry.syllabaryb
-						+ " - " + entry.definitiond);
 				if (!StringUtils.isBlank(next.syll)) {
 					next.pron=next.syll;
 				}

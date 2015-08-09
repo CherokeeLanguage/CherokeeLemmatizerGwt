@@ -1,7 +1,5 @@
 package com.cherokeelessons.dict.shared;
 
-import com.google.gwt.core.shared.GWT;
-
 import commons.lang3.StringUtils;
 
 public class Pronunciaton {
@@ -33,7 +31,6 @@ public class Pronunciaton {
 		
 		//TODO: Fire an EVENT that triggers a modal dialog
 		if (rawDbText.contains(".") || rawDbText.matches(".*[0-9].*") || rawDbText.contains("?")){
-			GWT.log("BAD PRONUNCIATION ENTRY: "+rawDbText);
 		}
 		
 		return rawDbText;

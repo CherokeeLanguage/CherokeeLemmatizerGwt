@@ -6,12 +6,16 @@
 	<inherits name="com.google.gwt.uibinder.UiBinder"/>
 	<inherits name='com.google.gwt.user.theme.clean.Clean'/>
 	<inherits name="com.google.gwt.resources.Resources" />
+	<inherits name='com.google.web.bindery.event.EventBinder'/>
 	<inherits name="commons.Commons" />
 	<inherits name="com.OpenCSV" />
 	
 	<source path="client" />
-	<source path="ui" />
+	<source path="engine" />
+	<source path="events" />
 	<source path="shared" />
+	<source path="ui" />
+	
 	<entry-point class="com.cherokeelessons.dict.client.DictEntryPoint">
 	</entry-point>
 	
