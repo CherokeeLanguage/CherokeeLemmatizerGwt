@@ -4,11 +4,13 @@ import com.cherokeelessons.dict.client.HistoryChangeHandler.AppLocation;
 import com.cherokeelessons.dict.ui.AnalysisView;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
+import commons.lang3.StringUtils;
 
 public class AppLocationHandler {
 	public interface AppLocationEventBinder extends
@@ -50,14 +52,17 @@ public class AppLocationHandler {
 	 */
 	@EventHandler
 	public void saveState(HistoryTokenEvent event) {
+		//#, a raw %, ^, [, ], {, }, \, ", < and >
+		
+		String encoded=URL.encodeQueryString(event.hash.replace("#", ""));
 		if (event.replace) {
 			if (hasState()) {
-				replaceState("#" + event.hash, Document.get().getTitle());
+				replaceState("#" + encoded, Document.get().getTitle());
 			}
 			History.replaceItem(event.hash, false);
 		} else {
 			if (hasState()) {
-				pushState("#" + event.hash, Document.get().getTitle());
+				pushState("#" + encoded, Document.get().getTitle());
 			}
 			History.newItem(event.hash, false);
 		}
