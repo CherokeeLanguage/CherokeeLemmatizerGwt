@@ -47,7 +47,7 @@ public enum ClientDictionary {
 			} catch (IOException e) {
 			}
 		}
-		lookup.addEntries(data);
+		lookup.addEntries("raven", data);
 	}
 	
 	private void loadᎹᎦᎵ() {
@@ -58,14 +58,11 @@ public enum ClientDictionary {
 		while (iline.hasNext()) {
 			try {
 				String next = iline.next();
-				if (!next.contains("[ᎹᎦᎵ]")){
-					next += " [ᎹᎦᎵ]";
-				}
 				data.add(parser.parseLine(next));
 			} catch (IOException e) {
 			}
 		}
-		lookup.addEntries(data);
+		lookup.addEntries("ᎹᎦᎵ", data);
 	}
 	
 	private void loadCED() {
@@ -80,7 +77,7 @@ public enum ClientDictionary {
 			} catch (IOException e) {
 			}
 		}
-		lookup.addEntries(data);
+		lookup.addEntries("CED", data);
 	}
 	
 }

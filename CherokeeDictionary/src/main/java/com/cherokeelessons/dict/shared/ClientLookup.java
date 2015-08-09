@@ -17,7 +17,7 @@ public class ClientLookup {
 	public ClientLookup() {
 	}
 
-	public void addEntries(List<String[]> words) {
+	public void addEntries(String tag, List<String[]> words) {
 		for (String[] data : words) {
 			String syllabary = StringUtils.strip(data[0]);
 			String definition = StringUtils.strip(data[1]);
@@ -29,7 +29,7 @@ public class ClientLookup {
 			if (!StringUtils.isBlank(prev)) {
 				prev = "|" + prev;
 			}
-			this.words.put(syllabary, definition + prev);
+			this.words.put(syllabary, definition + " ["+tag+"]" + prev);
 		}
 	}
 
