@@ -5,6 +5,7 @@ import com.cherokeelessons.dict.events.AppLocationHandler;
 import com.cherokeelessons.dict.shared.RestApi;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.History;
@@ -68,18 +69,14 @@ public class DictionaryApplication implements ScheduledCommand {
 	public void execute() {
 		RootPanel.get().clear(true);
 		rp = RootPanel.get();
-		rp.getElement()
-				.setPropertyString(
-						"style",
-						"margin-right: auto; min-height: 512px; margin-left: auto; margin-top: 10px; transform-origin: center top; max-width:"
-								+ (WIDTH - 10)
-								+ "px; padding: 5px; border: none;");
-		// RootPanel.getBodyElement().setInnerHTML("<div id='root'"
-		// +
-		// " style='margin-right: auto; min-height: 512px; margin-left: auto; margin-top: 10px; transform-origin: center top; max-width:"
-		// + " " + (WIDTH-10)
-		// + "px; padding: 5px; border: none;'></div>");
-		// rp = RootPanel.get("root");
+		Style style = rp.getElement().getStyle();
+		rp.getElement().setPropertyString("style", "transform-origin: center top;");
+		style.setProperty("marginRight", "auto");
+		style.setProperty("marginLeft", "auto");
+		style.setProperty("marginTop", "10px");
+		style.setProperty("maxWidth", (WIDTH-10)+"px");
+		style.setProperty("padding", "5px");
+		style.setProperty("border", "none");
 		new AppLocationHandler(rp, eventBus);
 		new DoAnalysis(eventBus);
 		History.addValueChangeHandler(new HistoryChangeHandler(eventBus));
