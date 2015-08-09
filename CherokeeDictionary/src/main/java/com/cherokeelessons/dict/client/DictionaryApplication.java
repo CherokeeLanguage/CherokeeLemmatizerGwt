@@ -48,16 +48,13 @@ public class DictionaryApplication implements ScheduledCommand {
 		float width = Window.getClientWidth();
 		float wanted = WIDTH;
 		float scaleby = width / wanted;
+		float height = Window.getClientHeight();
 		if (scaleby < 1f) {
 			scaleby = 1f;
 		}
-		rp.getElement().getStyle()
-				.setProperty("transform", "scale(" + scaleby + ")");
-		float height = Window.getClientHeight();
-		rp.getElement()
-				.getStyle()
-				.setProperty("minHeight",
-						((int) (height / scaleby) - 10) + "px");
+		Style style = rp.getElement().getStyle();
+		style.setProperty("transform", "scale(" + scaleby + ")");
+		style.setProperty("minHeight", ((int) (height / scaleby) - 10) + "px");
 	}
 
 	public DictionaryApplication() {
@@ -70,11 +67,12 @@ public class DictionaryApplication implements ScheduledCommand {
 		RootPanel.get().clear(true);
 		rp = RootPanel.get();
 		Style style = rp.getElement().getStyle();
-		rp.getElement().setPropertyString("style", "transform-origin: center top;");
+		rp.getElement().setPropertyString("style",
+				"transform-origin: center top;");
 		style.setProperty("marginRight", "auto");
 		style.setProperty("marginLeft", "auto");
 		style.setProperty("marginTop", "10px");
-		style.setProperty("maxWidth", (WIDTH-10)+"px");
+		style.setProperty("maxWidth", (WIDTH - 10) + "px");
 		style.setProperty("padding", "5px");
 		style.setProperty("border", "none");
 		new AppLocationHandler(rp, eventBus);
