@@ -27,6 +27,7 @@ import com.cherokeelessons.dict.events.AnalysisCompleteEvent;
 import com.cherokeelessons.dict.events.AnalyzeEvent;
 import com.cherokeelessons.dict.events.ClearResultsEvent;
 import com.cherokeelessons.dict.events.RemovePanelEvent;
+import com.cherokeelessons.dict.events.ReplaceTextInputEvent;
 import com.cherokeelessons.dict.events.ResetInputEvent;
 import com.cherokeelessons.dict.events.SearchResponseEvent;
 import com.cherokeelessons.dict.events.UiEnableEvent;
@@ -41,9 +42,13 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -74,6 +79,11 @@ public class AnalysisView extends Composite {
 	
 	@UiField
 	protected Button btn_reset;
+	
+	@EventHandler
+	public void setText(ReplaceTextInputEvent event) {
+		textBox.setValue(event.text);
+	}
 	
 	@EventHandler
 	public void enable(UiEnableEvent event) {
@@ -125,6 +135,9 @@ public class AnalysisView extends Composite {
 	public void onClearResults(final ClickEvent event) {
 		eventBus.fireEvent(new ClearResultsEvent());
 		eventBus.fireEvent(new ResetInputEvent());
+		String token = History.getToken();
+		token = token.replaceAll("&text=[^&]*", "");
+		History.newItem(token, false);
 	}
 	
 	@EventHandler
@@ -144,8 +157,12 @@ public class AnalysisView extends Composite {
 			btn_analyze.state().reset();
 			return;
 		}
-		textBox.setEnabled(false);
-		eventBus.fireEvent(new AnalyzeEvent(textBox.getValue()));
+		String token = History.getToken();
+		token = token.replaceAll("&text=[^&]*", "");
+		token = token+"&text="+value;
+		History.newItem(token, false);
+		GWT.log("[a]TOKEN: "+token);
+		eventBus.fireEvent(new AnalyzeEvent(value));
 	}
 
 	@UiHandler("btn_search")
@@ -159,6 +176,11 @@ public class AnalysisView extends Composite {
 			btn_search.state().reset();
 			return;
 		}
+		String token = History.getToken();
+		token = token.replaceAll("&text=[^&]*", "");
+		token = token+"&text="+value;
+		History.newItem(token, false);
+		GWT.log("[s]TOKEN: "+token);
 		DictionaryApplication.api.syll(StringUtils.strip(value), display_it);
 	}
 	
