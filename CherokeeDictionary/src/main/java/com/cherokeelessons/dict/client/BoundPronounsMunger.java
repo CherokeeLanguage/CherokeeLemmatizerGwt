@@ -23,8 +23,11 @@ public enum BoundPronounsMunger {
 	final private List<RegExp> patterns = new ArrayList<>();
 	
 	public List<String> munge(String word) {
-		GWT.log("MUNGING: "+word);
 		List<String> list = new ArrayList<String>();
+		list.add(word);
+		if (word.length()<4) {
+			return list;
+		}
 		for (RegExp p: patterns) {
 			if (!p.test(word)) {
 				continue;
@@ -70,8 +73,6 @@ public enum BoundPronounsMunger {
 				list.add("Ꭼ"+stem);
 				list.add("Ꮂ"+stem);
 			}
-			
-			GWT.log("FORMS: "+list.toString());
 		}
 		return list;
 	}
