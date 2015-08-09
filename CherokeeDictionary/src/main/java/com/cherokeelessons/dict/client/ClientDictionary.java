@@ -10,6 +10,8 @@ import com.cherokeelessons.dict.shared.ClientLookup;
 import com.google.gwt.core.client.GWT;
 import com.opencsv.CSVParser;
 
+import commons.lang3.StringUtils;
+
 public enum ClientDictionary {
 	INSTANCE;
 	
@@ -21,15 +23,17 @@ public enum ClientDictionary {
 		loadCED();
 		loadRaven();
 		
-		GWT.log("ClientDictionary: ᎣᏍᏛ "+lookup.guessed("ᎣᏍᏛ"));
+		GWT.log("ClientDictionary: ᎣᏍᏛ "+lookup.guess("ᎣᏍᏛ"));
 	}
 	
-	public String guessed(String syllabaryWord) {
-		return lookup.guessed(syllabaryWord);
+	public String guess(String syllabaryWord) {
+		String guess = lookup.guess(syllabaryWord);
+		return guess;
 	}
 	
 	public String exact(String syllabaryWord) {
-		return lookup.exact(syllabaryWord);
+		String exact = lookup.exact(syllabaryWord);
+		return exact;
 	}
 	
 	private void loadRaven() {

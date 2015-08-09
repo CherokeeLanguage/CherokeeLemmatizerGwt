@@ -76,6 +76,9 @@ public abstract class Suffixes {
 			syllabary = StringUtils.removeEnd(syllabary, suffix);
 			syllabary = Syllabary.changeForm(syllabary, Vowel.Ꭵ)+"Ꭲ";
 		}
+//		if (syllabary.matches(".*["+Suffixes.getVowelSet(Vowel.Ꭵ)+"]ᎥᎢ")){
+//			syllabary=StringUtils.left(syllabary, syllabary.length()-2)+"Ꭲ";
+//		}
 		return syllabary;
 	}
 	

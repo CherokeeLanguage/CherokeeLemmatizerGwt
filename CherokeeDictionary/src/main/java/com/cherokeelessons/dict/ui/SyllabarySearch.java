@@ -130,7 +130,7 @@ public class SyllabarySearch extends Composite {
 						for (MatchResult match : matched) {
 							shb.appendEscaped(match.stem + "+" + match.suffix + ":"
 									+ match.desc);
-							String info = ClientDictionary.INSTANCE.guessed(match.stem);
+							String info = ClientDictionary.INSTANCE.guess(match.stem);
 							if (!StringUtils.isBlank(info)){
 								shb.appendHtmlConstant("<br/><span style='color: navy; font-weight: bold;'>");
 								shb.appendEscapedLines(info.replace("|", "\n"));
@@ -147,7 +147,7 @@ public class SyllabarySearch extends Composite {
 						affixedStem.insert(0, innerstem);
 						SafeHtmlBuilder affixedStemHtml = new SafeHtmlBuilder();
 						
-						String info = ClientDictionary.INSTANCE.guessed(word);
+						String info = ClientDictionary.INSTANCE.guess(word);
 						if (!StringUtils.isBlank(info)){
 							affixedStemHtml.appendHtmlConstant("<span style='color: navy; font-weight: bold;'>");
 							affixedStemHtml.appendEscapedLines(info.replace("|", "\n"));
