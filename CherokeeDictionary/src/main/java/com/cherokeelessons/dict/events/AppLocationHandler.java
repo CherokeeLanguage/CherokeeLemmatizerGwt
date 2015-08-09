@@ -1,7 +1,7 @@
 package com.cherokeelessons.dict.events;
 
 import com.cherokeelessons.dict.client.HistoryChangeHandler.AppLocation;
-import com.cherokeelessons.dict.ui.SyllabarySearch;
+import com.cherokeelessons.dict.ui.AnalysisView;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.web.bindery.event.shared.EventBus;
@@ -29,7 +29,7 @@ public class AppLocationHandler {
 			rp.clear(true);
 			switch (event.location) {
 			case Analyzer:
-				SyllabarySearch mainwindow = new SyllabarySearch(eventBus, rp);
+				AnalysisView mainwindow = new AnalysisView(eventBus, rp);
 				rp.add(mainwindow);
 				break;
 			}

@@ -4,9 +4,9 @@ import org.gwtbootstrap3.client.ui.Panel;
 
 import com.google.web.bindery.event.shared.binder.GenericEvent;
 
-public class AddPanelEvent extends GenericEvent {
+public class AddAnalysisPanelEvent extends GenericEvent {
 	public final Panel p;
-	public AddPanelEvent(Panel p) {
+	public AddAnalysisPanelEvent(Panel p) {
 		this.p=p;
 	}
 }

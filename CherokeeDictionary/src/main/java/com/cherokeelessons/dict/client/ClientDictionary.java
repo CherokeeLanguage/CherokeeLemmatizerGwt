@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import com.cherokeelessons.dict.shared.ClientLookup;
+import com.cherokeelessons.dict.engine.ClientLookup;
 import com.google.gwt.core.client.GWT;
 import com.opencsv.CSVParser;
 

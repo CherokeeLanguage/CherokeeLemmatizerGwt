@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;
-import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.Heading;
@@ -17,14 +16,13 @@ import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelFooter;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.AlertType;
 import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.gwt.HTMLPanel;
 
 import com.cherokeelessons.dict.client.DictionaryApplication;
-import com.cherokeelessons.dict.events.AddPanelEvent;
+import com.cherokeelessons.dict.events.AddAnalysisPanelEvent;
 import com.cherokeelessons.dict.events.AnalysisCompleteEvent;
 import com.cherokeelessons.dict.events.AnalyzeEvent;
 import com.cherokeelessons.dict.events.ClearResultsEvent;
@@ -35,6 +33,7 @@ import com.cherokeelessons.dict.events.UiEnableEvent;
 import com.cherokeelessons.dict.shared.DictEntry;
 import com.cherokeelessons.dict.shared.FormattedEntry;
 import com.cherokeelessons.dict.shared.SearchResponse;
+import com.cherokeelessons.dict.ui.widgets.MessageDialog;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style;
@@ -51,10 +50,11 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
+
 import commons.lang3.StringUtils;
 
-public class SyllabarySearch extends Composite {
-	public static interface AnalyzerEventBinder extends EventBinder<SyllabarySearch> {};
+public class AnalysisView extends Composite {
+	public static interface AnalyzerEventBinder extends EventBinder<AnalysisView> {};
 	private final AnalyzerEventBinder binder = GWT.create(AnalyzerEventBinder.class);
 
 	@UiField
@@ -108,12 +108,12 @@ public class SyllabarySearch extends Composite {
 			.create(MainMenuUiBinder.class);
 
 	protected interface MainMenuUiBinder extends
-			UiBinder<Widget, SyllabarySearch> {
+			UiBinder<Widget, AnalysisView> {
 	}
 
 	private final RootPanel rp;
 	private final EventBus eventBus;
-	public SyllabarySearch(EventBus eventBus, RootPanel rp) {
+	public AnalysisView(EventBus eventBus, RootPanel rp) {
 		initWidget(uiBinder.createAndBindUi(this));
 		binder.bindEventHandlers(this, eventBus);
 		Document.get().setTitle("ᎤᎪᎵᏰᏗ - ᏣᎳᎩ ᏗᏕᏠᏆᏙᏗ");
@@ -136,13 +136,11 @@ public class SyllabarySearch extends Composite {
 
 	@UiHandler("btn_analyze")
 	public void onAnalyze(final ClickEvent event) {
+		this.pageHeader.setVisible(false);
 		btn_analyze.state().loading();
-		alert.removeFromParent();
 		String value = textBox.getValue();
 		if (StringUtils.isBlank(value)) {
-			alert.setDismissable(true);
-			alert.setText("NOTHING TO ANALYZE.");
-			rp.add(alert);
+			new MessageDialog(rp, "ERROR", "NOTHING TO ANALYZE.").show();
 			btn_analyze.state().reset();
 			return;
 		}
@@ -150,17 +148,14 @@ public class SyllabarySearch extends Composite {
 		eventBus.fireEvent(new AnalyzeEvent(textBox.getValue()));
 	}
 
-	private final Alert alert = new Alert("", AlertType.DANGER);
-
 	@UiHandler("btn_search")
 	public void onSearch(final ClickEvent event) {
-		alert.removeFromParent();
+		this.pageHeader.setVisible(false);
 		btn_search.state().loading();
 		String value = textBox.getValue();
 		if (StringUtils.isBlank(value)) {
-			alert.setDismissable(true);
-			alert.setText("EMPTY SEARCHES ARE NOT ALLOWED.");
-			rp.add(alert);
+			MessageDialog messageDialog = new MessageDialog(rp, "ERROR", "EMPTY SEARCHES ARE NOT ALLOWED.");
+			messageDialog.show();
 			btn_search.state().reset();
 			return;
 		}
@@ -177,7 +172,7 @@ public class SyllabarySearch extends Composite {
 	}
 	
 	@EventHandler
-	public void addPanel(AddPanelEvent event) {
+	public void addPanel(AddAnalysisPanelEvent event) {
 		rp.add(event.p);
 		panels.add(event.p);
 	}
@@ -227,13 +222,12 @@ public class SyllabarySearch extends Composite {
 	}
 
 	private MethodCallback<SearchResponse> display_it = new MethodCallback<SearchResponse>() {
-
 		@Override
 		public void onFailure(Method method, Throwable exception) {
 			btn_search.state().reset();
-			HTMLPanel panel = new HTMLPanel("onFailure: ᎤᏲᏳ!<br/>"
+			MessageDialog dialog = new MessageDialog(rp, "FAILURE", "onFailure: ᎤᏲᏳ!<br/>"
 					+ exception.getMessage());
-			rp.add(panel);
+			dialog.show();
 			throw new RuntimeException(exception);
 		}
 
@@ -241,8 +235,8 @@ public class SyllabarySearch extends Composite {
 		public void onSuccess(Method method, final SearchResponse sr) {
 			btn_search.state().reset();
 			if (sr == null) {
-				HTMLPanel panel = new HTMLPanel("ᎤᏲᏳ! SearchResponse is NULL");
-				rp.add(panel);
+				MessageDialog dialog = new MessageDialog(rp, "FAILURE", "ᎤᏲᏳ! SearchResponse is NULL");
+				dialog.show();
 				return;
 			}
 			GWT.log("SearchResponse");

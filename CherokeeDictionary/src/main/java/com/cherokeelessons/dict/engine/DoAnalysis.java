@@ -17,15 +17,14 @@ import org.gwtbootstrap3.client.ui.gwt.HTMLPanel;
 
 import com.cherokeelessons.dict.client.ClientDictionary;
 import com.cherokeelessons.dict.client.DictionaryApplication;
+import com.cherokeelessons.dict.engine.Suffixes.MatchResult;
 import com.cherokeelessons.dict.events.AbortEvent;
-import com.cherokeelessons.dict.events.AddPanelEvent;
+import com.cherokeelessons.dict.events.AddAnalysisPanelEvent;
 import com.cherokeelessons.dict.events.AnalysisCompleteEvent;
 import com.cherokeelessons.dict.events.AnalyzeEvent;
 import com.cherokeelessons.dict.events.RemovePanelEvent;
 import com.cherokeelessons.dict.events.ResetInputEvent;
 import com.cherokeelessons.dict.events.UiEnableEvent;
-import com.cherokeelessons.dict.shared.SuffixGuesser;
-import com.cherokeelessons.dict.shared.Suffixes.MatchResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -38,7 +37,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
-
 import commons.lang3.StringUtils;
 
 public class DoAnalysis {
@@ -155,7 +153,7 @@ public class DoAnalysis {
 					p.add(pf);
 
 					pb.add(hp);
-					eventBus.fireEvent(new AddPanelEvent(p));
+					eventBus.fireEvent(new AddAnalysisPanelEvent(p));
 				}
 			});
 		}

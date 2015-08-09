@@ -1,4 +1,4 @@
-package com.cherokeelessons.dict.shared;
+package com.cherokeelessons.dict.engine;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.cherokeelessons.dict.shared.Syllabary;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
 
 import commons.lang3.StringUtils;

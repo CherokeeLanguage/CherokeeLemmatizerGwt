@@ -15,30 +15,30 @@ import com.google.web.bindery.event.shared.ResettableEventBus;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
 public class DictionaryApplication implements ScheduledCommand {
-	
-	public static final int WIDTH=800;
+
+	public static final int WIDTH = 800;
 	public static final ResettableEventBus eventBus;
 	public static final RestApi api;
-	
+
 	static {
 		api = GWT.create(RestApi.class);
 		eventBus = new ResettableEventBus(new SimpleEventBus());
 	}
-	
+
 	private Timer doResizeTimer;
 	private final ResizeHandler resize = new ResizeHandler() {
 		@Override
 		public void onResize(ResizeEvent event) {
-			if (doResizeTimer!=null) {
+			if (doResizeTimer != null) {
 				doResizeTimer.cancel();
 			}
 			doResizeTimer = new Timer() {
 				@Override
 				public void run() {
-					doResize();		
+					doResize();
 				}
 			};
-			doResizeTimer.schedule(250);				
+			doResizeTimer.schedule(250);
 		}
 
 	};
@@ -46,28 +46,40 @@ public class DictionaryApplication implements ScheduledCommand {
 	private void doResize() {
 		float width = Window.getClientWidth();
 		float wanted = WIDTH;
-		float scaleby=width/wanted;
-		if (scaleby<1f) {
-			scaleby=1f;
+		float scaleby = width / wanted;
+		if (scaleby < 1f) {
+			scaleby = 1f;
 		}
-		rp.getElement().getStyle().setProperty("transform", "scale("+scaleby+")");
+		rp.getElement().getStyle()
+				.setProperty("transform", "scale(" + scaleby + ")");
+		float height = Window.getClientHeight();
+		rp.getElement()
+				.getStyle()
+				.setProperty("minHeight",
+						((int) (height / scaleby) - 10) + "px");
 	}
-	
-//	private AppLocationHandler locHandler;
-	
+
 	public DictionaryApplication() {
-		
 	}
-	
+
 	private RootPanel rp;
+
 	@Override
 	public void execute() {
 		RootPanel.get().clear(true);
-		RootPanel.getBodyElement().setInnerHTML("<div id='root'"
-				+ " style='margin-right: auto; margin-left: auto; margin-top: 10px; transform-origin: center top; max-width:"
-				+ " " + (WIDTH-10)
-				+ "px; padding: 5px; border: none;'></div>");
-		rp = RootPanel.get("root");
+		rp = RootPanel.get();
+		rp.getElement()
+				.setPropertyString(
+						"style",
+						"margin-right: auto; min-height: 512px; margin-left: auto; margin-top: 10px; transform-origin: center top; max-width:"
+								+ (WIDTH - 10)
+								+ "px; padding: 5px; border: none;");
+		// RootPanel.getBodyElement().setInnerHTML("<div id='root'"
+		// +
+		// " style='margin-right: auto; min-height: 512px; margin-left: auto; margin-top: 10px; transform-origin: center top; max-width:"
+		// + " " + (WIDTH-10)
+		// + "px; padding: 5px; border: none;'></div>");
+		// rp = RootPanel.get("root");
 		new AppLocationHandler(rp, eventBus);
 		new DoAnalysis(eventBus);
 		History.addValueChangeHandler(new HistoryChangeHandler(eventBus));

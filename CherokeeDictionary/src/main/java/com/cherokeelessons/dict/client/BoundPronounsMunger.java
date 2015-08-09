@@ -8,7 +8,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import com.cherokeelessons.dict.shared.Suffixes;
+import com.cherokeelessons.dict.engine.Suffixes;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.regexp.shared.MatchResult;

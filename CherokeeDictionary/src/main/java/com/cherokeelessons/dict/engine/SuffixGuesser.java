@@ -1,38 +1,35 @@
-package com.cherokeelessons.dict.shared;
+package com.cherokeelessons.dict.engine;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-import com.cherokeelessons.dict.shared.Suffixes.AboutTo;
-import com.cherokeelessons.dict.shared.Suffixes.Accidental;
-import com.cherokeelessons.dict.shared.Suffixes.Again;
-import com.cherokeelessons.dict.shared.Suffixes.AptTo;
-import com.cherokeelessons.dict.shared.Suffixes.Around;
-import com.cherokeelessons.dict.shared.Suffixes.But;
-import com.cherokeelessons.dict.shared.Suffixes.CausativePast;
-import com.cherokeelessons.dict.shared.Suffixes.ComeForDoing;
-import com.cherokeelessons.dict.shared.Suffixes.Completely;
-import com.cherokeelessons.dict.shared.Suffixes.InOnAt;
-import com.cherokeelessons.dict.shared.Suffixes.IntendTo;
-import com.cherokeelessons.dict.shared.Suffixes.Just;
-import com.cherokeelessons.dict.shared.Suffixes.MatchResult;
-import com.cherokeelessons.dict.shared.Suffixes.Place;
-import com.cherokeelessons.dict.shared.Suffixes.Repeatedly;
-import com.cherokeelessons.dict.shared.Suffixes.SoAnd;
-import com.cherokeelessons.dict.shared.Suffixes.ToFor;
-import com.cherokeelessons.dict.shared.Suffixes.ToForᏏ;
-import com.cherokeelessons.dict.shared.Suffixes.Towards;
-import com.cherokeelessons.dict.shared.Suffixes.Truly;
-import com.cherokeelessons.dict.shared.Suffixes.Very;
-import com.cherokeelessons.dict.shared.Suffixes.WentForDoing;
-import com.cherokeelessons.dict.shared.Suffixes.YesNo;
-import com.cherokeelessons.dict.shared.Suffixes.YesYes;
-import com.cherokeelessons.dict.shared.Syllabary.Vowel;
+import com.cherokeelessons.dict.engine.Suffixes.AboutTo;
+import com.cherokeelessons.dict.engine.Suffixes.Accidental;
+import com.cherokeelessons.dict.engine.Suffixes.Again;
+import com.cherokeelessons.dict.engine.Suffixes.AptTo;
+import com.cherokeelessons.dict.engine.Suffixes.Around;
+import com.cherokeelessons.dict.engine.Suffixes.But;
+import com.cherokeelessons.dict.engine.Suffixes.CausativePast;
+import com.cherokeelessons.dict.engine.Suffixes.ComeForDoing;
+import com.cherokeelessons.dict.engine.Suffixes.Completely;
+import com.cherokeelessons.dict.engine.Suffixes.InOnAt;
+import com.cherokeelessons.dict.engine.Suffixes.IntendTo;
+import com.cherokeelessons.dict.engine.Suffixes.Just;
+import com.cherokeelessons.dict.engine.Suffixes.MatchResult;
+import com.cherokeelessons.dict.engine.Suffixes.Place;
+import com.cherokeelessons.dict.engine.Suffixes.Repeatedly;
+import com.cherokeelessons.dict.engine.Suffixes.SoAnd;
+import com.cherokeelessons.dict.engine.Suffixes.ToFor;
+import com.cherokeelessons.dict.engine.Suffixes.ToForᏏ;
+import com.cherokeelessons.dict.engine.Suffixes.Towards;
+import com.cherokeelessons.dict.engine.Suffixes.Truly;
+import com.cherokeelessons.dict.engine.Suffixes.Very;
+import com.cherokeelessons.dict.engine.Suffixes.WentForDoing;
+import com.cherokeelessons.dict.engine.Suffixes.YesNo;
+import com.cherokeelessons.dict.engine.Suffixes.YesYes;
+import com.cherokeelessons.dict.shared.Affix;
 import com.google.gwt.core.shared.GWT;
-
 import commons.lang3.StringUtils;
 
 public enum SuffixGuesser {
