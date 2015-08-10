@@ -176,6 +176,7 @@ public class AnalysisView extends Composite {
 		token = token.replaceAll("&text=[^&]*", "");
 		token = token+"&text="+value;
 		eventBus.fireEvent(new HistoryTokenEvent(token));
+		eventBus.fireEvent(new UiEnableEvent(false));
 		DictionaryApplication.api.syll(StringUtils.strip(value), display_it);
 	}
 	
@@ -234,6 +235,7 @@ public class AnalysisView extends Composite {
 			rp.add(p);
 			panels.add(p);
 		}
+		eventBus.fireEvent(new UiEnableEvent(true));
 	}
 
 	private MethodCallback<SearchResponse> display_it = new MethodCallback<SearchResponse>() {
@@ -243,6 +245,7 @@ public class AnalysisView extends Composite {
 			MessageDialog dialog = new MessageDialog(rp, "FAILURE", "onFailure: ᎤᏲᏳ!<br/>"
 					+ exception.getMessage());
 			dialog.show();
+			eventBus.fireEvent(new UiEnableEvent(true));
 			throw new RuntimeException(exception);
 		}
 

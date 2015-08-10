@@ -22,6 +22,7 @@ import com.cherokeelessons.dict.events.AbortEvent;
 import com.cherokeelessons.dict.events.AddAnalysisPanelEvent;
 import com.cherokeelessons.dict.events.AnalysisCompleteEvent;
 import com.cherokeelessons.dict.events.AnalyzeEvent;
+import com.cherokeelessons.dict.events.ClearResultsEvent;
 import com.cherokeelessons.dict.events.RemovePanelEvent;
 import com.cherokeelessons.dict.events.ResetInputEvent;
 import com.cherokeelessons.dict.events.UiEnableEvent;
@@ -37,6 +38,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
+
 import commons.lang3.StringUtils;
 
 public class DoAnalysis {
@@ -65,6 +67,7 @@ public class DoAnalysis {
 			return;
 		}
 		eventBus.fireEvent(new UiEnableEvent(false));
+		eventBus.fireEvent(new ClearResultsEvent());
 		final List<ScheduledCommand> cmds = new ArrayList<>();
 		String[] words = StringUtils.split(value);
 		
