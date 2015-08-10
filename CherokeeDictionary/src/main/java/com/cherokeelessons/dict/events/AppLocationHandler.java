@@ -10,7 +10,6 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
-import commons.lang3.StringUtils;
 
 public class AppLocationHandler {
 	public interface AppLocationEventBinder extends
@@ -44,6 +43,8 @@ public class AppLocationHandler {
 			}
 		}
 	}
+	
+	private boolean enablepushstate=true;
 
 	/**
 	 * Record as new page visit current "view state"
@@ -52,19 +53,19 @@ public class AppLocationHandler {
 	 */
 	@EventHandler
 	public void saveState(HistoryTokenEvent event) {
-		//#, a raw %, ^, [, ], {, }, \, ", < and >
-		
-		String encoded=URL.encodeQueryString(event.hash.replace("#", ""));
+		GWT.log("HISTORY: "+event.hash);
 		if (event.replace) {
-			if (hasState()) {
-				replaceState("#" + encoded, Document.get().getTitle());
+			if (enablepushstate&&hasState()) {
+				replaceState("#" + URL.encode(event.hash), Document.get().getTitle());
+			} else {
+				History.replaceItem(event.hash, false);
 			}
-			History.replaceItem(event.hash, false);
 		} else {
-			if (hasState()) {
-				pushState("#" + encoded, Document.get().getTitle());
+			if (enablepushstate&&hasState()) {
+				pushState("#" + URL.encode(event.hash), Document.get().getTitle());
+			} else {
+				History.newItem(event.hash, false);
 			}
-			History.newItem(event.hash, false);
 		}
 		if (event.trigger) {
 			History.fireCurrentHistoryState();

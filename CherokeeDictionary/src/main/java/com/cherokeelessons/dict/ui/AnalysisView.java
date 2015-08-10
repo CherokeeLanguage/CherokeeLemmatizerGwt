@@ -46,7 +46,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -132,7 +132,7 @@ public class AnalysisView extends Composite {
 	public void onClearResults(final ClickEvent event) {
 		eventBus.fireEvent(new ClearResultsEvent());
 		eventBus.fireEvent(new ResetInputEvent());
-		String token = History.getToken();
+		String token = StringUtils.substringAfter(Location.getHref(), "#");
 		token = token.replaceAll("&text=[^&]*", "");
 		eventBus.fireEvent(new HistoryTokenEvent(token));
 	}
@@ -154,7 +154,7 @@ public class AnalysisView extends Composite {
 			btn_analyze.state().reset();
 			return;
 		}
-		String token = History.getToken();
+		String token = StringUtils.substringAfter(Location.getHref(), "#");
 		token = token.replaceAll("&text=[^&]*", "");
 		token = token+"&text="+value;
 		eventBus.fireEvent(new HistoryTokenEvent(token));
@@ -172,7 +172,7 @@ public class AnalysisView extends Composite {
 			btn_search.state().reset();
 			return;
 		}
-		String token = History.getToken();
+		String token = StringUtils.substringAfter(Location.getHref(), "#");
 		token = token.replaceAll("&text=[^&]*", "");
 		token = token+"&text="+value;
 		eventBus.fireEvent(new HistoryTokenEvent(token));

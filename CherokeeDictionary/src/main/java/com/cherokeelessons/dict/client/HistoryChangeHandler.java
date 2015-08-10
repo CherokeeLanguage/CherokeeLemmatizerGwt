@@ -6,10 +6,14 @@ import java.util.Iterator;
 import com.cherokeelessons.dict.events.AppLocationEvent;
 import com.cherokeelessons.dict.events.HistoryTokenEvent;
 import com.cherokeelessons.dict.events.ReplaceTextInputEvent;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.Window.Location;
 import com.google.web.bindery.event.shared.EventBus;
+
 import commons.lang3.StringUtils;
 
 public class HistoryChangeHandler implements ValueChangeHandler<String> {
@@ -46,12 +50,16 @@ public class HistoryChangeHandler implements ValueChangeHandler<String> {
 			return;
 		}
 		
+		String rawhash = StringUtils.substringAfter(Location.getHref(), "#");
+		iparams = Arrays.asList(rawhash.split("&")).iterator();
+		
 		eventBus.fireEvent(new AppLocationEvent(newLocation));
 		
 		while (iparams.hasNext()) {
 			String next = iparams.next();
 			String tag = StringUtils.substringBefore(next, "=");
-			String data = StringUtils.substringAfter(next, "=");
+			GWT.log("DATA: "+StringUtils.substringAfter(next, "="));
+			String data = URL.decodeQueryString(StringUtils.substringAfter(next, "="));
 			if ("text".equalsIgnoreCase(tag)) {
 				eventBus.fireEvent(new ReplaceTextInputEvent(data));
 			}
