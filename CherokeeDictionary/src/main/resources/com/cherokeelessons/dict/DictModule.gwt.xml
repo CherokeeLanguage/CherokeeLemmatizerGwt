@@ -32,7 +32,7 @@
 	<inherits name="com.google.gwt.precompress.Precompress" />
 
 	<!-- Fallback User Agent for use by CRAWLERS -->
-	<set-property-fallback name="user.agent" value="safari"/><!-- value="gecko1_8" /> -->
+	<set-property-fallback name="user.agent" value="gecko1_8" /> <!-- value="safari"/> -->
 	
 	<stylesheet src="css/cherokeelessons.css" />
 
