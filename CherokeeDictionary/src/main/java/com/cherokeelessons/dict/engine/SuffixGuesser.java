@@ -28,8 +28,8 @@ import com.cherokeelessons.dict.engine.Suffixes.Very;
 import com.cherokeelessons.dict.engine.Suffixes.WentForDoing;
 import com.cherokeelessons.dict.engine.Suffixes.YesNo;
 import com.cherokeelessons.dict.engine.Suffixes.YesYes;
-import com.cherokeelessons.dict.shared.Affix;
 import com.google.gwt.core.shared.GWT;
+
 import commons.lang3.StringUtils;
 
 public enum SuffixGuesser {
@@ -58,6 +58,13 @@ public enum SuffixGuesser {
 		public Without() {
 			vowelFixStem = true;
 			addSet("Ꭵ", "Ꮎ");
+		}
+	}
+	
+	public static class Tool extends Suffixes {
+		public Tool() {
+			vowelFixStem = false;
+			addSet("", "ᏍᏙᏗ");
 		}
 	}
 

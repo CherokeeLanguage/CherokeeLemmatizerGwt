@@ -1,4 +1,4 @@
-package com.cherokeelessons.dict.shared;
+package com.cherokeelessons.dict.engine;
 
 import java.util.ArrayList;
 import java.util.HashSet;
