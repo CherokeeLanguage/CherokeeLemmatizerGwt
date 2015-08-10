@@ -55,17 +55,11 @@ public class AppLocationHandler {
 	public void saveState(HistoryTokenEvent event) {
 		GWT.log("HISTORY: "+event.hash);
 		if (event.replace) {
-			if (enablepushstate&&hasState()) {
-				replaceState("#" + URL.encode(event.hash), Document.get().getTitle());
-			} else {
-				History.replaceItem(event.hash, false);
-			}
+			replaceState("#" + URL.encode(event.hash), Document.get().getTitle());
+			History.replaceItem(event.hash, false);
 		} else {
-			if (enablepushstate&&hasState()) {
-				pushState("#" + URL.encode(event.hash), Document.get().getTitle());
-			} else {
-				History.newItem(event.hash, false);
-			}
+			pushState("#" + URL.encode(event.hash), Document.get().getTitle());
+			History.newItem(event.hash, false);
 		}
 		if (event.trigger) {
 			History.fireCurrentHistoryState();
