@@ -38,7 +38,6 @@ import com.cherokeelessons.dict.events.UiEnableEvent;
 import com.cherokeelessons.dict.shared.DictEntry;
 import com.cherokeelessons.dict.shared.FormattedEntry;
 import com.cherokeelessons.dict.shared.SearchResponse;
-import com.cherokeelessons.dict.ui.widgets.MessageDialog;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style;
@@ -56,7 +55,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
-
 import commons.lang3.StringUtils;
 
 public class AnalysisView extends Composite {
