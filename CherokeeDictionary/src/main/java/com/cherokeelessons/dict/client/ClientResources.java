@@ -8,10 +8,10 @@ public interface ClientResources extends ClientBundle {
 	
 	public static final ClientResources INSTANCE = GWT.create(ClientResources.class);
 
-	@Source("text/ᎪᎸᏅᏱ.csv")
+	@Source("text/raven.csv")
 	public TextResource ᎪᎸᏅᏱ();
 	
-	@Source("text/ᎹᎦᎵ.csv")
+	@Source("text/magali.csv")
 	public TextResource ᎹᎦᎵ();
 
 	@Source("text/CED.csv")

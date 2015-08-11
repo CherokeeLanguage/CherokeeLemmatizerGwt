@@ -1,8 +1,10 @@
 package com.cherokeelessons.dict.ui;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;
@@ -16,6 +18,7 @@ import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelFooter;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.Emphasis;
 import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
@@ -53,6 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
+
 import commons.lang3.StringUtils;
 
 public class AnalysisView extends Composite {
@@ -195,12 +199,24 @@ public class AnalysisView extends Composite {
 
 	@EventHandler
 	public void process(SearchResponseEvent event) {
+		int dupes=0;
+		Set<Integer> already = new HashSet<>();
+		Set<Integer> duplicates = new HashSet<>();
 		SearchResponse sr = event.response;
 		GWT.log("COUNT: " + sr.data.size());
+		Iterator<DictEntry> isr = sr.data.iterator();
+		while (isr.hasNext()) {
+			DictEntry entry = isr.next();
+			if (already.contains(entry.id)){
+				GWT.log("DUPLICATE RECORD IN RESPONSE: "+entry.id);
+				dupes++;
+				duplicates.add(entry.id);
+				isr.remove();
+				continue;
+			}
+			already.add(entry.id);
+		}
 		for (DictEntry entry : sr.data) {
-			// if (!entry.source.equals("ced")){
-			// continue;
-			// }
 			final Panel p = new Panel(PanelType.SUCCESS);
 			Style style = p.getElement().getStyle();
 			style.setWidth((DictionaryApplication.WIDTH-20)/2-5, Unit.PX);
@@ -210,7 +226,11 @@ public class AnalysisView extends Composite {
 			PanelHeader ph = new PanelHeader();
 			Heading h = new Heading(HeadingSize.H5);
 			ph.add(h);
-			h.setText(entry.definitiond);
+			String hdr = entry.definitiond+"<br/>["+entry.id+"]";
+			if (duplicates.contains(entry.id)){
+				hdr+=" (DUPE DETECTED!)";
+			}
+			h.getElement().setInnerHTML(hdr);
 			h.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
 			Label source = new Label(LabelType.INFO);
 			ph.add(source);
@@ -235,6 +255,9 @@ public class AnalysisView extends Composite {
 			rp.add(p);
 			panels.add(p);
 		}
+		if (dupes>0) {
+			new MessageDialog(rp, "ERROR", dupes+" DUPES IN RESPONSE!").show();
+		}
 		eventBus.fireEvent(new UiEnableEvent(true));
 	}
 
@@ -257,7 +280,7 @@ public class AnalysisView extends Composite {
 				dialog.show();
 				return;
 			}
-			GWT.log("SearchResponse");
+			GWT.log("SearchResponse: "+sr.data.size());
 			eventBus.fireEvent(new ClearResultsEvent());
 			eventBus.fireEvent(new SearchResponseEvent(sr));
 		}
