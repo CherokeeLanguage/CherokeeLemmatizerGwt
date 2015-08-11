@@ -25,6 +25,7 @@ import org.gwtbootstrap3.client.ui.gwt.HTMLPanel;
 
 import com.cherokeelessons.dict.client.DictionaryApplication;
 import com.cherokeelessons.dict.events.AddAnalysisPanelEvent;
+import com.cherokeelessons.dict.events.AddSearchResultPanelEvent;
 import com.cherokeelessons.dict.events.AnalysisCompleteEvent;
 import com.cherokeelessons.dict.events.AnalyzeEvent;
 import com.cherokeelessons.dict.events.ClearResultsEvent;
@@ -193,6 +194,12 @@ public class AnalysisView extends Composite {
 		rp.add(event.p);
 		panels.add(event.p);
 	}
+	
+	@EventHandler
+	public void addPanel(AddSearchResultPanelEvent event) {
+		rp.add(event.p);
+		panels.add(event.p);
+	}
 
 	@EventHandler
 	public void process(SearchResponseEvent event) {
@@ -249,8 +256,7 @@ public class AnalysisView extends Composite {
 			p.add(pf);
 
 			pb.add(hp);
-			rp.add(p);
-			panels.add(p);
+			eventBus.fireEvent(new AddSearchResultPanelEvent(p));
 		}
 		if (dupes>0) {
 			eventBus.fireEvent(new MessageEvent("ERROR", dupes+" DUPES IN RESPONSE!"));
