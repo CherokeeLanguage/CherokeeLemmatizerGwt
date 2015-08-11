@@ -18,7 +18,6 @@ import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelFooter;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.Emphasis;
 import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
@@ -30,6 +29,7 @@ import com.cherokeelessons.dict.events.AnalysisCompleteEvent;
 import com.cherokeelessons.dict.events.AnalyzeEvent;
 import com.cherokeelessons.dict.events.ClearResultsEvent;
 import com.cherokeelessons.dict.events.HistoryTokenEvent;
+import com.cherokeelessons.dict.events.MessageEvent;
 import com.cherokeelessons.dict.events.RemovePanelEvent;
 import com.cherokeelessons.dict.events.ReplaceTextInputEvent;
 import com.cherokeelessons.dict.events.ResetInputEvent;
@@ -154,7 +154,7 @@ public class AnalysisView extends Composite {
 		btn_analyze.state().loading();
 		String value = textBox.getValue();
 		if (StringUtils.isBlank(value)) {
-			new MessageDialog(rp, "ERROR", "NOTHING TO ANALYZE.").show();
+			eventBus.fireEvent(new MessageEvent("ERROR", "NOTHING TO ANALYZE."));
 			btn_analyze.state().reset();
 			return;
 		}
@@ -171,8 +171,7 @@ public class AnalysisView extends Composite {
 		btn_search.state().loading();
 		String value = textBox.getValue();
 		if (StringUtils.isBlank(value)) {
-			MessageDialog messageDialog = new MessageDialog(rp, "ERROR", "EMPTY SEARCHES ARE NOT ALLOWED.");
-			messageDialog.show();
+			eventBus.fireEvent(new MessageEvent("ERROR", "EMPTY SEARCHES ARE NOT ALLOWED."));
 			btn_search.state().reset();
 			return;
 		}
@@ -219,7 +218,7 @@ public class AnalysisView extends Composite {
 		for (DictEntry entry : sr.data) {
 			final Panel p = new Panel(PanelType.SUCCESS);
 			Style style = p.getElement().getStyle();
-			style.setWidth((DictionaryApplication.WIDTH-20)/2-5, Unit.PX);
+			style.setWidth((DictionaryApplication.WIDTH-20)/2-4, Unit.PX);
 			style.setDisplay(Display.INLINE_BLOCK);
 			style.setMarginRight(5, Unit.PX);
 			style.setVerticalAlign(Style.VerticalAlign.TOP);
@@ -256,7 +255,7 @@ public class AnalysisView extends Composite {
 			panels.add(p);
 		}
 		if (dupes>0) {
-			new MessageDialog(rp, "ERROR", dupes+" DUPES IN RESPONSE!").show();
+			eventBus.fireEvent(new MessageEvent("ERROR", dupes+" DUPES IN RESPONSE!"));
 		}
 		eventBus.fireEvent(new UiEnableEvent(true));
 	}
@@ -265,9 +264,8 @@ public class AnalysisView extends Composite {
 		@Override
 		public void onFailure(Method method, Throwable exception) {
 			btn_search.state().reset();
-			MessageDialog dialog = new MessageDialog(rp, "FAILURE", "onFailure: ᎤᏲᏳ!<br/>"
-					+ exception.getMessage());
-			dialog.show();
+			eventBus.fireEvent(new MessageEvent("FAILURE", "onFailure: ᎤᏲᏳ!<br/>"
+					+ exception.getMessage()));
 			eventBus.fireEvent(new UiEnableEvent(true));
 			throw new RuntimeException(exception);
 		}
@@ -276,8 +274,7 @@ public class AnalysisView extends Composite {
 		public void onSuccess(Method method, final SearchResponse sr) {
 			btn_search.state().reset();
 			if (sr == null) {
-				MessageDialog dialog = new MessageDialog(rp, "FAILURE", "ᎤᏲᏳ! SearchResponse is NULL");
-				dialog.show();
+				eventBus.fireEvent(new MessageEvent("FAILURE", "ᎤᏲᏳ! SearchResponse is NULL"));
 				return;
 			}
 			GWT.log("SearchResponse: "+sr.data.size());

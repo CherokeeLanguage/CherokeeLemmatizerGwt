@@ -3,6 +3,7 @@ package com.cherokeelessons.dict.client;
 import com.cherokeelessons.dict.engine.DoAnalysis;
 import com.cherokeelessons.dict.events.AppLocationHandler;
 import com.cherokeelessons.dict.shared.RestApi;
+import com.cherokeelessons.dict.ui.DialogManager;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style;
@@ -84,6 +85,7 @@ public class DictionaryApplication implements ScheduledCommand {
 		style.setProperty("border", "none");
 		new AppLocationHandler(rp, eventBus);
 		new DoAnalysis(eventBus);
+		new DialogManager(rp, eventBus);
 		History.addValueChangeHandler(new HistoryChangeHandler(eventBus));
 		doResize();
 		Window.addResizeHandler(resize);
