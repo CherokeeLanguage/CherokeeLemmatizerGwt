@@ -61,12 +61,12 @@ public class ClientLookup {
 	private String[] Ꭶ1 = { "Ꭶ", "Ꭼ" };
 
 	private List<String> getDeprefixed(String syllabary) {
-		GWT.log("Deprefixing: "+syllabary);
+//		GWT.log("Deprefixing: "+syllabary);
 		List<String> list = new ArrayList<String>();
 		list.add(syllabary);
 		boolean zapᎢ=false;
 		if (StringUtils.startsWithAny(syllabary, Ᏹ)) {
-			GWT.log("Deprefixing Ᏹ: "+syllabary);
+//			GWT.log("Deprefixing Ᏹ: "+syllabary);
 			int sub=0;
 			for (String prefix: Ᏹ) {
 				sub = syllabary.startsWith(prefix)?Math.max(sub, prefix.length()):sub;
@@ -85,7 +85,7 @@ public class ClientLookup {
 		}
 		if (StringUtils.startsWithAny(test, Ꮻ)) {
 			syllabary=test;
-			GWT.log("Deprefixing Ꮻ: "+syllabary);
+//			GWT.log("Deprefixing Ꮻ: "+syllabary);
 			int sub=0;
 			for (String prefix: Ꮻ) {
 				sub = syllabary.startsWith(prefix)?Math.max(sub, prefix.length()):sub;
@@ -104,7 +104,7 @@ public class ClientLookup {
 		}
 		if (StringUtils.startsWithAny(test, Ꮒ)) {
 			syllabary=test;
-			GWT.log("Deprefixing Ꮒ: "+syllabary);
+//			GWT.log("Deprefixing Ꮒ: "+syllabary);
 			int sub=0;
 			for (String prefix: Ꮒ) {
 				sub = syllabary.startsWith(prefix)?Math.max(sub, prefix.length()):sub;
@@ -123,7 +123,7 @@ public class ClientLookup {
 		}
 		if (StringUtils.startsWithAny(test, Ꮧ)) {
 			syllabary=test;
-			GWT.log("Deprefixing Ꮧ: "+syllabary);
+//			GWT.log("Deprefixing Ꮧ: "+syllabary);
 			int sub=0;
 			for (String prefix: Ꮧ) {
 				sub = syllabary.startsWith(prefix)?Math.max(sub, prefix.length()):sub;
@@ -136,13 +136,14 @@ public class ClientLookup {
 			list.add(syllabary);
 			zapᎢ=true;
 		}
+		
 		test=syllabary;
 		if (zapᎢ&&syllabary.startsWith("Ꭲ")){
 			test=syllabary.substring(1);
 		}
 		if (StringUtils.startsWithAny(test, Ꮥ)) {
 			syllabary=test;
-			GWT.log("Deprefixing Ꮥ: "+syllabary);
+//			GWT.log("Deprefixing Ꮥ: "+syllabary);
 			int sub=0;
 			for (String prefix: Ꮥ) {
 				sub = syllabary.startsWith(prefix)?Math.max(sub, prefix.length()):sub;
@@ -161,7 +162,7 @@ public class ClientLookup {
 		}
 		if (StringUtils.startsWithAny(test, Ꭶ1)) {
 			syllabary=test;
-			GWT.log("Deprefixing Ꭶ: "+syllabary);
+//			GWT.log("Deprefixing Ꭶ: "+syllabary);
 			int sub=0;
 			for (String prefix: Ꭶ1) {
 				sub = syllabary.startsWith(prefix)?Math.max(sub, prefix.length()):sub;

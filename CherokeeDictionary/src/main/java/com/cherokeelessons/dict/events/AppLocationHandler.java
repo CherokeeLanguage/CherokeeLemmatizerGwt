@@ -32,7 +32,6 @@ public class AppLocationHandler {
 
 	@EventHandler
 	public void location(AppLocationEvent event) {
-		GWT.log("Location: " + event.location.name());
 		if (!event.location.equals(current)) {
 			rp.clear(true);
 			switch (event.location) {
@@ -53,7 +52,6 @@ public class AppLocationHandler {
 	 */
 	@EventHandler
 	public void saveState(HistoryTokenEvent event) {
-		GWT.log("HISTORY: "+event.hash);
 		if (event.replace) {
 			replaceState("#" + URL.encode(event.hash), Document.get().getTitle());
 			History.replaceItem(event.hash, false);
@@ -78,7 +76,6 @@ public class AppLocationHandler {
 	 * Modern Chrome's do not obey location requests anymore?
 	 */
 	public static native void replaceState(String hash, String title)/*-{
-		$wnd.console.log("Replace state: " + hash);
 		try {
 			$wnd.history.replaceState(hash, title, hash);
 		} catch (e) {
@@ -91,7 +88,6 @@ public class AppLocationHandler {
 	 * Modern Chrome's do not obey location requests anymore?
 	 */
 	public static native void pushState(String hash, String title)/*-{
-		$wnd.console.log("Push state: " + hash);
 		try {
 			$wnd.history.pushState(hash, title, hash);
 		} catch (e) {

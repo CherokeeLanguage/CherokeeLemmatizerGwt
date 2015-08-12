@@ -14,7 +14,7 @@ import commons.lang3.StringUtils;
 
 public abstract class Suffixes {
 
-	protected boolean vowelFixStem=true;
+	protected boolean completiveStem=true;
 	
 	private static final Map<String, String> vowelSets;
 
@@ -49,24 +49,23 @@ public abstract class Suffixes {
 		}
 	};
 
-	public static class MatchResult {
+	public static class AffixResult {
 		public boolean isMatch = false;
-		public String stem;
+		public final List<String> stem=new ArrayList<>();
 		public String suffix;
 		public String mode;
 		public String desc;
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
-			builder.append("MatchResult [");
-			if (stem != null)
-				builder.append("stem=").append(stem).append(", ");
+			builder.append("AffixResult [");
 			if (suffix != null)
-				builder.append("suffix=").append(suffix);
+				builder.append("suffix=").append(suffix).append(", ");
+			if (stem != null)
+				builder.append("stem=").append(stem);
 			builder.append("]");
 			return builder.toString();
 		}
-		
 	}
 
 	protected String splitAsCompletive(String syllabary, String suffix) {
@@ -84,11 +83,7 @@ public abstract class Suffixes {
 	}
 	
 	protected String splitAsIs(String syllabary, String suffix) {
-		if (suffix.matches("^[ᎠᎡᎢᎣᎤᎥ].*")) {
-			syllabary = StringUtils.removeEnd(syllabary, suffix.substring(1));
-		} else {
-			syllabary = StringUtils.removeEnd(syllabary, suffix);
-		}
+		syllabary = StringUtils.removeEnd(syllabary, suffix);
 		return syllabary;
 	}
 
@@ -96,7 +91,7 @@ public abstract class Suffixes {
 		return syllabary;
 	}
 
-	public MatchResult match(String syllabary) {
+	public AffixResult match(String syllabary) {
 		Iterator<String> ipat = patterns.iterator();
 		Iterator<String> spat = suffixes.iterator();
 		while (ipat.hasNext()) {
@@ -106,18 +101,19 @@ public abstract class Suffixes {
 				continue;
 			}
 			if (syllabary.endsWith(ending)) {
-				MatchResult matchResult = new MatchResult();
+				AffixResult matchResult = new AffixResult();
 				matchResult.isMatch = true;
 				matchResult.suffix = suffix;
-				if (vowelFixStem) {
-					matchResult.stem = splitAsCompletive(syllabary, suffix);
+				if (completiveStem) {
+					matchResult.stem.add(splitAsCompletive(syllabary, suffix));
 				} else {
-					matchResult.stem = splitAsIs(syllabary, suffix);
+					matchResult.stem.add(splitAsIs(syllabary, suffix));
 				}
+				
 				return matchResult;
 			}
 		}
-		return new MatchResult();
+		return new AffixResult();
 	}
 
 	public List<String> getPatterns() {
@@ -187,7 +183,7 @@ public abstract class Suffixes {
 
 	public static class ToForᏏ extends Suffixes {
 		public ToForᏏ() {
-			vowelFixStem=false;
+			completiveStem=false;
 			addSet("", "Ꮟ");
 		}
 	}
@@ -202,16 +198,18 @@ public abstract class Suffixes {
 			addSet("Ꭱ", "ᎴᎢ");
 			addSet("Ꭱ", "Ꮄ");
 			// progressive
-			addSet("Ꭱ", "ᎮᏍᏗ");
+			addSet("Ꭱ", "Ꮀ");
+			addSet("Ꭱ", "ᎰᎢ");
 			addSet("Ꭱ", "Ꮂ");
 			addSet("Ꭱ", "ᎲᎩ");
 			addSet("Ꭱ", "ᎲᎢ");
 			addSet("Ꭱ", "Ꭾ");
 			addSet("Ꭱ", "ᎮᎢ");
-			addSet("Ꭱ", "Ꮀ");
-			addSet("Ꭱ", "ᎰᎢ");
+			addSet("Ꭱ", "ᎮᏍᏗ");
 			addSet("Ꭱ", "Ꭿ");
+			// immediate
 			addSet("Ꭱ", "Ꮅ");
+			//infinitive
 			addSet("Ꭱ", "Ꮧ");
 		}
 	}
@@ -241,6 +239,9 @@ public abstract class Suffixes {
 
 	public static class AboutTo extends Suffixes {
 		public AboutTo() {
+			completiveStem=false;
+//			simpleSplitStem=true;
+//			vowelFixStem=false;
 			// present
 			addSet("Ꭲ", "Ꮧ");
 			// past
@@ -266,7 +267,7 @@ public abstract class Suffixes {
 
 	public static class IntendTo extends Suffixes {
 		public IntendTo() {
-			vowelFixStem=true;
+			completiveStem=true;
 			// progressive
 			addSet("Ꭲ", "ᏎᏍᏗ");
 			addSet("Ꭲ", "Ꮢ");
@@ -279,7 +280,7 @@ public abstract class Suffixes {
 
 	public static class Just extends Suffixes {
 		public Just() {
-			vowelFixStem=false;
+			completiveStem=false;
 			// 1844
 			addSet("", "Ꮙ");
 			// CED
@@ -289,14 +290,14 @@ public abstract class Suffixes {
 	
 	public static class Very extends Suffixes {
 		public Very() {
-			vowelFixStem=false;
+			completiveStem=false;
 			addSet("", "Ᏻ");
 		}
 	};
 	
 	public static class Truly extends Suffixes {
 		public Truly() {
-			vowelFixStem=false;
+			completiveStem=false;
 			addSet("", "Ꮿ");
 			addSet("", "ᏯᎢ");
 		}
@@ -304,7 +305,7 @@ public abstract class Suffixes {
 	
 	public static class Towards extends Suffixes {
 		public Towards() {
-			vowelFixStem=false;
+			completiveStem=false;
 			//1844
 			addSet("", "ᏗᏢ");
 			//CED
@@ -314,14 +315,14 @@ public abstract class Suffixes {
 	
 	public static class But extends Suffixes {
 		public But() {
-			vowelFixStem=false;
+			completiveStem=false;
 			addSet("", "ᏍᎩᏂ");
 		}
 	};
 	
 	public static class YesNo extends Suffixes {
 		public YesNo() {
-			vowelFixStem=false;
+			completiveStem=false;
 			addSet("", "Ꮝ");
 			addSet("", "ᏍᎪ");
 		}
@@ -329,14 +330,14 @@ public abstract class Suffixes {
 	
 	public static class YesYes extends Suffixes {
 		public YesYes() {
-			vowelFixStem=false;
+			completiveStem=false;
 			addSet("", "Ꮷ");
 		}
 	};
 	
 	public static class Place extends Suffixes {
 		public Place() {
-			vowelFixStem=false;
+			completiveStem=false;
 			// 1844
 			addSet("", "Ᏹ");
 		}
@@ -344,7 +345,7 @@ public abstract class Suffixes {
 	
 	public static class InOnAt extends Suffixes {
 		public InOnAt() {
-			vowelFixStem=false;
+			completiveStem=false;
 			// 1844
 			addSet("", "Ꭿ");
 		}
@@ -352,7 +353,7 @@ public abstract class Suffixes {
 	
 	public static class SoAnd extends Suffixes {
 		public SoAnd() {
-			vowelFixStem=false;
+			completiveStem=false;
 			addSet("", "Ꮓ");
 		}
 	};

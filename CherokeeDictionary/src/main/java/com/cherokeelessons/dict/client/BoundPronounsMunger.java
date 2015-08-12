@@ -32,11 +32,11 @@ public enum BoundPronounsMunger {
 			if (!p.test(word)) {
 				continue;
 			}
-			GWT.log("MATCH: "+p.getSource());
+//			GWT.log("MATCH: "+p.getSource());
 			MatchResult matcher = p.exec(word);
 			String prefix = matcher.getGroup(1);
 			String stem = matcher.getGroup(2);
-			GWT.log("STEM: "+stem);
+//			GWT.log("STEM: "+stem);
 			
 			prefix = StringUtils.right(prefix, 1);
 			

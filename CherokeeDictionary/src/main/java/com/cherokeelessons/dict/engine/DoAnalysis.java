@@ -1,7 +1,9 @@
 package com.cherokeelessons.dict.engine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Heading;
@@ -17,7 +19,7 @@ import org.gwtbootstrap3.client.ui.gwt.HTMLPanel;
 
 import com.cherokeelessons.dict.client.ClientDictionary;
 import com.cherokeelessons.dict.client.DictionaryApplication;
-import com.cherokeelessons.dict.engine.Suffixes.MatchResult;
+import com.cherokeelessons.dict.engine.Suffixes.AffixResult;
 import com.cherokeelessons.dict.events.AbortEvent;
 import com.cherokeelessons.dict.events.AddAnalysisPanelEvent;
 import com.cherokeelessons.dict.events.AnalysisCompleteEvent;
@@ -69,7 +71,17 @@ public class DoAnalysis {
 		eventBus.fireEvent(new UiEnableEvent(false));
 		eventBus.fireEvent(new ClearResultsEvent());
 		final List<ScheduledCommand> cmds = new ArrayList<>();
-		String[] words = StringUtils.split(value);
+		List<String> words = new ArrayList<>(Arrays.asList(StringUtils.split(value)));
+		ListIterator<String> iwords = words.listIterator();
+		/*
+		 * ᎢᏗ can be added to other than past tense... this seems to change bare "Ꭰ" + "Ꭲ" to "Ꭱ"
+		 */
+		while (iwords.hasNext()) {
+			String word=iwords.next();
+			if (word.endsWith("ᎡᏗ")){
+//				iwords.add(StringUtils.removeEnd(word, "ᎡᏗ")+"ᎠᎢᏗ");
+			}
+		}
 		
 		for (final String word : words) {
 			cmds.add(new ScheduledCommand() {
@@ -77,30 +89,33 @@ public class DoAnalysis {
 				public void execute() {
 					PanelType type = PanelType.DEFAULT;
 					SafeHtmlBuilder shb = new SafeHtmlBuilder();
-					List<MatchResult> matched = SuffixGuesser.INSTANCE
+					List<AffixResult> matched = SuffixGuesser.INSTANCE
 							.getMatches(word);
 					if (matched.size() != 0) {
 						type = PanelType.SUCCESS;
 					}
 					StringBuilder affixedStem = new StringBuilder();
 					String innerstem = "";
-					for (MatchResult match : matched) {
-						shb.appendEscaped(match.stem + "+" + match.suffix + ":"
-								+ match.desc);
-						String info = ClientDictionary.INSTANCE
-								.guess(match.stem);
-						if (!StringUtils.isBlank(info)) {
-							shb.appendHtmlConstant("<br/><span style='color: navy; font-weight: bold;'>");
-							shb.appendEscapedLines(info.replace("|", "\n"));
-							shb.appendHtmlConstant("</span><br/>");
+					for (AffixResult match : matched) {
+						for (String stem: match.stem) {
+							shb.appendEscaped(match.stem + "+" + match.suffix + ":"
+									+ match.desc);
+							String info = ClientDictionary.INSTANCE
+									.guess(stem);
+							if (!StringUtils.isBlank(info)) {
+								shb.appendHtmlConstant("<br/><span style='color: navy; font-weight: bold;'>");
+								shb.appendEscapedLines(info.replace("|", "\n"));
+								shb.appendHtmlConstant("</span><br/>");
+							}
+							shb.appendHtmlConstant("<br />");
 						}
-						shb.appendHtmlConstant("<br />");
 						if (match.desc.contains("*")) {
 							type = PanelType.DANGER;
 						}
-						affixedStem.insert(0, match.suffix);
-						affixedStem.insert(0, "+");
-						innerstem = match.stem;
+						for (String stem: match.stem) {
+							affixedStem.insert(0, "[+"+match.suffix+"]");
+							innerstem = stem;
+						}
 					}
 					affixedStem.insert(0, innerstem);
 					SafeHtmlBuilder affixedStemHtml = new SafeHtmlBuilder();

@@ -223,7 +223,7 @@ public class AnalysisView extends Composite {
 		for (DictEntry entry : sr.data) {
 			final Panel p = new Panel(PanelType.SUCCESS);
 			Style style = p.getElement().getStyle();
-			style.setWidth((DictionaryApplication.WIDTH-20)/2-4, Unit.PX);
+			style.setWidth((DictionaryApplication.WIDTH-20)/2-6, Unit.PX);
 			style.setDisplay(Display.INLINE_BLOCK);
 			style.setMarginRight(5, Unit.PX);
 			style.setVerticalAlign(Style.VerticalAlign.TOP);
