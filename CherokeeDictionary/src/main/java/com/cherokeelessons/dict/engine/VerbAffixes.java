@@ -12,7 +12,7 @@ import com.cherokeelessons.dict.shared.Syllabary.Vowel;
 
 import commons.lang3.StringUtils;
 
-public abstract class Suffixes {
+public abstract class VerbAffixes {
 
 	protected boolean completiveStem=true;
 	
@@ -140,12 +140,12 @@ public abstract class Suffixes {
 		}
 	}
 
-	public Suffixes() {
+	public VerbAffixes() {
 		patterns = new ArrayList<String>();
 		suffixes = new ArrayList<String>();
 	}
 
-	public static class Repeatedly extends Suffixes {
+	public static class Repeatedly extends VerbAffixes {
 
 		public Repeatedly() {
 			addSet("Ꭲ", "ᎶᎠ");
@@ -168,7 +168,7 @@ public abstract class Suffixes {
 		}
 	}
 
-	public static class CausativePast extends Suffixes {
+	public static class CausativePast extends VerbAffixes {
 
 		public CausativePast() {
 			for (String s : new String[] { "Ꮝ", "" }) {
@@ -181,13 +181,13 @@ public abstract class Suffixes {
 		}
 	}
 
-	public static class ToForᏏ extends Suffixes {
+	public static class ToForᏏ extends VerbAffixes {
 		public ToForᏏ() {
 			completiveStem=false;
 			addSet("", "Ꮟ");
 		}
 	}
-	public static class ToFor extends Suffixes {
+	public static class ToFor extends VerbAffixes {
 		public ToFor() {
 			// prc
 			addSet("Ꭱ", "Ꭽ");
@@ -214,7 +214,7 @@ public abstract class Suffixes {
 		}
 	}
 
-	public static class Again extends Suffixes {
+	public static class Again extends VerbAffixes {
 
 		public Again() {
 			addSet("Ꭲ", "ᏏᎭ");
@@ -237,7 +237,7 @@ public abstract class Suffixes {
 		}
 	}
 
-	public static class AboutTo extends Suffixes {
+	public static class AboutTo extends VerbAffixes {
 		public AboutTo() {
 			completiveStem=false;
 //			simpleSplitStem=true;
@@ -265,7 +265,7 @@ public abstract class Suffixes {
 		}
 	};
 
-	public static class IntendTo extends Suffixes {
+	public static class IntendTo extends VerbAffixes {
 		public IntendTo() {
 			completiveStem=true;
 			// progressive
@@ -278,7 +278,7 @@ public abstract class Suffixes {
 		}
 	};
 
-	public static class Just extends Suffixes {
+	public static class Just extends VerbAffixes {
 		public Just() {
 			completiveStem=false;
 			// 1844
@@ -288,14 +288,14 @@ public abstract class Suffixes {
 		}
 	};
 	
-	public static class Very extends Suffixes {
+	public static class Very extends VerbAffixes {
 		public Very() {
 			completiveStem=false;
 			addSet("", "Ᏻ");
 		}
 	};
 	
-	public static class Truly extends Suffixes {
+	public static class Truly extends VerbAffixes {
 		public Truly() {
 			completiveStem=false;
 			addSet("", "Ꮿ");
@@ -303,7 +303,7 @@ public abstract class Suffixes {
 		}
 	};
 	
-	public static class Towards extends Suffixes {
+	public static class Towards extends VerbAffixes {
 		public Towards() {
 			completiveStem=false;
 			//1844
@@ -313,14 +313,14 @@ public abstract class Suffixes {
 		}
 	};
 	
-	public static class But extends Suffixes {
+	public static class But extends VerbAffixes {
 		public But() {
 			completiveStem=false;
 			addSet("", "ᏍᎩᏂ");
 		}
 	};
 	
-	public static class YesNo extends Suffixes {
+	public static class YesNo extends VerbAffixes {
 		public YesNo() {
 			completiveStem=false;
 			addSet("", "Ꮝ");
@@ -328,14 +328,14 @@ public abstract class Suffixes {
 		}
 	};
 	
-	public static class YesYes extends Suffixes {
+	public static class YesYes extends VerbAffixes {
 		public YesYes() {
 			completiveStem=false;
 			addSet("", "Ꮷ");
 		}
 	};
 	
-	public static class Place extends Suffixes {
+	public static class Place extends VerbAffixes {
 		public Place() {
 			completiveStem=false;
 			// 1844
@@ -343,7 +343,7 @@ public abstract class Suffixes {
 		}
 	};
 	
-	public static class InOnAt extends Suffixes {
+	public static class InOnAt extends VerbAffixes {
 		public InOnAt() {
 			completiveStem=false;
 			// 1844
@@ -351,14 +351,14 @@ public abstract class Suffixes {
 		}
 	};
 	
-	public static class SoAnd extends Suffixes {
+	public static class SoAnd extends VerbAffixes {
 		public SoAnd() {
 			completiveStem=false;
 			addSet("", "Ꮓ");
 		}
 	};
 
-	public static class WithIntent extends Suffixes {
+	public static class WithIntent extends VerbAffixes {
 
 		public WithIntent() {
 			addSet("Ꭲ", "Ꮢ");
@@ -373,7 +373,7 @@ public abstract class Suffixes {
 		}
 	}
 
-	public static class WentForDoing extends Suffixes {
+	public static class WentForDoing extends VerbAffixes {
 
 		public WentForDoing() {
 
@@ -401,7 +401,7 @@ public abstract class Suffixes {
 		}
 	}
 
-	public static class ComeForDoing extends Suffixes {
+	public static class ComeForDoing extends VerbAffixes {
 
 		public ComeForDoing() {
 
@@ -425,7 +425,7 @@ public abstract class Suffixes {
 		}
 	}
 
-	public static class Around extends Suffixes {
+	public static class Around extends VerbAffixes {
 
 		public Around() {
 			addSet("Ꭲ", "ᏙᎭ");
@@ -448,7 +448,7 @@ public abstract class Suffixes {
 		}
 	}
 
-	public static class Completely extends Suffixes {
+	public static class Completely extends VerbAffixes {
 
 		public Completely() {
 			// present
@@ -476,7 +476,7 @@ public abstract class Suffixes {
 		}
 	}
 
-	public static class Accidental extends Suffixes {
+	public static class Accidental extends VerbAffixes {
 
 		public Accidental() {
 			// present
@@ -502,7 +502,7 @@ public abstract class Suffixes {
 		}
 	}
 	
-	public static class AptTo extends Suffixes {
+	public static class AptTo extends VerbAffixes {
 		public AptTo() {
 			// present
 			addSet("Ꭰ", "Ꮤ");

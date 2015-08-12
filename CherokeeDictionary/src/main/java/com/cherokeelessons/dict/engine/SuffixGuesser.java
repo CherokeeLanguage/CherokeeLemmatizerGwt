@@ -3,20 +3,20 @@ package com.cherokeelessons.dict.engine;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.cherokeelessons.dict.engine.Suffixes.AboutTo;
-import com.cherokeelessons.dict.engine.Suffixes.Accidental;
-import com.cherokeelessons.dict.engine.Suffixes.AffixResult;
-import com.cherokeelessons.dict.engine.Suffixes.Again;
-import com.cherokeelessons.dict.engine.Suffixes.AptTo;
-import com.cherokeelessons.dict.engine.Suffixes.Around;
-import com.cherokeelessons.dict.engine.Suffixes.CausativePast;
-import com.cherokeelessons.dict.engine.Suffixes.ComeForDoing;
-import com.cherokeelessons.dict.engine.Suffixes.Completely;
-import com.cherokeelessons.dict.engine.Suffixes.IntendTo;
-import com.cherokeelessons.dict.engine.Suffixes.Repeatedly;
-import com.cherokeelessons.dict.engine.Suffixes.ToFor;
-import com.cherokeelessons.dict.engine.Suffixes.ToForᏏ;
-import com.cherokeelessons.dict.engine.Suffixes.WentForDoing;
+import com.cherokeelessons.dict.engine.VerbAffixes.AboutTo;
+import com.cherokeelessons.dict.engine.VerbAffixes.Accidental;
+import com.cherokeelessons.dict.engine.VerbAffixes.AffixResult;
+import com.cherokeelessons.dict.engine.VerbAffixes.Again;
+import com.cherokeelessons.dict.engine.VerbAffixes.AptTo;
+import com.cherokeelessons.dict.engine.VerbAffixes.Around;
+import com.cherokeelessons.dict.engine.VerbAffixes.CausativePast;
+import com.cherokeelessons.dict.engine.VerbAffixes.ComeForDoing;
+import com.cherokeelessons.dict.engine.VerbAffixes.Completely;
+import com.cherokeelessons.dict.engine.VerbAffixes.IntendTo;
+import com.cherokeelessons.dict.engine.VerbAffixes.Repeatedly;
+import com.cherokeelessons.dict.engine.VerbAffixes.ToFor;
+import com.cherokeelessons.dict.engine.VerbAffixes.ToForᏏ;
+import com.cherokeelessons.dict.engine.VerbAffixes.WentForDoing;
 import com.google.gwt.core.shared.GWT;
 import commons.lang3.StringUtils;
 
@@ -31,7 +31,7 @@ public enum SuffixGuesser {
 	private SuffixGuesser() {
 	}
 
-	public static class Without extends Suffixes {
+	public static class Without extends VerbAffixes {
 		@Override
 		public AffixResult match(String syllabary) {
 			if (syllabary.startsWith("Ᏹ")){
@@ -49,7 +49,7 @@ public enum SuffixGuesser {
 		}
 	}
 	
-	public static class Tool extends Suffixes {
+	public static class Tool extends VerbAffixes {
 		public Tool() {
 			completiveStem = false;
 			addSet("", "ᏍᏙᏗ");
@@ -64,7 +64,7 @@ public enum SuffixGuesser {
 	 * @return
 	 */
 	public List<AffixResult> getMatches(String syllabary) {
-		List<AffixResult> list = new ArrayList<Suffixes.AffixResult>();
+		List<AffixResult> list = new ArrayList<VerbAffixes.AffixResult>();
 		Without withoutEnding = new Without();
 		AffixResult without = withoutEnding.match(syllabary);
 		if (without.isMatch) {
@@ -78,7 +78,7 @@ public enum SuffixGuesser {
 			return list;
 		}
 		for (VerbStemAffix affix: VerbStemAffix.values()){
-			Suffixes s = SuffixGuesser.getSuffixMatcher(affix);
+			VerbAffixes s = SuffixGuesser.getSuffixMatcher(affix);
 			AffixResult matchResult = s.match(syllabary);
 			if (matchResult.isMatch) {
 				matchResult.desc = affix.name();
@@ -208,7 +208,7 @@ public enum SuffixGuesser {
 		return pre + word;
 	}
 
-	public static Suffixes getSuffixMatcher(VerbStemAffix affix) {
+	public static VerbAffixes getSuffixMatcher(VerbStemAffix affix) {
 		switch (affix) {
 		case AboutTo:
 			return new AboutTo();
