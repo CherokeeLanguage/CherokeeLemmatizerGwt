@@ -9,19 +9,20 @@ import java.util.Map;
 
 import com.cherokeelessons.dict.shared.Syllabary;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
+import com.google.gwt.core.shared.GWT;
 
 import commons.lang3.StringUtils;
 
-public abstract class VerbAffixes {
+public abstract class Affixes {
 
-	protected boolean completiveStem=true;
-	
+	protected boolean completiveStem = true;
+
 	private static final Map<String, String> vowelSets;
 
 	public static String getVowelSet(Vowel vowel) {
 		return vowelSets.get(vowel.name());
 	}
-	
+
 	static {
 		vowelSets = new HashMap<>();
 		vowelSets.put("Ꭰ", "ᎠᎦᎧᎭᎳᎾᎿᏀᏆᏌᏓᏔᏜᏝᏣᏩᏯ");
@@ -51,10 +52,11 @@ public abstract class VerbAffixes {
 
 	public static class AffixResult {
 		public boolean isMatch = false;
-		public final List<String> stem=new ArrayList<>();
+		public final List<String> stem = new ArrayList<>();
 		public String suffix;
 		public String mode;
 		public String desc;
+
 		@Override
 		public String toString() {
 			StringBuilder builder = new StringBuilder();
@@ -71,17 +73,17 @@ public abstract class VerbAffixes {
 	protected String splitAsCompletive(String syllabary, String suffix) {
 		if (suffix.matches("^[ᎠᎡᎢᎣᎤᎥ].*")) {
 			syllabary = StringUtils.removeEnd(syllabary, suffix.substring(1));
-			syllabary = Syllabary.changeForm(syllabary, Vowel.Ꭵ)+"Ꭲ";
+			syllabary = Syllabary.changeForm(syllabary, Vowel.Ꭵ) + "Ꭲ";
 		} else {
 			syllabary = StringUtils.removeEnd(syllabary, suffix);
-			syllabary = Syllabary.changeForm(syllabary, Vowel.Ꭵ)+"Ꭲ";
+			syllabary = Syllabary.changeForm(syllabary, Vowel.Ꭵ) + "Ꭲ";
 		}
-//		if (syllabary.matches(".*["+Suffixes.getVowelSet(Vowel.Ꭵ)+"]ᎥᎢ")){
-//			syllabary=StringUtils.left(syllabary, syllabary.length()-2)+"Ꭲ";
-//		}
+		// if (syllabary.matches(".*["+Suffixes.getVowelSet(Vowel.Ꭵ)+"]ᎥᎢ")){
+		// syllabary=StringUtils.left(syllabary, syllabary.length()-2)+"Ꭲ";
+		// }
 		return syllabary;
 	}
-	
+
 	protected String splitAsIs(String syllabary, String suffix) {
 		syllabary = StringUtils.removeEnd(syllabary, suffix);
 		return syllabary;
@@ -97,7 +99,7 @@ public abstract class VerbAffixes {
 		while (ipat.hasNext()) {
 			String ending = ipat.next();
 			String suffix = spat.next();
-			if (syllabary.length()<3 || syllabary.length()<=ending.length()) {
+			if (syllabary.length() < 3 || syllabary.length() <= ending.length()) {
 				continue;
 			}
 			if (syllabary.endsWith(ending)) {
@@ -109,7 +111,7 @@ public abstract class VerbAffixes {
 				} else {
 					matchResult.stem.add(splitAsIs(syllabary, suffix));
 				}
-				
+
 				return matchResult;
 			}
 		}
@@ -140,12 +142,12 @@ public abstract class VerbAffixes {
 		}
 	}
 
-	public VerbAffixes() {
+	public Affixes() {
 		patterns = new ArrayList<String>();
 		suffixes = new ArrayList<String>();
 	}
 
-	public static class Repeatedly extends VerbAffixes {
+	public static class Repeatedly extends Affixes {
 
 		public Repeatedly() {
 			addSet("Ꭲ", "ᎶᎠ");
@@ -168,26 +170,149 @@ public abstract class VerbAffixes {
 		}
 	}
 
-	public static class CausativePast extends VerbAffixes {
-
-		public CausativePast() {
+	private static class CausativePresent extends Affixes {
+		@Override
+		public AffixResult match(String syllabary) {
+			AffixResult match = super.match(syllabary);
+			if (!match.isMatch) {
+				return match;
+			}
+			match.stem.clear();
+			String root = StringUtils.remove(syllabary, match.suffix);
+			if (match.suffix.startsWith("Ꮝ")){
+				
+			}
+			match.stem.add(root+"Ꭰ");
+			match.stem.add(root+"Ꭽ");
+			match.stem.add(root+"Ꭶ");
+			return match;
+		}
+		public CausativePresent() {
+			completiveStem = false;
 			for (String s : new String[] { "Ꮝ", "" }) {
-				addSet("", s + "ᏓᏅ");
-				addSet("", s + "ᏓᏅᎩ");
-				addSet("", s + "ᏓᏅᎢ");
-				addSet("", s + "ᏓᏁᎢ");
-				addSet("", s + "ᏓᏁ");
+				addSet("", s + "ᏗᎭ");
+			}
+		}
+	}
+	
+	private static class CausativePast extends Affixes {
+		@Override
+		public AffixResult match(String syllabary) {
+			AffixResult match = super.match(syllabary);
+			if (!match.isMatch) {
+				return match;
+			}
+			match.stem.clear();
+			String root = StringUtils.remove(syllabary, match.suffix);
+			if (match.suffix.startsWith("Ꮝ")){
+				
+			}
+			match.stem.add(root+"Ꭰ");
+			match.stem.add(root+"Ꭶ");
+			match.stem.add(root+"Ꭽ");
+			return match;
+		}
+		public CausativePast() {
+			completiveStem = false;
+			addSet("", "ᏍᏔᏅ");
+			addSet("", "ᏍᏔᏅᎩ");
+			addSet("", "ᏍᏔᏅᎢ");
+			addSet("", "ᏍᏔᏁᎢ");
+			addSet("", "ᏍᏔᏓᏁ");
+//			addSet("", "ᏍᏓᏅ");
+//			addSet("", "ᏍᏓᏅᎩ");
+//			addSet("", "ᏍᏓᏅᎢ");
+//			addSet("", "ᏍᏓᏁᎢ");
+//			addSet("", "ᏍᏓᏓᏁ");
+			addSet("", "ᏓᏅ");
+			addSet("", "ᏓᏅᎩ");
+			addSet("", "ᏓᏅᎢ");
+			addSet("", "ᏓᏁᎢ");
+			addSet("", "ᏓᏁ");
+		}
+	}
+
+	private static class CausativeProgressive extends Affixes {
+		@Override
+		public AffixResult match(String syllabary) {
+			AffixResult match = super.match(syllabary);
+			if (!match.isMatch) {
+				return match;
+			}
+			match.stem.clear();
+			String root = StringUtils.remove(syllabary, match.suffix);
+			if (match.suffix.startsWith("Ꮝ")){
+				
+			}
+			String oform = Syllabary.changeForm(root, Vowel.Ꭳ)+"Ꭲ";
+			GWT.log("OFORM: "+oform);
+			match.stem.add(oform);
+			return match;
+		}
+		public CausativeProgressive() {
+			completiveStem = false;
+			for (String s : new String[] { "ᏍᏘ", "Ꮧ" }) {
+				addSet("", s + "ᏍᎪ");
+				addSet("", s + "ᏍᎪᎢ");
+				addSet("", s + "ᏍᎬ");
+				addSet("", s + "ᏍᎬᎩ");
+				addSet("", s + "ᏍᎬᎢ");
+				addSet("", s + "ᏍᎨ");
+				addSet("", s + "ᏍᎨᎢ");
+				addSet("", s + "ᏍᎨᏍᏗ");
+				addSet("", s + "ᏍᎩ");
 			}
 		}
 	}
 
-	public static class ToForᏏ extends VerbAffixes {
+	private static class CausativeImmediate extends Affixes {
+		public CausativeImmediate() {
+			completiveStem = false;
+//			addSet("", "ᏍᏔ");
+			addSet("", "ᏍᏓ");
+			addSet("", "Ꮣ");
+		}
+	}
+
+	private static class CausativeDeverbal extends Affixes {
+		public CausativeDeverbal() {
+			completiveStem = false;
+			addSet("", "ᏍᏙᏗ");
+			addSet("", "ᏙᏗ");
+		}
+	}
+
+	public static class Causative extends Affixes {
+		private final List<Affixes> forms = new ArrayList<Affixes>();
+
+		@Override
+		public AffixResult match(String syllabary) {
+			for (Affixes affix : forms) {
+				AffixResult match = affix.match(syllabary);
+				if (match.isMatch) {
+					return match;
+				}
+			}
+			return new AffixResult();
+		}
+
+		public Causative() {
+			forms.add(new CausativePresent());
+			forms.add(new CausativePast());
+			forms.add(new CausativeProgressive());
+			forms.add(new CausativeImmediate());
+			forms.add(new CausativeDeverbal());
+		}
+	}
+
+	public static class ToForᏏ extends Affixes {
 		public ToForᏏ() {
-			completiveStem=false;
+			completiveStem = false;
 			addSet("", "Ꮟ");
 		}
 	}
-	public static class ToFor extends VerbAffixes {
+
+	public static class ToFor extends Affixes {
 		public ToFor() {
 			// prc
 			addSet("Ꭱ", "Ꭽ");
@@ -209,12 +334,12 @@ public abstract class VerbAffixes {
 			addSet("Ꭱ", "Ꭿ");
 			// immediate
 			addSet("Ꭱ", "Ꮅ");
-			//infinitive
+			// infinitive
 			addSet("Ꭱ", "Ꮧ");
 		}
 	}
 
-	public static class Again extends VerbAffixes {
+	public static class Again extends Affixes {
 
 		public Again() {
 			addSet("Ꭲ", "ᏏᎭ");
@@ -237,11 +362,11 @@ public abstract class VerbAffixes {
 		}
 	}
 
-	public static class AboutTo extends VerbAffixes {
+	public static class AboutTo extends Affixes {
 		public AboutTo() {
-			completiveStem=false;
-//			simpleSplitStem=true;
-//			vowelFixStem=false;
+			completiveStem = false;
+			// simpleSplitStem=true;
+			// vowelFixStem=false;
 			// present
 			addSet("Ꭲ", "Ꮧ");
 			// past
@@ -265,9 +390,9 @@ public abstract class VerbAffixes {
 		}
 	};
 
-	public static class IntendTo extends VerbAffixes {
+	public static class IntendTo extends Affixes {
 		public IntendTo() {
-			completiveStem=true;
+			completiveStem = true;
 			// progressive
 			addSet("Ꭲ", "ᏎᏍᏗ");
 			addSet("Ꭲ", "Ꮢ");
@@ -278,87 +403,87 @@ public abstract class VerbAffixes {
 		}
 	};
 
-	public static class Just extends VerbAffixes {
+	public static class Just extends Affixes {
 		public Just() {
-			completiveStem=false;
+			completiveStem = false;
 			// 1844
 			addSet("", "Ꮙ");
 			// CED
 			addSet("", "Ꮚ");
 		}
 	};
-	
-	public static class Very extends VerbAffixes {
+
+	public static class Very extends Affixes {
 		public Very() {
-			completiveStem=false;
+			completiveStem = false;
 			addSet("", "Ᏻ");
 		}
 	};
-	
-	public static class Truly extends VerbAffixes {
+
+	public static class Truly extends Affixes {
 		public Truly() {
-			completiveStem=false;
+			completiveStem = false;
 			addSet("", "Ꮿ");
 			addSet("", "ᏯᎢ");
 		}
 	};
-	
-	public static class Towards extends VerbAffixes {
+
+	public static class Towards extends Affixes {
 		public Towards() {
-			completiveStem=false;
-			//1844
+			completiveStem = false;
+			// 1844
 			addSet("", "ᏗᏢ");
-			//CED
+			// CED
 			addSet("", "ᏗᏜ");
 		}
 	};
-	
-	public static class But extends VerbAffixes {
+
+	public static class But extends Affixes {
 		public But() {
-			completiveStem=false;
+			completiveStem = false;
 			addSet("", "ᏍᎩᏂ");
 		}
 	};
-	
-	public static class YesNo extends VerbAffixes {
+
+	public static class YesNo extends Affixes {
 		public YesNo() {
-			completiveStem=false;
+			completiveStem = false;
 			addSet("", "Ꮝ");
 			addSet("", "ᏍᎪ");
 		}
 	};
-	
-	public static class YesYes extends VerbAffixes {
+
+	public static class YesYes extends Affixes {
 		public YesYes() {
-			completiveStem=false;
+			completiveStem = false;
 			addSet("", "Ꮷ");
 		}
 	};
-	
-	public static class Place extends VerbAffixes {
+
+	public static class Place extends Affixes {
 		public Place() {
-			completiveStem=false;
+			completiveStem = false;
 			// 1844
 			addSet("", "Ᏹ");
 		}
 	};
-	
-	public static class InOnAt extends VerbAffixes {
+
+	public static class InOnAt extends Affixes {
 		public InOnAt() {
-			completiveStem=false;
+			completiveStem = false;
 			// 1844
 			addSet("", "Ꭿ");
 		}
 	};
-	
-	public static class SoAnd extends VerbAffixes {
+
+	public static class SoAnd extends Affixes {
 		public SoAnd() {
-			completiveStem=false;
+			completiveStem = false;
 			addSet("", "Ꮓ");
 		}
 	};
 
-	public static class WithIntent extends VerbAffixes {
+	public static class WithIntent extends Affixes {
 
 		public WithIntent() {
 			addSet("Ꭲ", "Ꮢ");
@@ -373,7 +498,7 @@ public abstract class VerbAffixes {
 		}
 	}
 
-	public static class WentForDoing extends VerbAffixes {
+	public static class WentForDoing extends Affixes {
 
 		public WentForDoing() {
 
@@ -401,7 +526,7 @@ public abstract class VerbAffixes {
 		}
 	}
 
-	public static class ComeForDoing extends VerbAffixes {
+	public static class ComeForDoing extends Affixes {
 
 		public ComeForDoing() {
 
@@ -425,7 +550,7 @@ public abstract class VerbAffixes {
 		}
 	}
 
-	public static class Around extends VerbAffixes {
+	public static class Around extends Affixes {
 
 		public Around() {
 			addSet("Ꭲ", "ᏙᎭ");
@@ -448,7 +573,7 @@ public abstract class VerbAffixes {
 		}
 	}
 
-	public static class Completely extends VerbAffixes {
+	public static class Completely extends Affixes {
 
 		public Completely() {
 			// present
@@ -476,7 +601,7 @@ public abstract class VerbAffixes {
 		}
 	}
 
-	public static class Accidental extends VerbAffixes {
+	public static class Accidental extends Affixes {
 
 		public Accidental() {
 			// present
@@ -501,8 +626,8 @@ public abstract class VerbAffixes {
 			addSet("", "ᏙᏗ");
 		}
 	}
-	
-	public static class AptTo extends VerbAffixes {
+
+	public static class AptTo extends Affixes {
 		public AptTo() {
 			// present
 			addSet("Ꭰ", "Ꮤ");

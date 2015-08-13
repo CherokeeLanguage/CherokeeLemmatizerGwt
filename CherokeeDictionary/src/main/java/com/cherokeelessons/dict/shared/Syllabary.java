@@ -232,6 +232,9 @@ public class Syllabary {
 		if (x3.startsWith("hn") && !Vowel.Ꭰ.equals(vowel)){
 			x3=StringUtils.substring(x3, 1);
 		}
+		if (x3.startsWith("dl") && !Vowel.Ꭰ.equals(vowel)){
+			x3="t"+StringUtils.substring(x3, 1);
+		}
 		x3 = StringUtils.left(x3, x3.length()-1)+vowel.latin;
 		return base + lat2chr(x3);
 	}

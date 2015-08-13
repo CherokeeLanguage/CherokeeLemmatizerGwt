@@ -19,7 +19,7 @@ import org.gwtbootstrap3.client.ui.gwt.HTMLPanel;
 
 import com.cherokeelessons.dict.client.ClientDictionary;
 import com.cherokeelessons.dict.client.DictionaryApplication;
-import com.cherokeelessons.dict.engine.VerbAffixes.AffixResult;
+import com.cherokeelessons.dict.engine.Affixes.AffixResult;
 import com.cherokeelessons.dict.events.AbortEvent;
 import com.cherokeelessons.dict.events.AddAnalysisPanelEvent;
 import com.cherokeelessons.dict.events.AnalysisCompleteEvent;

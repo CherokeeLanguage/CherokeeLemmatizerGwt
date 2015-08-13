@@ -220,7 +220,7 @@ public class ClientLookup {
 		List<String> defixedlist = getDeprefixed(_word);
 		for (String word : defixedlist) {
 			// put any conscious forms... into dictionary forms and try
-			if (word.matches(".*[" + VerbAffixes.getVowelSet(Vowel.Ꭵ) + "]Ꭹ")) {
+			if (word.matches(".*[" + Affixes.getVowelSet(Vowel.Ꭵ) + "]Ꭹ")) {
 				String tmp = StringUtils.left(word, word.length() - 1);
 				tmp = Syllabary.changeForm(tmp, Vowel.Ꭳ) + "Ꭲ";
 				String maybe = _guessed(tmp);
@@ -250,7 +250,7 @@ public class ClientLookup {
 			return definition;
 		}
 
-		if (word.matches(".*[" + VerbAffixes.getVowelSet(Vowel.Ꭳ) + "]")) {
+		if (word.matches(".*[" + Affixes.getVowelSet(Vowel.Ꭳ) + "]")) {
 			String tmp = word + "Ꭲ";
 			String maybe = StringUtils.defaultString(words.get(tmp));
 			if (!StringUtils.isBlank(maybe)) {
@@ -258,7 +258,7 @@ public class ClientLookup {
 			}
 		}
 
-		if (word.matches(".*[" + VerbAffixes.getVowelSet(Vowel.Ꭵ) + "]")) {
+		if (word.matches(".*[" + Affixes.getVowelSet(Vowel.Ꭵ) + "]")) {
 			String tmp = word + "Ꭲ";
 			String maybe = StringUtils.defaultString(words.get(tmp));
 			if (!StringUtils.isBlank(maybe)) {
@@ -272,7 +272,7 @@ public class ClientLookup {
 			}
 		}
 
-		if (word.matches(".*[" + VerbAffixes.getVowelSet(Vowel.Ꭱ) + "]")) {
+		if (word.matches(".*[" + Affixes.getVowelSet(Vowel.Ꭱ) + "]")) {
 			String tmp = Syllabary.changeForm(word, Vowel.Ꭳ) + "Ꭲ";
 			String maybe = StringUtils.defaultString(words.get(tmp));
 			if (!StringUtils.isBlank(maybe)) {
@@ -285,7 +285,7 @@ public class ClientLookup {
 			}
 		}
 
-		if (word.matches(".*[" + VerbAffixes.getVowelSet(Vowel.Ꭱ) + "]Ꭲ")) {
+		if (word.matches(".*[" + Affixes.getVowelSet(Vowel.Ꭱ) + "]Ꭲ")) {
 			String tmp = StringUtils.left(word, word.length() - 1);
 			tmp = Syllabary.changeForm(tmp, Vowel.Ꭳ) + "Ꭲ";
 			String maybe = StringUtils.defaultString(words.get(tmp));
@@ -299,7 +299,7 @@ public class ClientLookup {
 				return "(?ᎡᎢ=>ᎥᎢ=>" + tmp + ")|" + maybe;
 			}
 		}
-		if (word.matches(".*[" + VerbAffixes.getVowelSet(Vowel.Ꭵ) + "]Ꭲ")) {
+		if (word.matches(".*[" + Affixes.getVowelSet(Vowel.Ꭵ) + "]Ꭲ")) {
 			String tmp = StringUtils.left(word, word.length() - 1);
 			tmp = Syllabary.changeForm(tmp, Vowel.Ꭳ) + "Ꭲ";
 			String maybe = StringUtils.defaultString(words.get(tmp));

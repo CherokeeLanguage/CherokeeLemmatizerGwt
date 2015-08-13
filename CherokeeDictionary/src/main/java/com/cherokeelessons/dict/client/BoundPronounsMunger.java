@@ -8,7 +8,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import com.cherokeelessons.dict.engine.VerbAffixes;
+import com.cherokeelessons.dict.engine.Affixes;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.regexp.shared.MatchResult;
@@ -42,32 +42,32 @@ public enum BoundPronounsMunger {
 			
 			list.add(prefix+stem);
 			
-			if (VerbAffixes.getVowelSet(Vowel.Ꭰ).contains(prefix)){
+			if (Affixes.getVowelSet(Vowel.Ꭰ).contains(prefix)){
 				list.add("ᎤᏩ"+stem);
 				list.add("Ꭰ"+stem);
 				list.add("Ꭶ"+stem);
 				list.add("Ꭷ"+stem);
 				list.add("Ꭽ"+stem);
 			}
-			if (VerbAffixes.getVowelSet(Vowel.Ꭱ).contains(prefix)){
+			if (Affixes.getVowelSet(Vowel.Ꭱ).contains(prefix)){
 				list.add("ᎤᏪ"+stem);
 				list.add("Ꭱ"+stem);
 				list.add("Ꭸ"+stem);
 				list.add("Ꭾ"+stem);
 			}
-			if (VerbAffixes.getVowelSet(Vowel.Ꭲ).contains(prefix)){
+			if (Affixes.getVowelSet(Vowel.Ꭲ).contains(prefix)){
 				list.add("Ꭴ"+stem);
 				list.add("Ꭰ"+stem);
 				list.add("Ꭶ"+stem);
 				list.add("Ꭿ"+stem);
 			}
-			if (VerbAffixes.getVowelSet(Vowel.Ꭳ).contains(prefix)){
+			if (Affixes.getVowelSet(Vowel.Ꭳ).contains(prefix)){
 				list.add("ᎤᏬ"+stem);
 				list.add("Ꭳ"+stem);
 				list.add("Ꭺ"+stem);
 				list.add("Ꮀ"+stem);
 			}
-			if (VerbAffixes.getVowelSet(Vowel.Ꭵ).contains(prefix)){
+			if (Affixes.getVowelSet(Vowel.Ꭵ).contains(prefix)){
 				list.add("ᎤᏩ"+stem);
 				list.add("Ꭵ"+stem);
 				list.add("Ꭼ"+stem);
