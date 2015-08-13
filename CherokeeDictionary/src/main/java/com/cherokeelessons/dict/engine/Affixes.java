@@ -219,11 +219,11 @@ public abstract class Affixes {
 			addSet("", "ᏍᏔᏅᎢ");
 			addSet("", "ᏍᏔᏁᎢ");
 			addSet("", "ᏍᏔᏓᏁ");
-//			addSet("", "ᏍᏓᏅ");
-//			addSet("", "ᏍᏓᏅᎩ");
-//			addSet("", "ᏍᏓᏅᎢ");
-//			addSet("", "ᏍᏓᏁᎢ");
-//			addSet("", "ᏍᏓᏓᏁ");
+			addSet("", "ᏍᏓᏅ");
+			addSet("", "ᏍᏓᏅᎩ");
+			addSet("", "ᏍᏓᏅᎢ");
+			addSet("", "ᏍᏓᏁᎢ");
+			addSet("", "ᏍᏓᏓᏁ");
 			addSet("", "ᏓᏅ");
 			addSet("", "ᏓᏅᎩ");
 			addSet("", "ᏓᏅᎢ");
@@ -268,7 +268,7 @@ public abstract class Affixes {
 	private static class CausativeImmediate extends Affixes {
 		public CausativeImmediate() {
 			completiveStem = false;
-//			addSet("", "ᏍᏔ");
+			addSet("", "ᏍᏔ");
 			addSet("", "ᏍᏓ");
 			addSet("", "Ꮣ");
 		}
