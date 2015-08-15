@@ -9,13 +9,13 @@ public interface ClientResources extends ClientBundle {
 	public static final ClientResources INSTANCE = GWT.create(ClientResources.class);
 
 	@Source("text/raven.csv")
-	public TextResource ᎪᎸᏅᏱ();
+	public TextResource raven();
 	
 	@Source("text/magali.csv")
-	public TextResource ᎹᎦᎵ();
+	public TextResource magali();
 
 	@Source("text/CED.csv")
-	public TextResource CED();
+	public TextResource ced();
 	
 	@Source("text/boundpronouns.csv")
 	public TextResource boundpronouns();

@@ -10,8 +10,6 @@ import com.cherokeelessons.dict.engine.ClientLookup;
 import com.google.gwt.core.client.GWT;
 import com.opencsv.CSVParser;
 
-import commons.lang3.StringUtils;
-
 public enum ClientDictionary {
 	INSTANCE;
 	
@@ -37,7 +35,7 @@ public enum ClientDictionary {
 	}
 	
 	private void loadRaven() {
-		String[] lines = ClientResources.INSTANCE.ᎪᎸᏅᏱ().getText().split("\n");
+		String[] lines = ClientResources.INSTANCE.raven().getText().split("\n");
 		CSVParser parser = new CSVParser();
 		Iterator<String> iline = Arrays.asList(lines).iterator();
 		List<String[]> data=new ArrayList<>();
@@ -51,7 +49,7 @@ public enum ClientDictionary {
 	}
 	
 	private void loadᎹᎦᎵ() {
-		String[] lines = ClientResources.INSTANCE.ᎹᎦᎵ().getText().split("\n");
+		String[] lines = ClientResources.INSTANCE.magali().getText().split("\n");
 		CSVParser parser = new CSVParser();
 		Iterator<String> iline = Arrays.asList(lines).iterator();
 		List<String[]> data=new ArrayList<>();
@@ -66,7 +64,7 @@ public enum ClientDictionary {
 	}
 	
 	private void loadCED() {
-		String[] lines = ClientResources.INSTANCE.CED().getText().split("\n");
+		String[] lines = ClientResources.INSTANCE.ced().getText().split("\n");
 		CSVParser parser = new CSVParser();
 		Iterator<String> iline = Arrays.asList(lines).iterator();
 		List<String[]> data=new ArrayList<>();

@@ -5,6 +5,7 @@ import com.cherokeelessons.dict.events.AppLocationHandler;
 import com.cherokeelessons.dict.shared.RestApi;
 import com.cherokeelessons.dict.ui.DialogManager;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -13,24 +14,35 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.web.bindery.event.shared.ResettableEventBus;
+import com.google.web.bindery.event.shared.Event.Type;
+import com.google.web.bindery.event.shared.HandlerRegistration;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
 public class DictionaryApplication implements ScheduledCommand {
 
 	public static final int WIDTH = 800;
-	public static final ResettableEventBus eventBus;
+	public static final SimpleEventBus eventBus;
 	public static final RestApi api;
 
 	static {
+		GWT.log("init api");
 		api = GWT.create(RestApi.class);
-		eventBus = new ResettableEventBus(new SimpleEventBus());
+		GWT.log("init eventbus");
+		eventBus = new SimpleEventBus() {
+			@Override
+			public <H> HandlerRegistration addHandler(Type<H> type, H handler) {
+				// TODO Auto-generated method stub
+				return super.addHandler(type, handler);
+			}
+			
+		};
 	}
 
 	private Timer doResizeTimer;
 	private final ResizeHandler resize = new ResizeHandler() {
 		@Override
 		public void onResize(ResizeEvent event) {
+			GWT.log("onResize");
 			if (doResizeTimer != null) {
 				doResizeTimer.cancel();
 			}
@@ -46,6 +58,7 @@ public class DictionaryApplication implements ScheduledCommand {
 	};
 
 	private void doResize() {
+		GWT.log("doResize");
 		float width = Window.getClientWidth();
 		float wanted = WIDTH;
 		float scaleby = width / wanted;
@@ -59,6 +72,7 @@ public class DictionaryApplication implements ScheduledCommand {
 	}
 
 	public DictionaryApplication() {
+		GWT.log("DictionaryApplication:instance");
 	}
 
 	private RootPanel rp;
@@ -67,8 +81,6 @@ public class DictionaryApplication implements ScheduledCommand {
 	public void execute() {
 		RootPanel.get().clear(true);
 		rp = RootPanel.get();
-		// rp.getElement().setPropertyString("style",
-		// "transform-origin: center top;");
 		Style style = rp.getElement().getStyle();
 		String[] engines = new String[] { "", "webkit", "ms", "Moz", "O",
 				"khtml" };
