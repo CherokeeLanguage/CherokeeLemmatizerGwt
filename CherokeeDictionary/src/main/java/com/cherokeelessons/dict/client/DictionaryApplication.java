@@ -2,20 +2,19 @@ package com.cherokeelessons.dict.client;
 
 import com.cherokeelessons.dict.engine.DoAnalysis;
 import com.cherokeelessons.dict.events.AppLocationHandler;
+import com.cherokeelessons.dict.events.MessageEvent;
 import com.cherokeelessons.dict.shared.RestApi;
 import com.cherokeelessons.dict.ui.DialogManager;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.web.bindery.event.shared.Event.Type;
-import com.google.web.bindery.event.shared.HandlerRegistration;
 import com.google.web.bindery.event.shared.SimpleEventBus;
 
 public class DictionaryApplication implements ScheduledCommand {
@@ -25,17 +24,8 @@ public class DictionaryApplication implements ScheduledCommand {
 	public static final RestApi api;
 
 	static {
-		GWT.log("init api");
 		api = GWT.create(RestApi.class);
-		GWT.log("init eventbus");
-		eventBus = new SimpleEventBus() {
-			@Override
-			public <H> HandlerRegistration addHandler(Type<H> type, H handler) {
-				// TODO Auto-generated method stub
-				return super.addHandler(type, handler);
-			}
-			
-		};
+		eventBus = new SimpleEventBus();
 	}
 
 	private Timer doResizeTimer;
@@ -72,7 +62,6 @@ public class DictionaryApplication implements ScheduledCommand {
 	}
 
 	public DictionaryApplication() {
-		GWT.log("DictionaryApplication:instance");
 	}
 
 	private RootPanel rp;
@@ -102,5 +91,18 @@ public class DictionaryApplication implements ScheduledCommand {
 		doResize();
 		Window.addResizeHandler(resize);
 		History.fireCurrentHistoryState();
+		BuildInfo info = GWT.create(BuildInfo.class);
+		StringBuilder sb = new StringBuilder();
+		sb.append("By using this application you agree you understand the following:\n\n");
+		sb.append("1) This is NOT A TRANSLATOR!\n");
+		sb.append("2) This will NOT PROVIDE ENGLISH TRANSLATIONS!\n");
+		sb.append("3) Only those studying the language FOR REAL will make any sense of this.\n");
+		sb.append("4) Ads and links to other sites will be displayed sometime in the future.\n");
+		sb.append("5) NO WARRANTY! NO MERCHANTABILITY! NO GUARANTEE!\n");
+		sb.append("6) This software will most certainly suggest WRONG meanings.\n");
+		sb.append("7) This software will most certainly provide WRONG work breakdowns.\n\n");
+		sb.append("This software was last udpated: ");
+		sb.append(DateTimeFormat.getFormat("MMM dd, yyyy - HH:mm:ss a zzz").format(info.getBuildTimestamp()));
+		eventBus.fireEvent(new MessageEvent("ᎠᎪᎵᏰᏙᏗ ᏣᎳᎩ ᎦᏬᏂᎯᏍᏗ",sb.toString().replace("\n", "<br/>")));
 	}
 }
