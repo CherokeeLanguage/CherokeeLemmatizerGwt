@@ -1,7 +1,10 @@
 package com.cherokeelessons.dict.ui;
 
 import com.cherokeelessons.dict.events.MessageEvent;
+import com.cherokeelessons.dict.events.MustWaitEvent;
+import com.cherokeelessons.dict.events.MustWaitEventDismiss;
 import com.cherokeelessons.dict.ui.widgets.MessageDialog;
+import com.cherokeelessons.dict.ui.widgets.MustWaitDialog;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.web.bindery.event.shared.EventBus;
@@ -16,13 +19,30 @@ public class DialogManager {
 	private final RootPanel rp;
 	
 	public DialogManager(RootPanel rp, EventBus eventBus) {
-		binder.bindEventHandlers(this, eventBus);
-		this.rp=rp;
 		this.eventBus=eventBus;
+		this.rp=rp;
+		binder.bindEventHandlers(this, this.eventBus);
 	}
 
 	@EventHandler
 	public void onMessageEvent(MessageEvent event) {
 		new MessageDialog(rp, event.title, event.message).show();
+	}
+	
+	private MustWaitDialog mwDialog=null;
+	@EventHandler
+	public void onMustWait(MustWaitEvent event) {
+		if (mwDialog!=null) {
+			mwDialog.hide();
+		}
+		mwDialog=new MustWaitDialog(rp, event.title, event.message);
+	}
+	
+	@EventHandler
+	public void onMustWaitDismiss(MustWaitEventDismiss event) {
+		if (mwDialog!=null) {
+			mwDialog.hide();
+			mwDialog=null;
+		}
 	}
 }
