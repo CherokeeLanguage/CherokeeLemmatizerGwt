@@ -60,11 +60,18 @@ public class ClientLookup {
 	private String[] Ꭶ1 = { "Ꭶ", "Ꭼ" };
 	private String[] Ꭶ = { "Ꭶ", "Ꭷ", "Ꭸ", "Ꭹ", "Ꭺ", "Ꭻ", "Ꭼ" };
 
+	/**
+	 * Deprefix based on simple lookups. Has hard-coded exceptions as certain
+	 * combinations don't happen! (Ꮒ followed by Ꮒ for example!)
+	 * 
+	 * @param syllabary
+	 * @return
+	 */
 	private List<String> getDeprefixed(String syllabary) {
 		// GWT.log("Deprefixing: "+syllabary);
 		List<String> list = new ArrayList<String>();
 		list.add(syllabary);
-		if (StringUtils.startsWithAny(syllabary, Ᏹ)) {
+		if (StringUtils.startsWithAny(syllabary, Ᏹ)&&!StringUtils.startsWithAny(syllabary.substring(1), Ᏹ)) {
 			int sub = 0;
 			for (String prefix : Ᏹ) {
 				sub = syllabary.startsWith(prefix) ? Math.max(sub,
@@ -75,12 +82,12 @@ public class ClientLookup {
 			syllabary = syllabary.substring(1);
 			String lat = Syllabary.chr2lat(l).substring(1);
 			syllabary = Syllabary.lat2chr(lat) + syllabary;
-			if (syllabary.startsWith("Ꭲ")){
-				syllabary=syllabary.substring(1);
+			if (syllabary.startsWith("Ꭲ")) {
+				syllabary = syllabary.substring(1);
 			}
 			list.add(syllabary);
 		}
-		if (StringUtils.startsWithAny(syllabary, Ꮻ)) {
+		if (StringUtils.startsWithAny(syllabary, Ꮻ)&&!StringUtils.startsWithAny(syllabary.substring(1), Ꮻ)) {
 			// GWT.log("Deprefixing Ꮻ: "+syllabary);
 			int sub = 0;
 			for (String prefix : Ꮻ) {
@@ -92,12 +99,12 @@ public class ClientLookup {
 			syllabary = syllabary.substring(1);
 			String lat = Syllabary.chr2lat(l).substring(1);
 			syllabary = Syllabary.lat2chr(lat) + syllabary;
-			if (syllabary.startsWith("Ꭲ")){
-				syllabary=syllabary.substring(1);
+			if (syllabary.startsWith("Ꭲ")) {
+				syllabary = syllabary.substring(1);
 			}
 			list.add(syllabary);
 		}
-		if (StringUtils.startsWithAny(syllabary, Ꮒ)) {
+		if (StringUtils.startsWithAny(syllabary, Ꮒ)&&!StringUtils.startsWithAny(syllabary.substring(1), Ꮒ)) {
 			// GWT.log("Deprefixing Ꮒ: "+syllabary);
 			int sub = 0;
 			for (String prefix : Ꮒ) {
@@ -109,8 +116,8 @@ public class ClientLookup {
 			syllabary = syllabary.substring(1);
 			String lat = Syllabary.chr2lat(l).substring(1);
 			syllabary = Syllabary.lat2chr(lat) + syllabary;
-			if (syllabary.startsWith("Ꭲ")){
-				syllabary=syllabary.substring(1);
+			if (syllabary.startsWith("Ꭲ")) {
+				syllabary = syllabary.substring(1);
 			}
 			list.add(syllabary);
 		}
@@ -126,8 +133,8 @@ public class ClientLookup {
 			syllabary = syllabary.substring(1);
 			String lat = Syllabary.chr2lat(l).substring(1);
 			syllabary = Syllabary.lat2chr(lat) + syllabary;
-			if (syllabary.startsWith("Ꭲ")){
-				syllabary=syllabary.substring(1);
+			if (syllabary.startsWith("Ꭲ")) {
+				syllabary = syllabary.substring(1);
 			}
 			list.add(syllabary);
 		}
@@ -144,13 +151,13 @@ public class ClientLookup {
 			syllabary = syllabary.substring(1);
 			String lat = Syllabary.chr2lat(l).substring(1);
 			syllabary = Syllabary.lat2chr(lat) + syllabary;
-			if (syllabary.startsWith("Ꭲ")){
-				syllabary=syllabary.substring(1);
+			if (syllabary.startsWith("Ꭲ")) {
+				syllabary = syllabary.substring(1);
 			}
 			list.add(syllabary);
 		}
-		if (StringUtils.startsWithAny(syllabary, Ꭶ)){
-			list.addAll(thirdPersonPronouns("Ꭰ"+syllabary));
+		if (StringUtils.startsWithAny(syllabary, Ꭶ)) {
+			list.addAll(thirdPersonPronouns("Ꭰ" + syllabary));
 		}
 		if (StringUtils.startsWithAny(syllabary, Ꭶ1)) {
 			// GWT.log("Deprefixing Ꭶ: "+syllabary);
@@ -184,8 +191,8 @@ public class ClientLookup {
 			String pre = lat != null ? StringUtils.defaultString(Syllabary
 					.lat2chr(lat)) : "";
 			syllabary = pre + syllabary;
-			if (syllabary.startsWith("Ꭲ")){
-				syllabary=syllabary.substring(1);
+			if (syllabary.startsWith("Ꭲ")) {
+				syllabary = syllabary.substring(1);
 			}
 			list.add(syllabary);
 		}
@@ -322,6 +329,23 @@ public class ClientLookup {
 			String maybe = StringUtils.defaultString(words.get(tmp));
 			if (!StringUtils.isBlank(maybe)) {
 				return "(?+Ꭲ=>" + tmp + ")|" + maybe;
+			}
+		}
+
+		// If it ends in Ꭵ see if it might really be a
+		// glottal-stop/h-alternation variant
+		if (word.endsWith("Ꭵ")) {
+			String tmp = StringUtils.left(word, word.length() - 1) + "ᎲᎢ";
+			GWT.log(tmp);
+			String maybe = StringUtils.defaultString(words.get(tmp));
+			if (!StringUtils.isBlank(maybe)) {
+				return "(?+Ꭵ=>ᎲᎢ)|" + maybe;
+			}
+			tmp = StringUtils.left(word, word.length() - 1) + "ᎰᎢ";
+			GWT.log(tmp);
+			maybe = StringUtils.defaultString(words.get(tmp));
+			if (!StringUtils.isBlank(maybe)) {
+				return "(?+Ꭵ=>ᎰᎢ)|" + maybe;
 			}
 		}
 

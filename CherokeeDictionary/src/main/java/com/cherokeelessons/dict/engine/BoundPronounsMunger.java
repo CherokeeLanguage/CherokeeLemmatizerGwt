@@ -23,7 +23,7 @@ public enum BoundPronounsMunger {
 	public List<String> munge(String word) {
 		List<String> list = new ArrayList<String>();
 		list.add(word);
-		if (word.length()<4) {
+		if (word.length()<3) {
 			return list;
 		}
 		for (RegExp p: patterns) {
