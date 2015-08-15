@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.cherokeelessons.dict.client.BoundPronounsMunger;
 import com.cherokeelessons.dict.shared.Syllabary;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
 import com.google.gwt.core.shared.GWT;
@@ -59,14 +58,13 @@ public class ClientLookup {
 	private String[] Ꮧ = { "Ꮴ", "Ꮧ", "Ꮶ", "Ꮷ" };
 	private String[] Ꮥ = { "Ꮣ", "Ꮥ", "Ꮩ", "Ꮪ", "Ꮫ" };
 	private String[] Ꭶ1 = { "Ꭶ", "Ꭼ" };
+	private String[] Ꭶ = { "Ꭶ", "Ꭷ", "Ꭸ", "Ꭹ", "Ꭺ", "Ꭻ", "Ꭼ" };
 
 	private List<String> getDeprefixed(String syllabary) {
 		// GWT.log("Deprefixing: "+syllabary);
 		List<String> list = new ArrayList<String>();
 		list.add(syllabary);
-		boolean zapᎢ = false;
 		if (StringUtils.startsWithAny(syllabary, Ᏹ)) {
-			// GWT.log("Deprefixing Ᏹ: "+syllabary);
 			int sub = 0;
 			for (String prefix : Ᏹ) {
 				sub = syllabary.startsWith(prefix) ? Math.max(sub,
@@ -77,15 +75,12 @@ public class ClientLookup {
 			syllabary = syllabary.substring(1);
 			String lat = Syllabary.chr2lat(l).substring(1);
 			syllabary = Syllabary.lat2chr(lat) + syllabary;
+			if (syllabary.startsWith("Ꭲ")){
+				syllabary=syllabary.substring(1);
+			}
 			list.add(syllabary);
-			zapᎢ = true;
 		}
-		String test = syllabary;
-		if (zapᎢ && syllabary.startsWith("Ꭲ")) {
-			test = syllabary.substring(1);
-		}
-		if (StringUtils.startsWithAny(test, Ꮻ)) {
-			syllabary = test;
+		if (StringUtils.startsWithAny(syllabary, Ꮻ)) {
 			// GWT.log("Deprefixing Ꮻ: "+syllabary);
 			int sub = 0;
 			for (String prefix : Ꮻ) {
@@ -97,15 +92,12 @@ public class ClientLookup {
 			syllabary = syllabary.substring(1);
 			String lat = Syllabary.chr2lat(l).substring(1);
 			syllabary = Syllabary.lat2chr(lat) + syllabary;
+			if (syllabary.startsWith("Ꭲ")){
+				syllabary=syllabary.substring(1);
+			}
 			list.add(syllabary);
-			zapᎢ = true;
 		}
-		test = syllabary;
-		if (zapᎢ && syllabary.startsWith("Ꭲ")) {
-			test = syllabary.substring(1);
-		}
-		if (StringUtils.startsWithAny(test, Ꮒ)) {
-			syllabary = test;
+		if (StringUtils.startsWithAny(syllabary, Ꮒ)) {
 			// GWT.log("Deprefixing Ꮒ: "+syllabary);
 			int sub = 0;
 			for (String prefix : Ꮒ) {
@@ -117,15 +109,12 @@ public class ClientLookup {
 			syllabary = syllabary.substring(1);
 			String lat = Syllabary.chr2lat(l).substring(1);
 			syllabary = Syllabary.lat2chr(lat) + syllabary;
+			if (syllabary.startsWith("Ꭲ")){
+				syllabary=syllabary.substring(1);
+			}
 			list.add(syllabary);
-			zapᎢ = true;
 		}
-		test = syllabary;
-		if (zapᎢ && syllabary.startsWith("Ꭲ")) {
-			test = syllabary.substring(1);
-		}
-		if (StringUtils.startsWithAny(test, Ꮧ)) {
-			syllabary = test;
+		if (StringUtils.startsWithAny(syllabary, Ꮧ)) {
 			// GWT.log("Deprefixing Ꮧ: "+syllabary);
 			int sub = 0;
 			for (String prefix : Ꮧ) {
@@ -137,16 +126,13 @@ public class ClientLookup {
 			syllabary = syllabary.substring(1);
 			String lat = Syllabary.chr2lat(l).substring(1);
 			syllabary = Syllabary.lat2chr(lat) + syllabary;
+			if (syllabary.startsWith("Ꭲ")){
+				syllabary=syllabary.substring(1);
+			}
 			list.add(syllabary);
-			zapᎢ = true;
 		}
 
-		test = syllabary;
-		if (zapᎢ && syllabary.startsWith("Ꭲ")) {
-			test = syllabary.substring(1);
-		}
-		if (StringUtils.startsWithAny(test, Ꮥ)) {
-			syllabary = test;
+		if (StringUtils.startsWithAny(syllabary, Ꮥ)) {
 			// GWT.log("Deprefixing Ꮥ: "+syllabary);
 			int sub = 0;
 			for (String prefix : Ꮥ) {
@@ -158,15 +144,15 @@ public class ClientLookup {
 			syllabary = syllabary.substring(1);
 			String lat = Syllabary.chr2lat(l).substring(1);
 			syllabary = Syllabary.lat2chr(lat) + syllabary;
+			if (syllabary.startsWith("Ꭲ")){
+				syllabary=syllabary.substring(1);
+			}
 			list.add(syllabary);
-			zapᎢ = true;
 		}
-		test = syllabary;
-		if (zapᎢ && syllabary.startsWith("Ꭲ")) {
-			test = syllabary.substring(1);
+		if (StringUtils.startsWithAny(syllabary, Ꭶ)){
+			list.addAll(thirdPersonPronouns("Ꭰ"+syllabary));
 		}
-		if (StringUtils.startsWithAny(test, Ꭶ1)) {
-			syllabary = test;
+		if (StringUtils.startsWithAny(syllabary, Ꭶ1)) {
 			// GWT.log("Deprefixing Ꭶ: "+syllabary);
 			int sub = 0;
 			for (String prefix : Ꭶ1) {
@@ -198,11 +184,10 @@ public class ClientLookup {
 			String pre = lat != null ? StringUtils.defaultString(Syllabary
 					.lat2chr(lat)) : "";
 			syllabary = pre + syllabary;
+			if (syllabary.startsWith("Ꭲ")){
+				syllabary=syllabary.substring(1);
+			}
 			list.add(syllabary);
-			zapᎢ = true;
-		}
-		if (zapᎢ == true && syllabary.startsWith("Ꭲ")) {
-			list.add(syllabary.substring(1));
 		}
 		list.addAll(thirdPersonPronouns(syllabary));
 		return list;

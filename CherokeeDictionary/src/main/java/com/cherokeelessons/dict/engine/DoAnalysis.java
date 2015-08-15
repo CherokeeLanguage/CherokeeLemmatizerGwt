@@ -3,14 +3,11 @@ package com.cherokeelessons.dict.engine;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ListIterator;
 
-import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
-import org.gwtbootstrap3.client.ui.PanelFooter;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
@@ -25,7 +22,6 @@ import com.cherokeelessons.dict.events.AddAnalysisPanelEvent;
 import com.cherokeelessons.dict.events.AnalysisCompleteEvent;
 import com.cherokeelessons.dict.events.AnalyzeEvent;
 import com.cherokeelessons.dict.events.ClearResultsEvent;
-import com.cherokeelessons.dict.events.RemovePanelEvent;
 import com.cherokeelessons.dict.events.ResetInputEvent;
 import com.cherokeelessons.dict.events.UiEnableEvent;
 import com.google.gwt.core.client.GWT;
@@ -34,16 +30,15 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
-
 import commons.lang3.StringUtils;
 
 public class DoAnalysis {
+	static {
+	}
 	public static interface DoAnalysisBinder extends EventBinder<DoAnalysis> {}
 	private final DoAnalysisBinder binder = GWT.create(DoAnalysisBinder.class);
 	
@@ -59,7 +54,7 @@ public class DoAnalysis {
 	}
 	
 	@EventHandler
-	void analyze(AnalyzeEvent event) {
+	void analyze(final AnalyzeEvent event) {
 		String value = StringUtils.strip(event.query);
 		value = value.replaceAll("[^Ꭰ-Ᏼ0-9]", " ");
 		value = value.replaceAll(" +", " ");
@@ -72,16 +67,6 @@ public class DoAnalysis {
 		eventBus.fireEvent(new ClearResultsEvent());
 		final List<ScheduledCommand> cmds = new ArrayList<>();
 		List<String> words = new ArrayList<>(Arrays.asList(StringUtils.split(value)));
-		ListIterator<String> iwords = words.listIterator();
-		/*
-		 * ᎢᏗ can be added to other than past tense... this seems to change bare "Ꭰ" + "Ꭲ" to "Ꭱ"
-		 */
-		while (iwords.hasNext()) {
-			String word=iwords.next();
-			if (word.endsWith("ᎡᏗ")){
-//				iwords.add(StringUtils.removeEnd(word, "ᎡᏗ")+"ᎠᎢᏗ");
-			}
-		}
 		
 		for (final String word : words) {
 			cmds.add(new ScheduledCommand() {
@@ -144,6 +129,7 @@ public class DoAnalysis {
 					style.setDisplay(Display.INLINE_BLOCK);
 					style.setMarginRight(5, Unit.PX);
 					style.setVerticalAlign(Style.VerticalAlign.TOP);
+					style.setMarginBottom(5, Unit.PX);
 					PanelHeader ph = new PanelHeader();
 					Heading h = new Heading(HeadingSize.H5);
 					h.setText(word);
@@ -157,18 +143,18 @@ public class DoAnalysis {
 
 					HTMLPanel hp = new HTMLPanel(affixedStemHtml.toSafeHtml());
 
-					PanelFooter pf = new PanelFooter();
-					Button dismiss = new Button("DISMISS");
-					dismiss.addClickHandler(new ClickHandler() {
-						@Override
-						public void onClick(ClickEvent event) {
-							eventBus.fireEvent(new RemovePanelEvent(p));
-						}
-					});
-					pf.add(dismiss);
+//					PanelFooter pf = new PanelFooter();
+//					Button dismiss = new Button("DISMISS");
+//					dismiss.addClickHandler(new ClickHandler() {
+//						@Override
+//						public void onClick(ClickEvent event) {
+//							eventBus.fireEvent(new RemovePanelEvent(p));
+//						}
+//					});
+//					pf.add(dismiss);
 					p.add(ph);
 					p.add(pb);
-					p.add(pf);
+//					p.add(pf);
 
 					pb.add(hp);
 					eventBus.fireEvent(new AddAnalysisPanelEvent(p));
@@ -194,5 +180,4 @@ public class DoAnalysis {
 			}
 		});
 	}
-
 }
