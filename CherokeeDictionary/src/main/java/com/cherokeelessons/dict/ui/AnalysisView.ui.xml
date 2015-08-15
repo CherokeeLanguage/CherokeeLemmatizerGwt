@@ -5,28 +5,29 @@
 	<ui:style>
 	</ui:style>
 	<b:Panel>
-		<b:PageHeader ui:field="pageHeader" text="ᏣᎳᎩ ᏗᏕᏠᏆᏍᏙᏗ"
-			subText="" />
+		<b:PageHeader ui:field="pageHeader" text="ᎠᎪᎵᏰᏙᏗ"
+			subText="ᏣᎳᎩ ᎦᏬᏂᎯᏍᏗ" />
 		<b:Form>
 			<b:FieldSet>
 				<b:FormGroup ui:field="formGroup">
-					<b:FormLabel for="formSuccess">
+					<b:FormLabel ui:field="formLabel" for="formSuccess">
 						Input Cherokee Syllabary Text</b:FormLabel>
-					<b:TextBox ui:field="textBox" b:id="formSuccess" b:value="" />
+					<b:TextArea ui:field="textArea" b:id="formSuccess" b:value="" />
 					<b:Button ui:field="btn_analyze" type="PRIMARY">ANALYZE</b:Button>
 					<b:Button ui:field="btn_search" type="PRIMARY">SEARCH</b:Button>
-					<b:Button ui:field="btn_reset" type="PRIMARY">CLEAR RESULTS</b:Button>
+					<b:Button ui:field="btn_clear" type="PRIMARY">CLEAR RESULTS</b:Button>
+					<b:Button ui:field="btn_reset" type="PRIMARY">RESET ALL</b:Button>
 				</b:FormGroup>
 			</b:FieldSet>
 		</b:Form>
-		<g:HTMLPanel>Whole
-			Word: [[:&lt;:]]ᎤᏍᏗ[[:&gt;:]]
-			<br />Over
-			and Over Ending (progressive):
-			(Ꭲ|Ꭹ|Ꭿ|Ꮅ|Ꮋ|Ꮒ|Ꮘ|Ꮟ|Ꮧ|Ꮨ|Ꮯ|Ꮵ|Ꮻ|Ᏹ)ᎶᏍ((Ꭺ|Ꭼ|Ꭸ)(Ꭲ)?|Ꭹ)[[:&gt;:]]
-			<br />Over
-			and Over Ending (completive):
-			(Ꭲ|Ꭹ|Ꭿ|Ꮅ|Ꮋ|Ꮒ|Ꮘ|Ꮟ|Ꮧ|Ꮨ|Ꮯ|Ꮵ|Ꮻ|Ᏹ)Ꮆ(ᎥᎢ|ᎥᎩ|ᎡᎢ?)[[:&gt;:]]
-		</g:HTMLPanel>
+<!-- 		<g:HTMLPanel>Whole -->
+<!-- 			Word: [[:&lt;:]]ᎤᏍᏗ[[:&gt;:]] -->
+<!-- 			<br />Over -->
+<!-- 			and Over Ending (progressive): -->
+<!-- 			(Ꭲ|Ꭹ|Ꭿ|Ꮅ|Ꮋ|Ꮒ|Ꮘ|Ꮟ|Ꮧ|Ꮨ|Ꮯ|Ꮵ|Ꮻ|Ᏹ)ᎶᏍ((Ꭺ|Ꭼ|Ꭸ)(Ꭲ)?|Ꭹ)[[:&gt;:]] -->
+<!-- 			<br />Over -->
+<!-- 			and Over Ending (completive): -->
+<!-- 			(Ꭲ|Ꭹ|Ꭿ|Ꮅ|Ꮋ|Ꮒ|Ꮘ|Ꮟ|Ꮧ|Ꮨ|Ꮯ|Ꮵ|Ꮻ|Ᏹ)Ꮆ(ᎥᎢ|ᎥᎩ|ᎡᎢ?)[[:&gt;:]] -->
+<!-- 		</g:HTMLPanel> -->
 	</b:Panel>
 </ui:UiBinder> 

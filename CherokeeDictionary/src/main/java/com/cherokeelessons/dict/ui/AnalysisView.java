@@ -10,6 +10,7 @@ import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.PageHeader;
@@ -17,7 +18,7 @@ import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelFooter;
 import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
@@ -29,6 +30,7 @@ import com.cherokeelessons.dict.events.AddSearchResultPanelEvent;
 import com.cherokeelessons.dict.events.AnalysisCompleteEvent;
 import com.cherokeelessons.dict.events.AnalyzeEvent;
 import com.cherokeelessons.dict.events.ClearResultsEvent;
+import com.cherokeelessons.dict.events.EnableSearchEvent;
 import com.cherokeelessons.dict.events.HistoryTokenEvent;
 import com.cherokeelessons.dict.events.MessageEvent;
 import com.cherokeelessons.dict.events.RemovePanelEvent;
@@ -46,6 +48,8 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -67,9 +71,12 @@ public class AnalysisView extends Composite {
 
 	@UiField
 	protected FormGroup formGroup;
+	
+	@UiField
+	protected FormLabel formLabel;
 
 	@UiField
-	protected TextBox textBox;
+	protected TextArea textArea;
 
 	@UiField
 	protected Button btn_analyze;
@@ -80,9 +87,12 @@ public class AnalysisView extends Composite {
 	@UiField
 	protected Button btn_reset;
 	
+	@UiField
+	protected Button btn_clear;
+	
 	@EventHandler
 	public void setText(ReplaceTextInputEvent event) {
-		textBox.setValue(event.text);
+		textArea.setValue(event.text);
 	}
 	
 	@EventHandler
@@ -90,7 +100,8 @@ public class AnalysisView extends Composite {
 		btn_analyze.setEnabled(event.enable);
 		btn_search.setEnabled(event.enable);
 		btn_reset.setEnabled(event.enable);
-		textBox.setEnabled(event.enable);
+		btn_clear.setEnabled(event.enable);
+		textArea.setEnabled(event.enable);
 		if (event.enable) {
 			btn_analyze.state().reset();
 			btn_search.state().reset();
@@ -123,16 +134,30 @@ public class AnalysisView extends Composite {
 
 	private final RootPanel rp;
 	private final EventBus eventBus;
+
+	private KeyPressHandler keypress=new KeyPressHandler() {
+		@Override
+		public void onKeyPress(KeyPressEvent event) {
+			if (event.isControlKeyDown()&&event.isAltKeyDown()&&event.getCharCode()=='s') {
+				eventBus.fireEvent(new EnableSearchEvent(!btn_search.isVisible()));
+			}
+		}
+	};
+	
 	public AnalysisView(EventBus eventBus, RootPanel rp) {
 		initWidget(uiBinder.createAndBindUi(this));
 		binder.bindEventHandlers(this, eventBus);
 		Document.get().setTitle("ᎤᎪᎵᏰᏗ - ᏣᎳᎩ ᏗᏕᏠᏆᏙᏗ");
 		this.rp = rp;
 		this.eventBus = eventBus;
+		addDomHandler(keypress, KeyPressEvent.getType());
+		textArea.getElement().getStyle().setProperty("marginLeft", "auto");
+		textArea.getElement().getStyle().setProperty("marginRight", "auto");
+		textArea.setHeight("6.7em");
 	}
 
 	@UiHandler("btn_reset")
-	public void onClearResults(final ClickEvent event) {
+	public void onResetAll(final ClickEvent event) {
 		eventBus.fireEvent(new ClearResultsEvent());
 		eventBus.fireEvent(new ResetInputEvent());
 		String token = StringUtils.substringAfter(Location.getHref(), "#");
@@ -140,9 +165,14 @@ public class AnalysisView extends Composite {
 		eventBus.fireEvent(new HistoryTokenEvent(token));
 	}
 	
+	@UiHandler("btn_clear")
+	public void onClearResults(final ClickEvent event) {
+		eventBus.fireEvent(new ClearResultsEvent());
+	}
+	
 	@EventHandler
 	public void onResetInput(ResetInputEvent event) {
-		textBox.setValue("");
+		textArea.setValue("");
 	}
 
 	private final List<Panel> panels = new ArrayList<Panel>();
@@ -150,8 +180,9 @@ public class AnalysisView extends Composite {
 	@UiHandler("btn_analyze")
 	public void onAnalyze(final ClickEvent event) {
 		this.pageHeader.setVisible(false);
+		this.formLabel.setVisible(false);
 		btn_analyze.state().loading();
-		String value = textBox.getValue();
+		String value = textArea.getValue();
 		if (StringUtils.isBlank(value)) {
 			eventBus.fireEvent(new MessageEvent("ERROR", "NOTHING TO ANALYZE."));
 			btn_analyze.state().reset();
@@ -168,7 +199,7 @@ public class AnalysisView extends Composite {
 	public void onSearch(final ClickEvent event) {
 		this.pageHeader.setVisible(false);
 		btn_search.state().loading();
-		String value = textBox.getValue();
+		String value = textArea.getValue();
 		if (StringUtils.isBlank(value)) {
 			eventBus.fireEvent(new MessageEvent("ERROR", "EMPTY SEARCHES ARE NOT ALLOWED."));
 			btn_search.state().reset();
@@ -180,6 +211,15 @@ public class AnalysisView extends Composite {
 		eventBus.fireEvent(new HistoryTokenEvent(token));
 		eventBus.fireEvent(new UiEnableEvent(false));
 		DictionaryApplication.api.syll(StringUtils.strip(value), display_it);
+	}
+	
+	@EventHandler
+	public void onEnableSearch(EnableSearchEvent event) {
+		if (event.enable) {
+			btn_search.setVisible(true);
+		} else {
+			btn_search.setVisible(false);
+		}
 	}
 	
 	@EventHandler
