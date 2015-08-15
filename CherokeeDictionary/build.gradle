@@ -62,12 +62,14 @@ gwt {
 	jsInteropMode = "JS"
 	
 	compiler {
-		disableAggressiveOptimization = true;
+		disableAggressiveOptimization = false;
 		disableCastChecking = false;		
 		disableClassMetadata = false;
-		enableClosureCompiler = false;
+		enableClosureCompiler = true;
 		enforceStrictResources = false;
 		overlappingSourceWarnings = false;
+		localWorkers = 1;
+		fragmentCount = 4;
 		strict = true;
 		style = "OBF";
 	}
@@ -75,6 +77,7 @@ gwt {
 	superDev {
 		noPrecompile = false;
 		failOnError = false;
+		bindAddress = "0.0.0.0";
 	}
 	
 	eclipse {
