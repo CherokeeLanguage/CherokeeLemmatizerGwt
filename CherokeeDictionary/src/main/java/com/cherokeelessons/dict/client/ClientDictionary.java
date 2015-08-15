@@ -17,7 +17,7 @@ public enum ClientDictionary {
 	
 	private ClientDictionary() {
 		lookup = new ClientLookup();
-		loadᎹᎦᎵ();
+		loadMagali();
 		loadCED();
 		loadRaven();
 		
@@ -48,7 +48,7 @@ public enum ClientDictionary {
 		lookup.addEntries("raven", data);
 	}
 	
-	private void loadᎹᎦᎵ() {
+	private void loadMagali() {
 		String[] lines = ClientResources.INSTANCE.magali().getText().split("\n");
 		CSVParser parser = new CSVParser();
 		Iterator<String> iline = Arrays.asList(lines).iterator();
