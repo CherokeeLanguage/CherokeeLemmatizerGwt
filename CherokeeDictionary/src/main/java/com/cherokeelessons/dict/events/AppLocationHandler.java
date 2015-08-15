@@ -12,7 +12,8 @@ import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
 
 public class AppLocationHandler {
-	public interface AppLocationEventBinder extends
+
+	public static interface AppLocationEventBinder extends
 			EventBinder<AppLocationHandler> {
 	}
 
@@ -23,9 +24,11 @@ public class AppLocationHandler {
 	private final EventBus eventBus;
 
 	public AppLocationHandler(RootPanel rp, EventBus eventBus) {
-		binder.bindEventHandlers(this, eventBus);
 		this.rp = rp;
 		this.eventBus = eventBus;
+		GWT.log(this.getClass().getName() + "#" + binder.toString());
+		binder.bindEventHandlers(this, eventBus);
+		GWT.log(this.getClass().getName() + "#" + binder.toString());
 	}
 
 	private AppLocation current = null;
@@ -33,17 +36,26 @@ public class AppLocationHandler {
 	@EventHandler
 	public void location(AppLocationEvent event) {
 		if (!event.location.equals(current)) {
+			GWT.log("LOCATION CHANGE: " + String.valueOf(current) + " => "
+					+ String.valueOf(event.location));
 			rp.clear(true);
 			switch (event.location) {
 			case Analyzer:
-				AnalysisView mainwindow = new AnalysisView(eventBus, rp);
+				AnalysisView mainwindow = new AnalysisView(eventBus, rp) {
+
+					@Override
+					protected void onLoad() {
+						super.onLoad();
+						onEnableSearch(new EnableSearchEvent(false));
+					}
+				};
 				rp.add(mainwindow);
 				break;
 			}
 		}
 	}
-	
-	private boolean enablepushstate=true;
+
+	private boolean enablepushstate = true;
 
 	/**
 	 * Record as new page visit current "view state"
@@ -53,7 +65,8 @@ public class AppLocationHandler {
 	@EventHandler
 	public void saveState(HistoryTokenEvent event) {
 		if (event.replace) {
-			replaceState("#" + URL.encode(event.hash), Document.get().getTitle());
+			replaceState("#" + URL.encode(event.hash), Document.get()
+					.getTitle());
 			History.replaceItem(event.hash, false);
 		} else {
 			pushState("#" + URL.encode(event.hash), Document.get().getTitle());
