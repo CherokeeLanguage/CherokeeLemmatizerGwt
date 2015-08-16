@@ -27,7 +27,10 @@ import com.cherokeelessons.dict.engine.Affixes.Very;
 import com.cherokeelessons.dict.engine.Affixes.WentForDoing;
 import com.cherokeelessons.dict.engine.Affixes.YesNo;
 import com.cherokeelessons.dict.engine.Affixes.YesYes;
+import com.cherokeelessons.dict.shared.Syllabary;
+import com.cherokeelessons.dict.shared.Syllabary.Vowel;
 import com.google.gwt.core.shared.GWT;
+
 import commons.lang3.StringUtils;
 
 public enum SuffixGuesser {
@@ -60,6 +63,66 @@ public enum SuffixGuesser {
 			addSet("Ꭵ", "Ꮎ");
 		}
 	}
+	
+	/**
+	 * Simple future tense matcher, will not match all prefixed versions! 
+	 * @author mjoyner
+	 *
+	 */
+	public static class Future extends Affixes {
+		@Override
+		public AffixResult match(String syllabary) {
+			AffixResult match = super.match(syllabary);
+			if (!match.isMatch) {
+				return match;
+			}
+			StringBuilder prefix=new StringBuilder();
+			if (syllabary.startsWith("Ᏹ")) {
+				syllabary = syllabary.substring(1);
+				prefix.append("Ᏹ");
+			}
+			if (syllabary.startsWith("Ꮒ")) {
+				syllabary = syllabary.substring(1);
+				prefix.append("Ꮒ");
+			}
+			if (!syllabary.matches("Ꮩ?[ᏓᏗᏛ].*")) {
+				return new AffixResult();
+			}
+			if (syllabary.startsWith("Ꮩ")){
+				syllabary=syllabary.substring(1);
+				prefix.append("Ꮩ");
+			}
+			prefix.append("Ꮣ/Ꭲ");
+			match.suffix=prefix.toString();
+			munge: {
+				if (syllabary.matches("Ꮣ[ᏯᏰᏱᏲᏳᏴ].*")){
+					String tmp = StringUtils.left(syllabary, 2).substring(1);
+					syllabary=syllabary.substring(2);
+					String lat = Syllabary.chr2lat(tmp).substring(1);
+					syllabary = Syllabary.lat2chr(lat)+syllabary;
+					break munge;
+				}
+				if (syllabary.startsWith("Ꮣ")){
+					syllabary=syllabary.substring(1);
+					break munge;
+				}
+				if (syllabary.startsWith("Ꮧ")){
+					syllabary=syllabary.substring(1);
+					break munge;
+				}
+				if (syllabary.startsWith("Ꮫ")){
+					syllabary="Ꭰ"+syllabary.substring(1);
+					break munge;
+				}
+			}
+			match.stem=Syllabary.changeForm(syllabary, Vowel.Ꭵ)+"Ꭲ";
+			return match;
+		}
+		public Future() {
+			completiveStem = true;
+			addSet("", "Ꭲ");
+		}
+	}
 
 	public static class Tool extends Affixes {
 		public Tool() {
@@ -77,46 +140,58 @@ public enum SuffixGuesser {
 	 */
 	public List<AffixResult> getMatches(String syllabary) {
 		List<AffixResult> list = new ArrayList<Affixes.AffixResult>();
+		Future futureForm = new Future();
+		AffixResult future = futureForm.match(syllabary);
+		if (future.isMatch) {
+			future.desc = future.stem+"-Future";
+			list.add(future);
+			/*
+			 * Should be only one valid stem for a future match.
+			 */
+			list.addAll(getMatches(future.stem));
+			return list;
+		}
 		Without withoutEnding = new Without();
 		AffixResult without = withoutEnding.match(syllabary);
 		if (without.isMatch) {
-			without.desc = "WithOut";
+			without.desc = without.stem+"-WithOut";
 			without.suffix = "Ꮒ/" + without.suffix;
 			list.add(without);
 			// should only be one stem for a "without" match!
-			without.stem.set(0, removeᏂprefix(without.stem.get(0)));
-			GWT.log("WITHOUT: " + without.stem.get(0));
-			list.addAll(getMatches(without.stem.get(0)));
+			without.stem=removeᏂprefix(without.stem);
+			list.addAll(getMatches(without.stem));
 			return list;
 		}
 		for (VerbStemAffix affix : VerbStemAffix.values()) {
 			Affixes s = SuffixGuesser.getSuffixMatcher(affix);
 			AffixResult matchResult = s.match(syllabary);
 			if (matchResult.isMatch) {
-				matchResult.desc = affix.name();
+				matchResult.desc = matchResult.stem+"-"+affix.name();
 				list.add(matchResult);
-				GWT.log("SuffixGuesser: " + matchResult.stem + "+"
-						+ matchResult.suffix + ":" + matchResult.desc);
-				for (String stem : matchResult.stem) {
-					list.addAll(getMatches(stem));
-				}
+				list.addAll(getMatches(matchResult.stem));
 			}
 		}
 		for (GeneralAffix affix : GeneralAffix.values()) {
 			Affixes s = SuffixGuesser.getSuffixMatcher(affix);
 			AffixResult matchResult = s.match(syllabary);
 			if (matchResult.isMatch) {
-				matchResult.desc = affix.name();
+				matchResult.desc = matchResult.stem+"-"+affix.name();
 				list.add(matchResult);
-				GWT.log("SuffixGuesser: " + matchResult.stem + "+"
-						+ matchResult.suffix + ":" + matchResult.desc);
-				for (String stem : matchResult.stem) {
-					list.addAll(getMatches(stem));
-				}
+				list.addAll(getMatches(matchResult.stem));
 			}
 		}
-		if (list.size() > 0) {
-			GWT.log("SuffixGuesser Results: " + list.toString());
+		if (syllabary.endsWith("Ꭽ")){
+			String tmp = StringUtils.left(syllabary, syllabary.length()-1);
+			AffixResult match = new AffixResult();
+			match.isMatch=true;
+			match.stem=tmp;
+			match.suffix="Ꭽ";
+			match.desc=match.stem+"-only";
+			list.add(match);
+			if (Affixes.getVowelSet(Vowel.Ꭵ).contains(StringUtils.right(tmp, 1))){
+				Syllabary.changeForm(tmp, Vowel.Ꭰ);
+			}
+			list.addAll(getMatches(tmp));
 		}
 		return list;
 	}

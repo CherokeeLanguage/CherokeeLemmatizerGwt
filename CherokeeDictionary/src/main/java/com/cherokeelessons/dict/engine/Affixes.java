@@ -52,7 +52,7 @@ public abstract class Affixes {
 
 	public static class AffixResult {
 		public boolean isMatch = false;
-		public final List<String> stem = new ArrayList<>();
+		public String stem;// = new ArrayList<>();
 		public String suffix;
 		public String mode;
 		public String desc;
@@ -107,9 +107,9 @@ public abstract class Affixes {
 				matchResult.isMatch = true;
 				matchResult.suffix = suffix;
 				if (completiveStem) {
-					matchResult.stem.add(splitAsCompletive(syllabary, suffix));
+					matchResult.stem=splitAsCompletive(syllabary, suffix);
 				} else {
-					matchResult.stem.add(splitAsIs(syllabary, suffix));
+					matchResult.stem=splitAsIs(syllabary, suffix);
 				}
 
 				return matchResult;
@@ -177,14 +177,11 @@ public abstract class Affixes {
 			if (!match.isMatch) {
 				return match;
 			}
-			match.stem.clear();
 			String root = StringUtils.remove(syllabary, match.suffix);
 			if (match.suffix.startsWith("Ꮝ")){
 				
 			}
-			match.stem.add(root+"Ꭰ");
-			match.stem.add(root+"Ꭽ");
-			match.stem.add(root+"Ꭶ");
+			match.stem=root+"Ꭰ";
 			return match;
 		}
 		public CausativePresent() {
@@ -202,14 +199,11 @@ public abstract class Affixes {
 			if (!match.isMatch) {
 				return match;
 			}
-			match.stem.clear();
 			String root = StringUtils.remove(syllabary, match.suffix);
 			if (match.suffix.startsWith("Ꮝ")){
 				
 			}
-			match.stem.add(root+"Ꭰ");
-			match.stem.add(root+"Ꭶ");
-			match.stem.add(root+"Ꭽ");
+			match.stem=root+"Ꭰ";
 			return match;
 		}
 		public CausativePast() {
@@ -239,14 +233,13 @@ public abstract class Affixes {
 			if (!match.isMatch) {
 				return match;
 			}
-			match.stem.clear();
 			String root = StringUtils.remove(syllabary, match.suffix);
 			if (match.suffix.startsWith("Ꮝ")){
 				
 			}
 			String oform = Syllabary.changeForm(root, Vowel.Ꭳ)+"Ꭲ";
 			GWT.log("OFORM: "+oform);
-			match.stem.add(oform);
+			match.stem=oform;
 			return match;
 		}
 		public CausativeProgressive() {
@@ -469,9 +462,22 @@ public abstract class Affixes {
 	};
 
 	public static class InOnAt extends Affixes {
+		@Override
+		public AffixResult match(String syllabary) {
+			AffixResult match = super.match(syllabary);
+			if (!match.isMatch) {
+				return match;
+			}
+			if (!match.suffix.equals("Ꭿ")){
+				match.suffix="Ꭿ";
+				match.stem=Syllabary.changeForm(match.stem, Vowel.Ꭰ);
+			}
+			return match;
+		}
 		public InOnAt() {
 			completiveStem = false;
 			// 1844
+			addSet("Ꭳ", "Ꭿ");
 			addSet("", "Ꭿ");
 		}
 	};

@@ -9,10 +9,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.cherokeelessons.dict.client.ClientResources;
+import com.cherokeelessons.dict.shared.Syllabary;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.opencsv.CSVParser;
+
 import commons.lang3.StringUtils;
 
 public enum BoundPronounsMunger {
@@ -30,16 +33,11 @@ public enum BoundPronounsMunger {
 			if (!p.test(word)) {
 				continue;
 			}
-//			GWT.log("MATCH: "+p.getSource());
 			MatchResult matcher = p.exec(word);
 			String prefix = matcher.getGroup(1);
 			String stem = matcher.getGroup(2);
-//			GWT.log("STEM: "+stem);
-			
 			prefix = StringUtils.right(prefix, 1);
-			
 			list.add(prefix+stem);
-			
 			if (Affixes.getVowelSet(Vowel.Ꭰ).contains(prefix)){
 				list.add("ᎤᏩ"+stem);
 				list.add("Ꭰ"+stem);
@@ -99,12 +97,33 @@ public enum BoundPronounsMunger {
 				pattern = pattern.replace("Ꮒ͓", "[ᎾᎿᏁᏂᏃᏄᏅ]");
 				pattern = pattern.replace("Ꮖ͓", "[ᏆᏇᏈᏉᏊᏋ]");
 				pattern = pattern.replace("Ꮣ͓", "[ᏓᏕᏗᏙᏚᏛ]");
-				pattern = "^(Ꭲ?" + pattern + ")(.*)";
-				RegExp p = RegExp.compile(pattern);// Pattern.compile(pattern);
+				pattern = pattern.replace("Ꮳ͓", "[ᏣᏤᏥᏦᏧᏨ]");
+				pattern = pattern.replace("Ꮵ͓", "[ᏣᏤᏥᏦᏧᏨ]");
+				pattern = pattern.replace("Ꮧ͓", "[ᏗᏓᏕᏙᏚᏛ]");
+				pattern = pattern.replace("Ꭹ͓", "[ᎦᎧᎨᎩᎪᎫᎬ]");
+				pattern = pattern.replace("Ꮿ͓", "[ᏯᏰᏱᏲᏳᏴ]");
+				pattern = pattern.replace("Ꭿ͓", "[ᎭᎮᎯᎰᎱᎲ]");
+				if (pattern.contains(Syllabary.UnderX)){
+					GWT.log("BAD PATTERN: "+pattern);
+				}
+				pattern = "^(Ꭲ?" + pattern + ")(.*?)$";
+				RegExp p = RegExp.compile(pattern);
+				patterns.add(p);
+				p = RegExp.compile(pattern.replaceAll("\\[.*?\\]\\?", ""));
 				patterns.add(p);
 			}
 		}
 		Collections.sort(patterns, sizeDesc);
+		Iterator<RegExp> ireg = patterns.iterator();
+		RegExp r = ireg.next();
+		while (ireg.hasNext()) {
+			RegExp s = ireg.next();
+			if (s.getSource().equals(r.getSource())){
+				ireg.remove();
+				continue;
+			}
+			r=s;
+		}
 	}
 	private final Comparator<RegExp> sizeDesc=new Comparator<RegExp>() {
 		@Override
@@ -112,10 +131,15 @@ public enum BoundPronounsMunger {
 			if (arg0==arg1) {
 				return 0;
 			}
-			if (arg0.getSource().equals(arg1.getSource())){
+			String pat2 = arg1.getSource();
+			String pat1 = arg0.getSource();
+			if (pat1.equals(pat2)){
 				return 0;
 			}
-			return arg1.getSource().length()-arg0.getSource().length();
+			if (pat2.length()!=pat1.length()) {
+				return pat2.length()-pat1.length();
+			}
+			return pat1.compareTo(pat2);
 		}
 	};
 }

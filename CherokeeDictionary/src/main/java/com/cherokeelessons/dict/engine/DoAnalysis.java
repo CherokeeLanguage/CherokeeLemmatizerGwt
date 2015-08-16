@@ -2,7 +2,10 @@ package com.cherokeelessons.dict.engine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.Label;
@@ -34,25 +37,30 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
+
 import commons.lang3.StringUtils;
 
 public class DoAnalysis {
 	static {
 	}
-	public static interface DoAnalysisBinder extends EventBinder<DoAnalysis> {}
+
+	public static interface DoAnalysisBinder extends EventBinder<DoAnalysis> {
+	}
+
 	private final DoAnalysisBinder binder = GWT.create(DoAnalysisBinder.class);
-	
+
 	private final EventBus eventBus;
+
 	public DoAnalysis(EventBus eventBus) {
 		binder.bindEventHandlers(this, eventBus);
-		this.eventBus=eventBus;
+		this.eventBus = eventBus;
 	}
-	
+
 	@EventHandler
 	void abort(AbortEvent event) {
-		
+
 	}
-	
+
 	@EventHandler
 	void analyze(final AnalyzeEvent event) {
 		String value = StringUtils.strip(event.query);
@@ -66,8 +74,9 @@ public class DoAnalysis {
 		eventBus.fireEvent(new UiEnableEvent(false));
 		eventBus.fireEvent(new ClearResultsEvent());
 		final List<ScheduledCommand> cmds = new ArrayList<>();
-		List<String> words = new ArrayList<>(Arrays.asList(StringUtils.split(value)));
-		
+		List<String> words = new ArrayList<>(Arrays.asList(StringUtils
+				.split(value)));
+
 		for (final String word : words) {
 			cmds.add(new ScheduledCommand() {
 				@Override
@@ -79,28 +88,43 @@ public class DoAnalysis {
 					if (matched.size() != 0) {
 						type = PanelType.SUCCESS;
 					}
+
+					Set<String> already = new HashSet<>();
+					Iterator<AffixResult> imatch = matched.iterator();
+					while (imatch.hasNext()) {
+						AffixResult next = imatch.next();
+						String combo = next.suffix + "|" + next.stem.toString();
+						if (already.contains(combo)) {
+							imatch.remove();
+						}
+						already.add(combo);
+					}
+
 					StringBuilder affixedStem = new StringBuilder();
 					String innerstem = "";
 					for (AffixResult match : matched) {
-						for (String stem: match.stem) {
-							shb.appendEscaped(match.stem + "+" + match.suffix + ":"
-									+ match.desc);
-							String info = ClientDictionary.INSTANCE
-									.guess(stem);
-							if (!StringUtils.isBlank(info)) {
-								shb.appendHtmlConstant("<br/><span style='color: navy; font-weight: bold;'>");
-								shb.appendEscapedLines(info.replace("|", "\n"));
-								shb.appendHtmlConstant("</span><br/>");
-							}
-							shb.appendHtmlConstant("<br />");
+						already.clear();
+						String matchDesc = match.desc + "{" + match.suffix
+								+ "}";
+						if (!already.contains(matchDesc)) {
+							shb.appendEscapedLines(matchDesc);
+							shb.appendHtmlConstant("<br/>");
 						}
+						already.add(matchDesc);
+						String info = ClientDictionary.INSTANCE
+								.guess(match.stem);
+						if (!StringUtils.isBlank(info)) {
+							shb.appendHtmlConstant("<span style='color: navy; font-weight: bold;'>");
+							shb.appendEscapedLines(info.replace("|", "\n"));
+							shb.appendHtmlConstant("</span><br/>");
+						}
+						// shb.appendHtmlConstant("<br />");
 						if (match.desc.contains("*")) {
 							type = PanelType.DANGER;
 						}
-						for (String stem: match.stem) {
-							affixedStem.insert(0, "[+"+match.suffix+"]");
-							innerstem = stem;
-						}
+						already.add(match.stem);
+						affixedStem.insert(0, "[+" + match.suffix + "]");
+						innerstem = match.stem;
 					}
 					affixedStem.insert(0, innerstem);
 					SafeHtmlBuilder affixedStemHtml = new SafeHtmlBuilder();
@@ -143,18 +167,18 @@ public class DoAnalysis {
 
 					HTMLPanel hp = new HTMLPanel(affixedStemHtml.toSafeHtml());
 
-//					PanelFooter pf = new PanelFooter();
-//					Button dismiss = new Button("DISMISS");
-//					dismiss.addClickHandler(new ClickHandler() {
-//						@Override
-//						public void onClick(ClickEvent event) {
-//							eventBus.fireEvent(new RemovePanelEvent(p));
-//						}
-//					});
-//					pf.add(dismiss);
+					// PanelFooter pf = new PanelFooter();
+					// Button dismiss = new Button("DISMISS");
+					// dismiss.addClickHandler(new ClickHandler() {
+					// @Override
+					// public void onClick(ClickEvent event) {
+					// eventBus.fireEvent(new RemovePanelEvent(p));
+					// }
+					// });
+					// pf.add(dismiss);
 					p.add(ph);
 					p.add(pb);
-//					p.add(pf);
+					// p.add(pf);
 
 					pb.add(hp);
 					eventBus.fireEvent(new AddAnalysisPanelEvent(p));

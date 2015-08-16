@@ -2,9 +2,15 @@ package com.cherokeelessons.dict.engine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import com.cherokeelessons.dict.shared.Syllabary;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
@@ -40,7 +46,7 @@ public class ClientLookup {
 	}
 
 	public String exact(String syllabary) {
-		List<String> deprefixedlist = getDeprefixed(syllabary);
+		List<String> deprefixedlist = new ArrayList<>(getDeprefixed(syllabary));
 		for (String deprefixed : deprefixedlist) {
 			String definition = StringUtils
 					.defaultString(words.get(deprefixed));
@@ -55,10 +61,23 @@ public class ClientLookup {
 	private String[] Ᏹ = { "Ꮿ", "Ᏸ", "Ᏹ", "Ᏺ", "Ᏻ", "Ᏼ" };
 	private String[] Ꮻ = { "Ꮹ", "Ꮺ", "Ꮻ", "Ꮼ", "Ꮽ", "Ꮾ" };
 	private String[] Ꮒ = { "Ꮎ", "Ꮏ", "Ꮑ", "Ꮒ", "Ꮓ", "Ꮔ", "Ꮕ" };
+	private String[] ᎢᏱ = { "ᎢᏯ", "ᎢᏰ", "ᎢᏱ", "ᎢᏲ", "ᎢᏳ", "ᎢᏴ" };
 	private String[] Ꮧ = { "Ꮴ", "Ꮧ", "Ꮶ", "Ꮷ" };
 	private String[] Ꮥ = { "Ꮣ", "Ꮥ", "Ꮩ", "Ꮪ", "Ꮫ" };
 	private String[] Ꭶ1 = { "Ꭶ", "Ꭼ" };
 	private String[] Ꭶ = { "Ꭶ", "Ꭷ", "Ꭸ", "Ꭹ", "Ꭺ", "Ꭻ", "Ꭼ" };
+	private Comparator<String> bySizeDesc = new Comparator<String>() {
+		@Override
+		public int compare(String o1, String o2) {
+			if (o1 == null) {
+				return -1;
+			}
+			if (o2 == null) {
+				return 1;
+			}
+			return Integer.compare(o2.length(), o1.length());
+		}
+	};
 
 	/**
 	 * Deprefix based on simple lookups. Has hard-coded exceptions as certain
@@ -67,11 +86,11 @@ public class ClientLookup {
 	 * @param syllabary
 	 * @return
 	 */
-	private List<String> getDeprefixed(String syllabary) {
-		// GWT.log("Deprefixing: "+syllabary);
-		List<String> list = new ArrayList<String>();
+	private Collection<String> getDeprefixed(String syllabary) {
+		Set<String> list = new HashSet<String>();
 		list.add(syllabary);
-		if (StringUtils.startsWithAny(syllabary, Ᏹ)&&!StringUtils.startsWithAny(syllabary.substring(1), Ᏹ)) {
+		if (StringUtils.startsWithAny(syllabary, Ᏹ)
+				&& !StringUtils.startsWithAny(syllabary.substring(1), Ᏹ)) {
 			int sub = 0;
 			for (String prefix : Ᏹ) {
 				sub = syllabary.startsWith(prefix) ? Math.max(sub,
@@ -87,8 +106,8 @@ public class ClientLookup {
 			}
 			list.add(syllabary);
 		}
-		if (StringUtils.startsWithAny(syllabary, Ꮻ)&&!StringUtils.startsWithAny(syllabary.substring(1), Ꮻ)) {
-			// GWT.log("Deprefixing Ꮻ: "+syllabary);
+		if (StringUtils.startsWithAny(syllabary, Ꮻ)
+				&& !StringUtils.startsWithAny(syllabary.substring(1), Ꮻ)) {
 			int sub = 0;
 			for (String prefix : Ꮻ) {
 				sub = syllabary.startsWith(prefix) ? Math.max(sub,
@@ -104,8 +123,8 @@ public class ClientLookup {
 			}
 			list.add(syllabary);
 		}
-		if (StringUtils.startsWithAny(syllabary, Ꮒ)&&!StringUtils.startsWithAny(syllabary.substring(1), Ꮒ)) {
-			// GWT.log("Deprefixing Ꮒ: "+syllabary);
+		if (StringUtils.startsWithAny(syllabary, Ꮒ)
+				&& !StringUtils.startsWithAny(syllabary.substring(1), Ꮒ)) {
 			int sub = 0;
 			for (String prefix : Ꮒ) {
 				sub = syllabary.startsWith(prefix) ? Math.max(sub,
@@ -121,8 +140,23 @@ public class ClientLookup {
 			}
 			list.add(syllabary);
 		}
+		if (StringUtils.startsWithAny(syllabary, ᎢᏱ)) {
+			int sub = 0;
+			for (String prefix : ᎢᏱ) {
+				sub = syllabary.startsWith(prefix) ? Math.max(sub,
+						prefix.length()) : sub;
+			}
+			syllabary = syllabary.substring(sub - 1);
+			String l = StringUtils.left(syllabary, 1);
+			syllabary = syllabary.substring(1);
+			String lat = Syllabary.chr2lat(l).substring(1);
+			syllabary = Syllabary.lat2chr(lat) + syllabary;
+			if (syllabary.startsWith("Ꭲ")) {
+				syllabary = syllabary.substring(1);
+			}
+			list.add(syllabary);
+		}
 		if (StringUtils.startsWithAny(syllabary, Ꮧ)) {
-			// GWT.log("Deprefixing Ꮧ: "+syllabary);
 			int sub = 0;
 			for (String prefix : Ꮧ) {
 				sub = syllabary.startsWith(prefix) ? Math.max(sub,
@@ -140,7 +174,6 @@ public class ClientLookup {
 		}
 
 		if (StringUtils.startsWithAny(syllabary, Ꮥ)) {
-			// GWT.log("Deprefixing Ꮥ: "+syllabary);
 			int sub = 0;
 			for (String prefix : Ꮥ) {
 				sub = syllabary.startsWith(prefix) ? Math.max(sub,
@@ -157,10 +190,9 @@ public class ClientLookup {
 			list.add(syllabary);
 		}
 		if (StringUtils.startsWithAny(syllabary, Ꭶ)) {
-			list.addAll(thirdPersonPronouns("Ꭰ" + syllabary));
+			list.addAll(BoundPronounsMunger.INSTANCE.munge("Ꭰ" + syllabary));
 		}
 		if (StringUtils.startsWithAny(syllabary, Ꭶ1)) {
-			// GWT.log("Deprefixing Ꭶ: "+syllabary);
 			int sub = 0;
 			for (String prefix : Ꭶ1) {
 				sub = syllabary.startsWith(prefix) ? Math.max(sub,
@@ -196,18 +228,8 @@ public class ClientLookup {
 			}
 			list.add(syllabary);
 		}
-		list.addAll(thirdPersonPronouns(syllabary));
+		list.addAll(BoundPronounsMunger.INSTANCE.munge(syllabary));
 		return list;
-	}
-
-	/**
-	 * tries to convert into bare "he/she" form.
-	 * 
-	 * @param syllabary
-	 * @return
-	 */
-	private List<String> thirdPersonPronouns(String syllabary) {
-		return BoundPronounsMunger.INSTANCE.munge(syllabary);
 	}
 
 	public String guess(String _word) {
@@ -215,25 +237,24 @@ public class ClientLookup {
 		if (!StringUtils.isBlank(definition)) {
 			return definition;
 		}
+		List<String> defixedlist = new ArrayList<>(getDeprefixed(_word));
 
-		List<String> defixedlist = getDeprefixed(_word);
-		for (String word : defixedlist) {
-			// put any conscious forms... into dictionary forms and try
-			if (word.matches(".*[" + Affixes.getVowelSet(Vowel.Ꭵ) + "]Ꭹ")) {
-				String tmp = StringUtils.left(word, word.length() - 1);
+		ListIterator<String> liter = defixedlist.listIterator();
+		while (liter.hasNext()) {
+			String next = liter.next();
+			if (next.matches(".*[" + Affixes.getVowelSet(Vowel.Ꭵ) + "]Ꭹ")) {
+				String tmp = StringUtils.left(next, next.length() - 1);
 				tmp = Syllabary.changeForm(tmp, Vowel.Ꭳ) + "Ꭲ";
-				String maybe = _guessed(tmp);
-				if (!StringUtils.isBlank(maybe)) {
-					return "(?ᎥᎩ=>ᎣᎢ=>" + tmp + ")|" + maybe;
-				}
-				tmp = StringUtils.left(word, word.length() - 1);
+				liter.add(tmp);
+				tmp = StringUtils.left(next, next.length() - 1);
 				tmp = Syllabary.changeForm(tmp, Vowel.Ꭵ) + "Ꭲ";
-				maybe = _guessed(tmp);
-				if (!StringUtils.isBlank(maybe)) {
-					return "(?ᎥᎩ=>ᎥᎢ=>" + tmp + ")|" + maybe;
-				}
+				liter.add(tmp);
 			}
+		}
 
+		Collections.sort(defixedlist, bySizeDesc);
+
+		for (String word : defixedlist) {
 			definition = _guessed(word);
 			if (!StringUtils.isBlank(definition)) {
 				definition += " {" + word + "}";
@@ -244,6 +265,7 @@ public class ClientLookup {
 	}
 
 	private String _guessed(String word) {
+
 		String definition = StringUtils.defaultString(words.get(word));
 		if (!StringUtils.isBlank(definition)) {
 			return definition;
@@ -336,40 +358,73 @@ public class ClientLookup {
 		// glottal-stop/h-alternation variant
 		if (word.endsWith("Ꭵ")) {
 			String tmp = StringUtils.left(word, word.length() - 1) + "ᎲᎢ";
-			GWT.log(tmp);
 			String maybe = StringUtils.defaultString(words.get(tmp));
 			if (!StringUtils.isBlank(maybe)) {
 				return "(?+Ꭵ=>ᎲᎢ)|" + maybe;
 			}
 			tmp = StringUtils.left(word, word.length() - 1) + "ᎰᎢ";
-			GWT.log(tmp);
 			maybe = StringUtils.defaultString(words.get(tmp));
 			if (!StringUtils.isBlank(maybe)) {
 				return "(?+Ꭵ=>ᎰᎢ)|" + maybe;
 			}
 		}
 
-		// Maybe a shortening for "-Ꭿ" number or other?
-		// {
-		// String tmp = syllabary+"Ꭿ";
-		// String maybe = StringUtils.defaultString(words.get(tmp));
-		// if (!StringUtils.isBlank(maybe)){
-		// return "(?+Ꭿ=>"+tmp+")|"+maybe;
-		// }
-		// }
-		// Maybe a shortening for "-Ꭽ/-Ꭰ" present?
-		// {
-		// String tmp = syllabary+"Ꭽ";
-		// String maybe = StringUtils.defaultString(words.get(tmp));
-		// if (!StringUtils.isBlank(maybe)){
-		// return "(?+Ꭽ=>"+tmp+")|"+maybe;
-		// }
-		// tmp = syllabary+"Ꭰ";
-		// maybe = StringUtils.defaultString(words.get(tmp));
-		// if (!StringUtils.isBlank(maybe)){
-		// return "(?+Ꭰ=>"+tmp+")|"+maybe;
-		// }
-		// }
+		/*
+		 * see if it might be a simple Ꮧ=>Ꭰ or Ꭰ=>Ꮧ prefix change to find a
+		 * dictionary entry.
+		 */
+		if (word.startsWith("Ꭰ")) {
+			String tmp = "Ꮧ" + word.substring(1);
+			String maybe = StringUtils.defaultString(words.get(tmp));
+			if (!StringUtils.isBlank(maybe)) {
+				return "(Ꭰ+?=>Ꮧ+?)|" + maybe;
+			}
+		}
+		if (word.startsWith("Ꮧ")) {
+			String tmp = "Ꭰ" + word.substring(1);
+			String maybe = StringUtils.defaultString(words.get(tmp));
+			if (!StringUtils.isBlank(maybe)) {
+				return "(Ꮧ+?=>Ꭰ+?)|" + maybe;
+			}
+		}
+
+		if (word.startsWith("Ꮷ")) {
+			String tmp = "Ꭴ" + word.substring(1);
+			String maybe = StringUtils.defaultString(words.get(tmp));
+			if (!StringUtils.isBlank(maybe)) {
+				return "(Ꮷ+?=>Ꭴ+?)|" + maybe;
+			}
+		}
+
+		{
+			/*
+			 * Maybe a shortening for "-Ꭽ/-Ꭰ" present?
+			 */
+			String tmp = word + "Ꭽ";
+			String maybe = StringUtils.defaultString(words.get(tmp));
+			if (!StringUtils.isBlank(maybe)) {
+				return "(?+Ꭽ=>" + tmp + ")|" + maybe;
+			}
+			tmp = word + "Ꭰ";
+			maybe = StringUtils.defaultString(words.get(tmp));
+			if (!StringUtils.isBlank(maybe)) {
+				return "(?+Ꭰ=>" + tmp + ")|" + maybe;
+			}
+		}
+
+		{
+			/*
+			 * Maybe dialect variant where "-Ꭲ" for imperative where CED shows
+			 * "-Ꭰ"?
+			 */
+			if (word.matches(".*[" + Affixes.getVowelSet(Vowel.Ꭲ) + "]")) {
+				String tmp = Syllabary.changeForm(word, Vowel.Ꭰ);
+				String maybe = StringUtils.defaultString(words.get(tmp));
+				if (!StringUtils.isBlank(maybe)) {
+					return "(?+Ꭲ=>+Ꭰ)|" + maybe;
+				}
+			}
+		}
 
 		return definition;
 	}

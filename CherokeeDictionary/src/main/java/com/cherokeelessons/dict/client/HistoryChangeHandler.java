@@ -58,7 +58,6 @@ public class HistoryChangeHandler implements ValueChangeHandler<String> {
 		while (iparams.hasNext()) {
 			String next = iparams.next();
 			String tag = StringUtils.substringBefore(next, "=");
-			GWT.log("DATA: "+StringUtils.substringAfter(next, "="));
 			String data = URL.decodeQueryString(StringUtils.substringAfter(next, "="));
 			if ("text".equalsIgnoreCase(tag)) {
 				eventBus.fireEvent(new ReplaceTextInputEvent(data));
