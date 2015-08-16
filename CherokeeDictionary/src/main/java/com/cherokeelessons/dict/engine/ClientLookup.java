@@ -169,6 +169,8 @@ public class ClientLookup {
 			syllabary = Syllabary.lat2chr(lat) + syllabary;
 			if (syllabary.startsWith("Ꭲ")) {
 				syllabary = syllabary.substring(1);
+				//sometimes Ꮧ- is hiding an Ꭰ-
+				list.add("Ꭰ"+syllabary.substring(1));
 			}
 			list.add(syllabary);
 		}
@@ -255,10 +257,13 @@ public class ClientLookup {
 		Collections.sort(defixedlist, bySizeDesc);
 
 		for (String word : defixedlist) {
-			definition = _guessed(word);
-			if (!StringUtils.isBlank(definition)) {
-				definition += " {" + word + "}";
-				return definition;
+			//see if it might be stored with a "Ꮣ", "Ꮥ", "Ꮧ", "Ꮤ", "Ꮨ", ... in front in the dictionary
+			for (String prefix: new String[]{"", "Ꮣ", "Ꮥ", "Ꮧ", "Ꮤ", "Ꮦ", "Ꮨ", "Ꮹ", "Ꮺ", "Ꮻ", "Ꮎ", "Ꮑ", "Ꮒ", "Ꮕ"}) {
+				definition = _guessed(prefix+word);
+				if (!StringUtils.isBlank(definition)) {
+					definition += " {" + word + "}";
+					return definition;
+				}
 			}
 		}
 		return "";
