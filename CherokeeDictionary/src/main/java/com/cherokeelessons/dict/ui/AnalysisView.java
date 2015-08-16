@@ -13,7 +13,6 @@ import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.Label;
-import org.gwtbootstrap3.client.ui.PageHeader;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelFooter;
@@ -66,8 +65,8 @@ public class AnalysisView extends Composite {
 	public static interface AnalyzerEventBinder extends EventBinder<AnalysisView> {};
 	private final AnalyzerEventBinder binder = GWT.create(AnalyzerEventBinder.class);
 
-	@UiField
-	protected PageHeader pageHeader;
+//	@UiField
+//	protected PageHeader pageHeader;
 
 	@UiField
 	protected FormGroup formGroup;
@@ -179,7 +178,7 @@ public class AnalysisView extends Composite {
 
 	@UiHandler("btn_analyze")
 	public void onAnalyze(final ClickEvent event) {
-		this.pageHeader.setVisible(false);
+//		this.pageHeader.setVisible(false);
 		this.formLabel.setVisible(false);
 		btn_analyze.state().loading();
 		String value = textArea.getValue();
@@ -197,7 +196,8 @@ public class AnalysisView extends Composite {
 
 	@UiHandler("btn_search")
 	public void onSearch(final ClickEvent event) {
-		this.pageHeader.setVisible(false);
+//		this.pageHeader.setVisible(false);
+		this.formLabel.setVisible(false);
 		btn_search.state().loading();
 		String value = textArea.getValue();
 		if (StringUtils.isBlank(value)) {

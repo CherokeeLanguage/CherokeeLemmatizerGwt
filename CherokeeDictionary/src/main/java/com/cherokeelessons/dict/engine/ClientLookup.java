@@ -400,21 +400,21 @@ public class ClientLookup {
 			}
 		}
 
-		{
-			/*
-			 * Maybe a shortening for "-Ꭽ/-Ꭰ" present?
-			 */
-			String tmp = word + "Ꭽ";
-			String maybe = StringUtils.defaultString(words.get(tmp));
-			if (!StringUtils.isBlank(maybe)) {
-				return "(?+Ꭽ=>" + tmp + ")|" + maybe;
-			}
-			tmp = word + "Ꭰ";
-			maybe = StringUtils.defaultString(words.get(tmp));
-			if (!StringUtils.isBlank(maybe)) {
-				return "(?+Ꭰ=>" + tmp + ")|" + maybe;
-			}
-		}
+//		{
+//			/*
+//			 * Maybe a shortening for "-Ꭽ/-Ꭰ" present?
+//			 */
+//			String tmp = word + "Ꭽ";
+//			String maybe = StringUtils.defaultString(words.get(tmp));
+//			if (!StringUtils.isBlank(maybe)) {
+//				return "(?+Ꭽ=>" + tmp + ")|" + maybe;
+//			}
+//			tmp = word + "Ꭰ";
+//			maybe = StringUtils.defaultString(words.get(tmp));
+//			if (!StringUtils.isBlank(maybe)) {
+//				return "(?+Ꭰ=>" + tmp + ")|" + maybe;
+//			}
+//		}
 
 		{
 			/*
