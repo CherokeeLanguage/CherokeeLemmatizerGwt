@@ -271,6 +271,10 @@ public class ClientLookup {
 			return definition;
 		}
 
+		if (word.length()<3) {
+			return "";
+		}
+		
 		if (word.matches(".*[" + Affixes.getVowelSet(Vowel.Ꭳ) + "]")) {
 			String tmp = word + "Ꭲ";
 			String maybe = StringUtils.defaultString(words.get(tmp));
@@ -414,7 +418,7 @@ public class ClientLookup {
 
 		{
 			/*
-			 * Maybe dialect variant where "-Ꭲ" for imperative where CED shows
+			 * Maybe dialect variant where "-Ꭲ" for immediate stem where CED shows
 			 * "-Ꭰ"?
 			 */
 			if (word.matches(".*[" + Affixes.getVowelSet(Vowel.Ꭲ) + "]")) {
