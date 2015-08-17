@@ -51,9 +51,14 @@ public enum SuffixGuesser {
 				syllabary = syllabary.substring(1);
 			}
 			AffixResult match = super.match(syllabary);
-			if (match.isMatch
-					&& !"ᎾᎿᏁᏂᏃᏄᏅ".contains(StringUtils.left(syllabary, 1))) {
-				GWT.log("BAD WITHOUT? " + syllabary);
+			if (match.isMatch) {
+				String prefix = StringUtils.left(match.stem, 1);
+				prefix = Syllabary.chr2lat(prefix).substring(1);
+				prefix = Syllabary.lat2chr(prefix);
+				if (prefix.equals("Ꭲ")){
+					prefix="";
+				}
+				match.stem=prefix+match.stem.substring(1);
 			}
 			return match;
 		}

@@ -38,6 +38,13 @@ public enum BoundPronounsMunger {
 			String stem = matcher.getGroup(2);
 			prefix = StringUtils.right(prefix, 1);
 			list.add(prefix+stem);
+			if (Affixes.getVowelSet(Vowel.Ꭴ).contains(prefix)){
+				list.add(stem);
+				list.add("Ꭴ"+stem);
+				list.add("Ꭰ"+stem);
+				list.add("Ꭶ"+stem);
+				list.add("Ꭿ"+stem);
+			}
 			if (Affixes.getVowelSet(Vowel.Ꭰ).contains(prefix)){
 				list.add("ᎤᏩ"+stem);
 				list.add("Ꭰ"+stem);
@@ -53,6 +60,7 @@ public enum BoundPronounsMunger {
 				list.add("Ꭾ"+stem);
 			}
 			if (Affixes.getVowelSet(Vowel.Ꭲ).contains(prefix)){
+				list.add(stem);
 				list.add("Ꭴ"+stem);
 				list.add("Ꭰ"+stem);
 				list.add("Ꭶ"+stem);

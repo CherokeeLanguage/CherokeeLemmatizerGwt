@@ -36,6 +36,22 @@ public class ClientLookup {
 				prev = "|" + prev;
 			}
 			this.words.put(syllabary, definition + " [" + tag + "]" + prev);
+			/*
+			 * put in alternate lookup matches if entry does not yet exist
+			 */
+			for (String prefix: new String[]{"Ꮣ","Ꮥ","Ꮧ","Ꮹ","Ꮺ","Ꮻ","Ꮽ","Ꮎ","Ꮑ","Ꮒ","Ꮔ","Ꮕ"}) {
+				if (syllabary.startsWith(prefix)) {
+					String tmp = StringUtils.removeStart(syllabary, prefix);
+					if (this.words.get(tmp)!=null) {
+						continue;
+					}
+					prev = StringUtils.defaultString(this.words.get(tmp));
+					if (!StringUtils.isBlank(prev)) {
+						prev = "|" + prev;
+					}
+					this.words.put(tmp, definition + " [" + tag + "]" + prev);
+				}
+			}
 		}
 	}
 
@@ -191,6 +207,9 @@ public class ClientLookup {
 			}
 			list.add(syllabary);
 		}
+		if (syllabary.length()<3) {
+			return list;
+		}
 		if (StringUtils.startsWithAny(syllabary, Ꭶ)) {
 			list.addAll(BoundPronounsMunger.INSTANCE.munge("Ꭰ" + syllabary));
 		}
@@ -259,6 +278,7 @@ public class ClientLookup {
 		for (String word : defixedlist) {
 			//see if it might be stored with a "Ꮣ", "Ꮥ", "Ꮧ", "Ꮤ", "Ꮨ", ... in front in the dictionary
 			for (String prefix: new String[]{"", "Ꮣ", "Ꮥ", "Ꮧ", "Ꮤ", "Ꮦ", "Ꮨ", "Ꮹ", "Ꮺ", "Ꮻ", "Ꮎ", "Ꮑ", "Ꮒ", "Ꮕ"}) {
+				GWT.log("lookup: "+prefix+word);
 				definition = _guessed(prefix+word);
 				if (!StringUtils.isBlank(definition)) {
 					definition += " {" + word + "}";
@@ -276,10 +296,6 @@ public class ClientLookup {
 			return definition;
 		}
 
-		if (word.length()<3) {
-			return "";
-		}
-		
 		if (word.matches(".*[" + Affixes.getVowelSet(Vowel.Ꭳ) + "]")) {
 			String tmp = word + "Ꭲ";
 			String maybe = StringUtils.defaultString(words.get(tmp));
@@ -352,6 +368,10 @@ public class ClientLookup {
 			if (!StringUtils.isBlank(maybe)) {
 				return "(?+Ᏹ=>Ꭲ)|" + maybe;
 			}
+		}
+		
+		if (word.length()<3) {
+			return "";
 		}
 
 		// Try generic -Ꭲ form.
