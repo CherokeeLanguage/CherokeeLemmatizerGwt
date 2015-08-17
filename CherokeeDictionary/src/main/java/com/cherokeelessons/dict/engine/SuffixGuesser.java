@@ -29,8 +29,6 @@ import com.cherokeelessons.dict.engine.Affixes.YesNo;
 import com.cherokeelessons.dict.engine.Affixes.YesYes;
 import com.cherokeelessons.dict.shared.Syllabary;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
-import com.google.gwt.core.shared.GWT;
-
 import commons.lang3.StringUtils;
 
 public enum SuffixGuesser {
