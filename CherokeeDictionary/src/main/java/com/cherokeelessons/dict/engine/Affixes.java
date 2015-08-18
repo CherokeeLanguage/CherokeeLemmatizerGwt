@@ -10,7 +10,6 @@ import java.util.Map;
 import com.cherokeelessons.dict.shared.Syllabary;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
 import com.google.gwt.core.shared.GWT;
-
 import commons.lang3.StringUtils;
 
 public abstract class Affixes {

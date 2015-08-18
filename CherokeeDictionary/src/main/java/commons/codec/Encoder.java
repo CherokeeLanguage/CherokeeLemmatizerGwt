@@ -17,6 +17,8 @@
 
 package commons.codec;
 
+import org.apache.commons.codec.Decoder;
+
 /**
  * Provides the highest level of abstraction for Encoders.
  * <p>

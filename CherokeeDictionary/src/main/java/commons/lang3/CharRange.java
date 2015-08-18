@@ -18,8 +18,8 @@ package commons.lang3;
     */
 
    import java.io.Serializable;
-   import java.util.Iterator;
-   import java.util.NoSuchElementException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
    /**
     * <p>A contiguous range of characters, optionally negated.</p>
     * 

@@ -6,14 +6,12 @@ import java.util.Iterator;
 import com.cherokeelessons.dict.events.AppLocationEvent;
 import com.cherokeelessons.dict.events.HistoryTokenEvent;
 import com.cherokeelessons.dict.events.ReplaceTextInputEvent;
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window.Location;
 import com.google.web.bindery.event.shared.EventBus;
-
 import commons.lang3.StringUtils;
 
 public class HistoryChangeHandler implements ValueChangeHandler<String> {

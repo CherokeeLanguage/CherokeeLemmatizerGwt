@@ -15,7 +15,6 @@ import java.util.Set;
 import com.cherokeelessons.dict.shared.Syllabary;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
 import com.google.gwt.core.shared.GWT;
-
 import commons.lang3.StringUtils;
 
 public class ClientLookup {

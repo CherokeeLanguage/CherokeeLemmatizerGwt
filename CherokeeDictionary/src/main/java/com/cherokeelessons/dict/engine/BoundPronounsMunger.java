@@ -15,7 +15,6 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.opencsv.CSVParser;
-
 import commons.lang3.StringUtils;
 
 public enum BoundPronounsMunger {
