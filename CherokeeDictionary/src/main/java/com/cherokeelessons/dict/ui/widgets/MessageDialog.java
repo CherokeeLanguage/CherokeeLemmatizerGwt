@@ -5,8 +5,6 @@ import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
 import org.gwtbootstrap3.client.ui.Modal;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -32,7 +30,9 @@ public class MessageDialog extends Composite {
 	protected Modal modal;
 	
 	public void show(){
+		GWT.log(this.getClass().getSimpleName()+"#rp.add(this)");
 		rp.add(this);
+		GWT.log(this.getClass().getSimpleName()+"#modal.show");
 		modal.show();
 	}
 	

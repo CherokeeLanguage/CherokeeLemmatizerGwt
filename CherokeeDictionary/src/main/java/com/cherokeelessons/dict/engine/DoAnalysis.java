@@ -24,6 +24,7 @@ import com.cherokeelessons.dict.events.AbortEvent;
 import com.cherokeelessons.dict.events.AddAnalysisPanelEvent;
 import com.cherokeelessons.dict.events.AnalysisCompleteEvent;
 import com.cherokeelessons.dict.events.AnalyzeEvent;
+import com.cherokeelessons.dict.events.Binders;
 import com.cherokeelessons.dict.events.ClearResultsEvent;
 import com.cherokeelessons.dict.events.ResetInputEvent;
 import com.cherokeelessons.dict.events.UiEnableEvent;
@@ -35,34 +36,29 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
-
 import commons.lang3.StringUtils;
 
 public class DoAnalysis {
 	static {
 	}
 
-	public static interface DoAnalysisBinder extends EventBinder<DoAnalysis> {
-	}
-
-	private final DoAnalysisBinder binder = GWT.create(DoAnalysisBinder.class);
-
 	private final EventBus eventBus;
 
 	public DoAnalysis(EventBus eventBus) {
-		binder.bindEventHandlers(this, eventBus);
+		Binders.binder_analyzer.bindEventHandlers(this, eventBus);
+		GWT.log("#" + String.valueOf(Binders.binder_analyzer));
 		this.eventBus = eventBus;
 	}
 
 	@EventHandler
-	void abort(AbortEvent event) {
-
+	public void abort(AbortEvent event) {
+		GWT.log(this.getClass().getSimpleName()+"#Event#abort");
 	}
 
 	@EventHandler
-	void analyze(final AnalyzeEvent event) {
+	public void analyze(final AnalyzeEvent event) {
+		GWT.log(this.getClass().getSimpleName()+"#Event#analyze");
 		String value = StringUtils.strip(event.query);
 		value = value.replaceAll("[^Ꭰ-Ᏼ0-9]", " ");
 		value = value.replaceAll(" +", " ");

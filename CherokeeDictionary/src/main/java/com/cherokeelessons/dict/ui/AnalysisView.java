@@ -28,6 +28,7 @@ import com.cherokeelessons.dict.events.AddAnalysisPanelEvent;
 import com.cherokeelessons.dict.events.AddSearchResultPanelEvent;
 import com.cherokeelessons.dict.events.AnalysisCompleteEvent;
 import com.cherokeelessons.dict.events.AnalyzeEvent;
+import com.cherokeelessons.dict.events.Binders;
 import com.cherokeelessons.dict.events.ClearResultsEvent;
 import com.cherokeelessons.dict.events.EnableSearchEvent;
 import com.cherokeelessons.dict.events.HistoryTokenEvent;
@@ -57,13 +58,13 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
+import com.google.web.bindery.event.shared.HandlerRegistration;
 import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
+
 import commons.lang3.StringUtils;
 
 public class AnalysisView extends Composite {
-	public static interface AnalyzerEventBinder extends EventBinder<AnalysisView> {};
-	private final AnalyzerEventBinder binder = GWT.create(AnalyzerEventBinder.class);
 
 //	@UiField
 //	protected PageHeader pageHeader;
@@ -91,11 +92,13 @@ public class AnalysisView extends Composite {
 	
 	@EventHandler
 	public void setText(ReplaceTextInputEvent event) {
+		GWT.log(this.getClass().getSimpleName()+"#Event#setText");
 		textArea.setValue(event.text);
 	}
 	
 	@EventHandler
 	public void enable(UiEnableEvent event) {
+		GWT.log(this.getClass().getSimpleName()+"#Event#enable");
 		btn_analyze.setEnabled(event.enable);
 		btn_search.setEnabled(event.enable);
 		btn_reset.setEnabled(event.enable);
@@ -109,7 +112,7 @@ public class AnalysisView extends Composite {
 	
 	@EventHandler
 	public void onClearResults(ClearResultsEvent event) {
-		GWT.log("ClearResultsEvent");
+		GWT.log(this.getClass().getSimpleName()+"#Event#onClearResults");
 		Iterator<Panel> ip = panels.iterator();
 		while (ip.hasNext()) {
 			Panel next = ip.next();
@@ -121,6 +124,7 @@ public class AnalysisView extends Composite {
 	
 	@EventHandler
 	public void onCompletion(AnalysisCompleteEvent event) {
+		GWT.log(this.getClass().getSimpleName()+"#Event#onCompletion");
 		eventBus.fireEvent(new UiEnableEvent(true));
 	}
 
@@ -142,11 +146,30 @@ public class AnalysisView extends Composite {
 			}
 		}
 	};
+
+	private HandlerRegistration reg;
+
+	private String prevTitle;
+	
+	@Override
+	protected void onLoad() {
+		super.onLoad();
+		reg = Binders.binder_analysisView.bindEventHandlers(this, eventBus);
+		GWT.log("onLoad#" + String.valueOf(Binders.binder_analysisView));
+		prevTitle = Document.get().getTitle();
+		Document.get().setTitle("ᎤᎪᎵᏰᏗ - ᏣᎳᎩ ᏗᏕᏠᏆᏙᏗ");
+	}
+	
+	@Override
+	protected void onUnload() {
+		super.onUnload();
+		reg.removeHandler();
+		GWT.log("onUnload#" + String.valueOf(Binders.binder_analysisView));
+		Document.get().setTitle(prevTitle);
+	}
 	
 	public AnalysisView(EventBus eventBus, RootPanel rp) {
 		initWidget(uiBinder.createAndBindUi(this));
-		binder.bindEventHandlers(this, eventBus);
-		Document.get().setTitle("ᎤᎪᎵᏰᏗ - ᏣᎳᎩ ᏗᏕᏠᏆᏙᏗ");
 		this.rp = rp;
 		this.eventBus = eventBus;
 		addDomHandler(keypress, KeyPressEvent.getType());
@@ -171,6 +194,7 @@ public class AnalysisView extends Composite {
 	
 	@EventHandler
 	public void onResetInput(ResetInputEvent event) {
+		GWT.log(this.getClass().getSimpleName()+"#Event#resetInput");
 		textArea.setValue("");
 	}
 
@@ -215,6 +239,7 @@ public class AnalysisView extends Composite {
 	
 	@EventHandler
 	public void onEnableSearch(EnableSearchEvent event) {
+		GWT.log(this.getClass().getSimpleName()+"#Event#enableSearch");
 		if (event.enable) {
 			btn_search.setVisible(true);
 		} else {
@@ -224,6 +249,7 @@ public class AnalysisView extends Composite {
 	
 	@EventHandler
 	public void removePanel(RemovePanelEvent event) {
+		GWT.log(this.getClass().getSimpleName()+"#Event#removePanel");
 		Panel p = event.p;
 		p.clear();
 		p.removeFromParent();
@@ -231,18 +257,21 @@ public class AnalysisView extends Composite {
 	
 	@EventHandler
 	public void addPanel(AddAnalysisPanelEvent event) {
+		GWT.log(this.getClass().getSimpleName()+"#Event#addPanel(analysis)");
 		rp.add(event.p);
 		panels.add(event.p);
 	}
 	
 	@EventHandler
 	public void addPanel(AddSearchResultPanelEvent event) {
+		GWT.log(this.getClass().getSimpleName()+"#Event#addPanel");
 		rp.add(event.p);
 		panels.add(event.p);
 	}
 
 	@EventHandler
 	public void process(SearchResponseEvent event) {
+		GWT.log(this.getClass().getSimpleName()+"#Event#process");
 		int dupes=0;
 		Set<Integer> already = new HashSet<>();
 		Set<Integer> duplicates = new HashSet<>();

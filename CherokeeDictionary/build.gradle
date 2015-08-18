@@ -14,6 +14,7 @@ version = '1.0'
 
 farm {
   webapp ':'
+  //webapp 'com.google.gwt.eventbinder:eventbinder-sample:1.1.1-SNAPSHOT'
 }
 
 def RTJAR = '/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rt.jar';
@@ -62,16 +63,17 @@ gwt {
 	jsInteropMode = "JS"
 	
 	compiler {
-		disableAggressiveOptimization = false;
+		saveSource = true;
+		disableAggressiveOptimization = true;
 		disableCastChecking = false;		
 		disableClassMetadata = false;
-		enableClosureCompiler = true;
+		enableClosureCompiler = false;
 		enforceStrictResources = false;
 		overlappingSourceWarnings = false;
-		localWorkers = 1;
-		fragmentCount = 4;
+		localWorkers = 5;
+		//fragmentCount = 4;
 		strict = true;
-		style = "OBF";
+		style = "DETAILED";
 	}
 	
 	superDev {
@@ -96,7 +98,7 @@ dependencies {
 	providedCompile 'com.google.gwt:gwt-servlet:2.7.0'
 	gwt 'org.fusesource.restygwt:restygwt:2.0.3'
 	gwt 'org.gwtbootstrap3:gwtbootstrap3:0.9.1'
-	gwt ('com.google.gwt.eventbinder:eventbinder:1.1.0') {
+	gwt ('com.google.gwt.eventbinder:eventbinder:1.1.1-SNAPSHOT') {
 		exclude module: 'gwt-user'
 	}
 }
@@ -129,6 +131,7 @@ eclipse {
 	project {
 		name = 'CherokeeDictionary'
 		comment = 'Cherokee Dictionary GWT based font-end'
+		//referencedProjects 'eventbinder'
 		//referencedProjects 'ResearcherInstituteApi', 'ResearcherInstituteDao', 'ResearcherInstituteShared', 'SHARED-POJOS', 'SHARED-SERVER' 
 		natures 'org.springsource.ide.eclipse.gradle.core.nature'
 		webAppDirName = 'src/main/webapp'

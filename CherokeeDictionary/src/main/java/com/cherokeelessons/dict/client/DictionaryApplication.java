@@ -62,14 +62,19 @@ public class DictionaryApplication implements ScheduledCommand {
 	}
 
 	public DictionaryApplication() {
+		RootPanel.get().clear(true);
+		rp = RootPanel.get();
+		
+		new AppLocationHandler(rp, eventBus);
+		new DoAnalysis(eventBus);
+		new DialogManager(rp, eventBus);
 	}
 
 	private RootPanel rp;
 
 	@Override
 	public void execute() {
-		RootPanel.get().clear(true);
-		rp = RootPanel.get();
+		
 		Style style = rp.getElement().getStyle();
 		String[] engines = new String[] { "", "webkit", "ms", "Moz", "O",
 				"khtml" };
@@ -84,9 +89,7 @@ public class DictionaryApplication implements ScheduledCommand {
 		style.setProperty("maxWidth", (WIDTH - 10) + "px");
 		style.setProperty("padding", "5px");
 		style.setProperty("border", "none");
-		new AppLocationHandler(rp, eventBus);
-		new DoAnalysis(eventBus);
-		new DialogManager(rp, eventBus);
+		
 		History.addValueChangeHandler(new HistoryChangeHandler(eventBus));
 		doResize();
 		Window.addResizeHandler(resize);
