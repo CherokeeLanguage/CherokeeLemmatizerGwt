@@ -42,6 +42,8 @@ import com.cherokeelessons.dict.shared.DictEntry;
 import com.cherokeelessons.dict.shared.FormattedEntry;
 import com.cherokeelessons.dict.shared.SearchResponse;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
@@ -53,25 +55,25 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
-import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
 
 import commons.lang3.StringUtils;
 
 public class AnalysisView extends Composite {
 
-//	@UiField
-//	protected PageHeader pageHeader;
+	// @UiField
+	// protected PageHeader pageHeader;
 
 	@UiField
 	protected FormGroup formGroup;
-	
+
 	@UiField
 	protected FormLabel formLabel;
 
@@ -83,22 +85,22 @@ public class AnalysisView extends Composite {
 
 	@UiField
 	protected Button btn_search;
-	
+
 	@UiField
 	protected Button btn_reset;
-	
+
 	@UiField
 	protected Button btn_clear;
-	
+
 	@EventHandler
 	public void setText(ReplaceTextInputEvent event) {
-		GWT.log(this.getClass().getSimpleName()+"#Event#setText");
+		GWT.log(this.getClass().getSimpleName() + "#Event#setText");
 		textArea.setValue(event.text);
 	}
-	
+
 	@EventHandler
 	public void enable(UiEnableEvent event) {
-		GWT.log(this.getClass().getSimpleName()+"#Event#enable");
+		GWT.log(this.getClass().getSimpleName() + "#Event#enable");
 		btn_analyze.setEnabled(event.enable);
 		btn_search.setEnabled(event.enable);
 		btn_reset.setEnabled(event.enable);
@@ -109,10 +111,10 @@ public class AnalysisView extends Composite {
 			btn_search.state().reset();
 		}
 	}
-	
+
 	@EventHandler
 	public void onClearResults(ClearResultsEvent event) {
-		GWT.log(this.getClass().getSimpleName()+"#Event#onClearResults");
+		GWT.log(this.getClass().getSimpleName() + "#Event#onClearResults");
 		Iterator<Panel> ip = panels.iterator();
 		while (ip.hasNext()) {
 			Panel next = ip.next();
@@ -121,28 +123,29 @@ public class AnalysisView extends Composite {
 			ip.remove();
 		}
 	}
-	
+
 	@EventHandler
 	public void onCompletion(AnalysisCompleteEvent event) {
-		GWT.log(this.getClass().getSimpleName()+"#Event#onCompletion");
+		GWT.log(this.getClass().getSimpleName() + "#Event#onCompletion");
 		eventBus.fireEvent(new UiEnableEvent(true));
 	}
 
 	private static MainMenuUiBinder uiBinder = GWT
 			.create(MainMenuUiBinder.class);
 
-	protected interface MainMenuUiBinder extends
-			UiBinder<Widget, AnalysisView> {
+	protected interface MainMenuUiBinder extends UiBinder<Widget, AnalysisView> {
 	}
 
 	private final RootPanel rp;
 	private final EventBus eventBus;
 
-	private KeyPressHandler keypress=new KeyPressHandler() {
+	private KeyPressHandler keypress = new KeyPressHandler() {
 		@Override
 		public void onKeyPress(KeyPressEvent event) {
-			if (event.isControlKeyDown()&&event.isAltKeyDown()&&event.getCharCode()=='s') {
-				eventBus.fireEvent(new EnableSearchEvent(!btn_search.isVisible()));
+			if (event.isControlKeyDown() && event.isAltKeyDown()
+					&& event.getCharCode() == 's') {
+				eventBus.fireEvent(new EnableSearchEvent(!btn_search
+						.isVisible()));
 			}
 		}
 	};
@@ -150,7 +153,7 @@ public class AnalysisView extends Composite {
 	private HandlerRegistration reg;
 
 	private String prevTitle;
-	
+
 	@Override
 	protected void onLoad() {
 		super.onLoad();
@@ -159,7 +162,7 @@ public class AnalysisView extends Composite {
 		prevTitle = Document.get().getTitle();
 		Document.get().setTitle("ᎤᎪᎵᏰᏗ - ᏣᎳᎩ ᏗᏕᏠᏆᏙᏗ");
 	}
-	
+
 	@Override
 	protected void onUnload() {
 		super.onUnload();
@@ -167,7 +170,7 @@ public class AnalysisView extends Composite {
 		GWT.log("onUnload#" + String.valueOf(Binders.binder_analysisView));
 		Document.get().setTitle(prevTitle);
 	}
-	
+
 	public AnalysisView(EventBus eventBus, RootPanel rp) {
 		initWidget(uiBinder.createAndBindUi(this));
 		this.rp = rp;
@@ -186,15 +189,15 @@ public class AnalysisView extends Composite {
 		token = token.replaceAll("&text=[^&]*", "");
 		eventBus.fireEvent(new HistoryTokenEvent(token));
 	}
-	
+
 	@UiHandler("btn_clear")
 	public void onClearResults(final ClickEvent event) {
 		eventBus.fireEvent(new ClearResultsEvent());
 	}
-	
+
 	@EventHandler
 	public void onResetInput(ResetInputEvent event) {
-		GWT.log(this.getClass().getSimpleName()+"#Event#resetInput");
+		GWT.log(this.getClass().getSimpleName() + "#Event#resetInput");
 		textArea.setValue("");
 	}
 
@@ -202,77 +205,90 @@ public class AnalysisView extends Composite {
 
 	@UiHandler("btn_analyze")
 	public void onAnalyze(final ClickEvent event) {
-//		this.pageHeader.setVisible(false);
-		this.formLabel.setVisible(false);
-		btn_analyze.state().loading();
-		String value = textArea.getValue();
-		if (StringUtils.isBlank(value)) {
-			eventBus.fireEvent(new MessageEvent("ERROR", "NOTHING TO ANALYZE."));
-			btn_analyze.state().reset();
-			return;
-		}
-		String token = StringUtils.substringAfter(Location.getHref(), "#");
-		token = token.replaceAll("&text=[^&]*", "");
-		token = token+"&text="+value;
-		eventBus.fireEvent(new HistoryTokenEvent(token));
-		eventBus.fireEvent(new AnalyzeEvent(value));
+		Scheduler.get().scheduleFinally(new ScheduledCommand() {
+			@Override
+			public void execute() {
+				// this.pageHeader.setVisible(false);
+				formLabel.setVisible(false);
+				btn_analyze.state().loading();
+				final String value = textArea.getValue();
+				if (StringUtils.isBlank(value)) {
+					eventBus.fireEvent(new MessageEvent("ERROR",
+							"NOTHING TO ANALYZE."));
+					btn_analyze.state().reset();
+					return;
+				}
+				String token = StringUtils.substringAfter(Location.getHref(),
+						"#");
+				token = token.replaceAll("&text=[^&]*", "");
+				token = token + "&text=" + value;
+				final String h = token;
+				GWT.log("1 fire#history " + h);
+				eventBus.fireEvent(new HistoryTokenEvent(h));
+				GWT.log("2 fire#analyze " + value);
+				eventBus.fireEvent(new AnalyzeEvent(value));
+				GWT.log("3 fire#done");
+			}
+
+		});
 	}
 
 	@UiHandler("btn_search")
 	public void onSearch(final ClickEvent event) {
-//		this.pageHeader.setVisible(false);
+		// this.pageHeader.setVisible(false);
 		this.formLabel.setVisible(false);
 		btn_search.state().loading();
 		String value = textArea.getValue();
 		if (StringUtils.isBlank(value)) {
-			eventBus.fireEvent(new MessageEvent("ERROR", "EMPTY SEARCHES ARE NOT ALLOWED."));
+			eventBus.fireEvent(new MessageEvent("ERROR",
+					"EMPTY SEARCHES ARE NOT ALLOWED."));
 			btn_search.state().reset();
 			return;
 		}
 		String token = StringUtils.substringAfter(Location.getHref(), "#");
 		token = token.replaceAll("&text=[^&]*", "");
-		token = token+"&text="+value;
+		token = token + "&text=" + value;
 		eventBus.fireEvent(new HistoryTokenEvent(token));
 		eventBus.fireEvent(new UiEnableEvent(false));
 		DictionaryApplication.api.syll(StringUtils.strip(value), display_it);
 	}
-	
+
 	@EventHandler
 	public void onEnableSearch(EnableSearchEvent event) {
-		GWT.log(this.getClass().getSimpleName()+"#Event#enableSearch");
+		GWT.log(this.getClass().getSimpleName() + "#Event#enableSearch");
 		if (event.enable) {
 			btn_search.setVisible(true);
 		} else {
 			btn_search.setVisible(false);
 		}
 	}
-	
+
 	@EventHandler
 	public void removePanel(RemovePanelEvent event) {
-		GWT.log(this.getClass().getSimpleName()+"#Event#removePanel");
+		GWT.log(this.getClass().getSimpleName() + "#Event#removePanel");
 		Panel p = event.p;
 		p.clear();
 		p.removeFromParent();
 	}
-	
+
 	@EventHandler
 	public void addPanel(AddAnalysisPanelEvent event) {
-		GWT.log(this.getClass().getSimpleName()+"#Event#addPanel(analysis)");
+		GWT.log(this.getClass().getSimpleName() + "#Event#addPanel(analysis)");
 		rp.add(event.p);
 		panels.add(event.p);
 	}
-	
+
 	@EventHandler
 	public void addPanel(AddSearchResultPanelEvent event) {
-		GWT.log(this.getClass().getSimpleName()+"#Event#addPanel");
+		GWT.log(this.getClass().getSimpleName() + "#Event#addPanel");
 		rp.add(event.p);
 		panels.add(event.p);
 	}
 
 	@EventHandler
 	public void process(SearchResponseEvent event) {
-		GWT.log(this.getClass().getSimpleName()+"#Event#process");
-		int dupes=0;
+		GWT.log(this.getClass().getSimpleName() + "#Event#process");
+		int dupes = 0;
 		Set<Integer> already = new HashSet<>();
 		Set<Integer> duplicates = new HashSet<>();
 		SearchResponse sr = event.response;
@@ -280,8 +296,8 @@ public class AnalysisView extends Composite {
 		Iterator<DictEntry> isr = sr.data.iterator();
 		while (isr.hasNext()) {
 			DictEntry entry = isr.next();
-			if (already.contains(entry.id)){
-				GWT.log("DUPLICATE RECORD IN RESPONSE: "+entry.id);
+			if (already.contains(entry.id)) {
+				GWT.log("DUPLICATE RECORD IN RESPONSE: " + entry.id);
 				dupes++;
 				duplicates.add(entry.id);
 				isr.remove();
@@ -292,23 +308,23 @@ public class AnalysisView extends Composite {
 		for (DictEntry entry : sr.data) {
 			final Panel p = new Panel(PanelType.SUCCESS);
 			Style style = p.getElement().getStyle();
-			style.setWidth((DictionaryApplication.WIDTH-20)/2-6, Unit.PX);
+			style.setWidth((DictionaryApplication.WIDTH - 20) / 2 - 6, Unit.PX);
 			style.setDisplay(Display.INLINE_BLOCK);
 			style.setMarginRight(5, Unit.PX);
 			style.setVerticalAlign(Style.VerticalAlign.TOP);
 			PanelHeader ph = new PanelHeader();
 			Heading h = new Heading(HeadingSize.H5);
 			ph.add(h);
-			String hdr = entry.definitiond+"<br/>["+entry.id+"]";
-			if (duplicates.contains(entry.id)){
-				hdr+=" (DUPE DETECTED!)";
+			String hdr = entry.definitiond + "<br/>[" + entry.id + "]";
+			if (duplicates.contains(entry.id)) {
+				hdr += " (DUPE DETECTED!)";
 			}
 			h.getElement().setInnerHTML(hdr);
 			h.getElement().getStyle().setDisplay(Display.INLINE_BLOCK);
 			Label source = new Label(LabelType.INFO);
 			ph.add(source);
 			source.getElement().getStyle().setFloat(Style.Float.RIGHT);
-			source.setText("["+entry.source+"]");
+			source.setText("[" + entry.source + "]");
 			PanelBody pb = new PanelBody();
 			HTMLPanel hp = new HTMLPanel(new FormattedEntry(entry).getHtml());
 			Button dismiss = new Button("DISMISS");
@@ -327,8 +343,9 @@ public class AnalysisView extends Composite {
 			pb.add(hp);
 			eventBus.fireEvent(new AddSearchResultPanelEvent(p));
 		}
-		if (dupes>0) {
-			eventBus.fireEvent(new MessageEvent("ERROR", dupes+" DUPES IN RESPONSE!"));
+		if (dupes > 0) {
+			eventBus.fireEvent(new MessageEvent("ERROR", dupes
+					+ " DUPES IN RESPONSE!"));
 		}
 		eventBus.fireEvent(new UiEnableEvent(true));
 	}
@@ -337,8 +354,8 @@ public class AnalysisView extends Composite {
 		@Override
 		public void onFailure(Method method, Throwable exception) {
 			btn_search.state().reset();
-			eventBus.fireEvent(new MessageEvent("FAILURE", "onFailure: ᎤᏲᏳ!<br/>"
-					+ exception.getMessage()));
+			eventBus.fireEvent(new MessageEvent("FAILURE",
+					"onFailure: ᎤᏲᏳ!<br/>" + exception.getMessage()));
 			eventBus.fireEvent(new UiEnableEvent(true));
 			throw new RuntimeException(exception);
 		}
@@ -347,10 +364,11 @@ public class AnalysisView extends Composite {
 		public void onSuccess(Method method, final SearchResponse sr) {
 			btn_search.state().reset();
 			if (sr == null) {
-				eventBus.fireEvent(new MessageEvent("FAILURE", "ᎤᏲᏳ! SearchResponse is NULL"));
+				eventBus.fireEvent(new MessageEvent("FAILURE",
+						"ᎤᏲᏳ! SearchResponse is NULL"));
 				return;
 			}
-			GWT.log("SearchResponse: "+sr.data.size());
+			GWT.log("SearchResponse: " + sr.data.size());
 			eventBus.fireEvent(new ClearResultsEvent());
 			eventBus.fireEvent(new SearchResponseEvent(sr));
 		}

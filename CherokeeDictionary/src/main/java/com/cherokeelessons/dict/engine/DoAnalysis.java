@@ -40,15 +40,12 @@ import com.google.web.bindery.event.shared.binder.EventHandler;
 import commons.lang3.StringUtils;
 
 public class DoAnalysis {
-	static {
-	}
-
 	private final EventBus eventBus;
 
 	public DoAnalysis(EventBus eventBus) {
-		Binders.binder_analyzer.bindEventHandlers(this, eventBus);
-		GWT.log("#" + String.valueOf(Binders.binder_analyzer));
 		this.eventBus = eventBus;
+		Binders.binder_analyzer.bindEventHandlers(this, this.eventBus);
+		GWT.log("#" + String.valueOf(Binders.binder_analyzer));
 	}
 
 	@EventHandler
@@ -187,14 +184,14 @@ public class DoAnalysis {
 				eventBus.fireEvent(new AnalysisCompleteEvent());
 			}
 		});
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+		Scheduler.get().scheduleFinally(new ScheduledCommand() {
 			@Override
 			public void execute() {
 				if (cmds.size() > 0) {
 					ScheduledCommand cmd = cmds.get(0);
 					cmds.remove(0);
-					Scheduler.get().scheduleDeferred(cmd);
-					Scheduler.get().scheduleDeferred(this);
+					Scheduler.get().scheduleFinally(cmd);
+					Scheduler.get().scheduleFinally(this);
 					return;
 				}
 			}

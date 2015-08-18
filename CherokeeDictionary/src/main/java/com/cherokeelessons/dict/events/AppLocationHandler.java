@@ -56,7 +56,6 @@ public class AppLocationHandler {
 	 */
 	@EventHandler
 	public void saveState(HistoryTokenEvent event) {
-		GWT.log(this.getClass().getSimpleName()+"#Event#saveState");
 		if (event.replace) {
 			replaceState("#" + URL.encode(event.hash), Document.get()
 					.getTitle());
@@ -68,6 +67,7 @@ public class AppLocationHandler {
 		if (event.trigger) {
 			History.fireCurrentHistoryState();
 		}
+		GWT.log(this.getClass().getSimpleName()+"#Event#saveState#done [trigger="+event.trigger+"]");
 	}
 
 	public static native boolean hasState()/*-{

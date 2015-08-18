@@ -73,7 +73,7 @@ gwt {
 		localWorkers = 5;
 		//fragmentCount = 4;
 		strict = true;
-		style = "DETAILED";
+		style = "PRETTY";
 	}
 	
 	superDev {
@@ -131,7 +131,7 @@ eclipse {
 	project {
 		name = 'CherokeeDictionary'
 		comment = 'Cherokee Dictionary GWT based font-end'
-		//referencedProjects 'eventbinder'
+		referencedProjects 'eventbinder'
 		//referencedProjects 'ResearcherInstituteApi', 'ResearcherInstituteDao', 'ResearcherInstituteShared', 'SHARED-POJOS', 'SHARED-SERVER' 
 		natures 'org.springsource.ide.eclipse.gradle.core.nature'
 		webAppDirName = 'src/main/webapp'

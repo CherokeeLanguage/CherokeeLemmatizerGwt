@@ -21,6 +21,7 @@ public class DialogManager {
 		this.eventBus=eventBus;
 		this.rp=rp;
 		Binders.binder_dialog.bindEventHandlers(this, this.eventBus);
+		GWT.log("onLoad#" + String.valueOf(Binders.binder_dialog));
 	}
 
 	@EventHandler
