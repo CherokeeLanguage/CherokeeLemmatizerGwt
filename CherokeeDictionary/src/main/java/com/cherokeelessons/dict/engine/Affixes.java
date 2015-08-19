@@ -6,15 +6,19 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.cherokeelessons.dict.client.ConsoleLogHandler2;
+import com.cherokeelessons.dict.shared.Log;
 import com.cherokeelessons.dict.shared.Syllabary;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
+
 import commons.lang3.StringUtils;
 
 public abstract class Affixes {
 
-	protected final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+	protected final Logger logger = Log.getGwtLogger(new ConsoleLogHandler2(), this.getClass().getSimpleName());
 	
 	protected boolean completiveStem = true;
 
@@ -146,6 +150,7 @@ public abstract class Affixes {
 	public Affixes() {
 		patterns = new ArrayList<String>();
 		suffixes = new ArrayList<String>();
+		
 	}
 
 	public static class Repeatedly extends Affixes {

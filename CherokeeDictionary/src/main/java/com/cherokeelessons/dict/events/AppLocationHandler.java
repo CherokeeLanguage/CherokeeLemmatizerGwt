@@ -1,9 +1,12 @@
 package com.cherokeelessons.dict.events;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.cherokeelessons.dict.client.ConsoleLogHandler2;
 import com.cherokeelessons.dict.client.DictEntryPoint;
 import com.cherokeelessons.dict.client.HistoryChangeHandler.AppLocation;
+import com.cherokeelessons.dict.shared.Log;
 import com.cherokeelessons.dict.ui.AnalysisView;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Document;
@@ -15,7 +18,7 @@ import com.google.web.bindery.event.shared.binder.EventHandler;
 
 public class AppLocationHandler {
 	
-	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+	private final Logger logger = Log.getGwtLogger(new ConsoleLogHandler2(), this.getClass().getSimpleName());
 	
 	protected interface AppLocationEventBinder extends	EventBinder<AppLocationHandler> {
 		public final AppLocationEventBinder binder_applocation=GWT.create(AppLocationEventBinder.class);
@@ -24,6 +27,7 @@ public class AppLocationHandler {
 	private final RootPanel rp;
 
 	public AppLocationHandler(RootPanel rp) {
+		
 		this.rp = rp;
 		AppLocationEventBinder.binder_applocation.bindEventHandlers(this, DictEntryPoint.eventBus);
 		logger.info("#" + String.valueOf(AppLocationEventBinder.binder_applocation));
@@ -37,7 +41,6 @@ public class AppLocationHandler {
 		if (!event.location.equals(current)) {
 			logger.info("LOCATION CHANGE: " + String.valueOf(current) + " => "
 					+ String.valueOf(event.location));
-			rp.clear(true);
 			switch (event.location) {
 			case Analyzer:
 				AnalysisView mainwindow = new AnalysisView(rp) {

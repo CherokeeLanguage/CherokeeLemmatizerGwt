@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.cherokeelessons.dict.client.ConsoleLogHandler2;
 import com.cherokeelessons.dict.engine.Affixes.AboutTo;
 import com.cherokeelessons.dict.engine.Affixes.Accidental;
 import com.cherokeelessons.dict.engine.Affixes.AffixResult;
@@ -28,6 +29,7 @@ import com.cherokeelessons.dict.engine.Affixes.Very;
 import com.cherokeelessons.dict.engine.Affixes.WentForDoing;
 import com.cherokeelessons.dict.engine.Affixes.YesNo;
 import com.cherokeelessons.dict.engine.Affixes.YesYes;
+import com.cherokeelessons.dict.shared.Log;
 import com.cherokeelessons.dict.shared.Syllabary;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
 import commons.lang3.StringUtils;
@@ -40,7 +42,7 @@ public enum SuffixGuesser {
 		Present, Past, Progressive, Immediate, Deverbal
 	}
 	
-	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+	private final Logger logger = Log.getGwtLogger(new ConsoleLogHandler2(), this.getClass().getSimpleName());
 
 	private SuffixGuesser() {
 	}

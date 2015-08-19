@@ -11,17 +11,22 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.cherokeelessons.dict.client.ConsoleLogHandler2;
+import com.cherokeelessons.dict.shared.Log;
 import com.cherokeelessons.dict.shared.Syllabary;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
+
 import commons.lang3.StringUtils;
 
 public class ClientLookup {
 	
-	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+	private final Logger logger = Log.getGwtLogger(new ConsoleLogHandler2(), this.getClass().getSimpleName());
 
 	public ClientLookup() {
+		
 	}
 
 	public void addEntries(String tag, List<String[]> words) {

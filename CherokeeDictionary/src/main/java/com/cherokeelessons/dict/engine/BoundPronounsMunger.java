@@ -7,21 +7,25 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.cherokeelessons.dict.client.ClientResources;
+import com.cherokeelessons.dict.client.ConsoleLogHandler2;
+import com.cherokeelessons.dict.shared.Log;
 import com.cherokeelessons.dict.shared.Syllabary;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.opencsv.CSVParser;
+
 import commons.lang3.StringUtils;
 
 public enum BoundPronounsMunger {
 	INSTANCE;
 	
 	final private List<RegExp> patterns = new ArrayList<>();
-	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+	private final Logger logger = Log.getGwtLogger(new ConsoleLogHandler2(), this.getClass().getSimpleName());
 	public List<String> munge(String word) {
 		List<String> list = new ArrayList<String>();
 		list.add(word);
@@ -82,6 +86,7 @@ public enum BoundPronounsMunger {
 	}
 	
 	private BoundPronounsMunger(){
+		
 		String[] lines = ClientResources.INSTANCE.boundpronouns().getText().split("\n");
 		CSVParser parser = new CSVParser();
 		Iterator<String> iline = Arrays.asList(lines).iterator();

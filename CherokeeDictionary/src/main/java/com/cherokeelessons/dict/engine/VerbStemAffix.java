@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import com.cherokeelessons.dict.client.ConsoleLogHandler2;
+import com.cherokeelessons.dict.shared.Log;
+
 public enum VerbStemAffix {
 	/**
 	 * These entries are order dependent and are listed from word END to ROOT
@@ -17,8 +20,7 @@ public enum VerbStemAffix {
 			ToForᏏ), AptTo(Completely), ByAccident(AptTo), Causative(AptTo), OverAndOver(
 			Causative, ByAccident), Again(OverAndOver);
 
-	private final Logger logger = Logger.getLogger(this.getClass()
-			.getSimpleName());
+	private final Logger logger =Log.getGwtLogger(new ConsoleLogHandler2(), this.getClass().getSimpleName());
 
 	private VerbStemAffix(VerbStemAffix... affixs) {
 		if (affixs == null) {

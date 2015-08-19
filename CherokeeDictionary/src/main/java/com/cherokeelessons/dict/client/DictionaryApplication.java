@@ -1,10 +1,12 @@
 package com.cherokeelessons.dict.client;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.cherokeelessons.dict.engine.DoAnalysis;
 import com.cherokeelessons.dict.events.AppLocationHandler;
 import com.cherokeelessons.dict.events.MessageEvent;
+import com.cherokeelessons.dict.shared.Log;
 import com.cherokeelessons.dict.ui.DialogManager;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -21,7 +23,7 @@ public class DictionaryApplication implements ScheduledCommand {
 
 	public static final int WIDTH = 800;
 	
-	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+	private final Logger logger = Log.getGwtLogger(new ConsoleLogHandler2(), this.getClass().getSimpleName());
 
 	private Timer doResizeTimer;
 	private final ResizeHandler resize = new ResizeHandler() {
@@ -57,6 +59,7 @@ public class DictionaryApplication implements ScheduledCommand {
 	}
 
 	public DictionaryApplication() {
+		
 	}
 
 	private RootPanel rp;

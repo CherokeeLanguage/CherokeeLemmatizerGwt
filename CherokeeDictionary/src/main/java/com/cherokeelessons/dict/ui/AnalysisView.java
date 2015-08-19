@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.fusesource.restygwt.client.Method;
@@ -24,6 +25,7 @@ import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.gwt.HTMLPanel;
 
+import com.cherokeelessons.dict.client.ConsoleLogHandler2;
 import com.cherokeelessons.dict.client.DictEntryPoint;
 import com.cherokeelessons.dict.client.DictionaryApplication;
 import com.cherokeelessons.dict.events.AddAnalysisPanelEvent;
@@ -41,6 +43,7 @@ import com.cherokeelessons.dict.events.SearchResponseEvent;
 import com.cherokeelessons.dict.events.UiEnableEvent;
 import com.cherokeelessons.dict.shared.DictEntry;
 import com.cherokeelessons.dict.shared.FormattedEntry;
+import com.cherokeelessons.dict.shared.Log;
 import com.cherokeelessons.dict.shared.SearchResponse;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -61,11 +64,12 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
+
 import commons.lang3.StringUtils;
 
 public class AnalysisView extends Composite {
 	
-	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+	private final Logger logger = Log.getGwtLogger(new ConsoleLogHandler2(), this.getClass().getSimpleName());
 
 	protected interface AnalysisViewEventBinder extends
 			EventBinder<AnalysisView> {

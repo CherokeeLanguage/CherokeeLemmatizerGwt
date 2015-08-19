@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import com.cherokeelessons.dict.events.AppLocationEvent;
 import com.cherokeelessons.dict.events.HistoryTokenEvent;
 import com.cherokeelessons.dict.events.ReplaceTextInputEvent;
+import com.cherokeelessons.dict.shared.Log;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -16,7 +17,7 @@ import commons.lang3.StringUtils;
 
 public class HistoryChangeHandler implements ValueChangeHandler<String> {
 
-	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+	private final Logger logger = Log.getGwtLogger(new ConsoleLogHandler2(), this.getClass().getSimpleName());
 	
 	public static enum AppLocation {
 		Invalid, Analyzer;

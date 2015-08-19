@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.gwtbootstrap3.client.ui.Heading;
@@ -19,6 +20,7 @@ import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.gwt.HTMLPanel;
 
 import com.cherokeelessons.dict.client.ClientDictionary;
+import com.cherokeelessons.dict.client.ConsoleLogHandler2;
 import com.cherokeelessons.dict.client.DictEntryPoint;
 import com.cherokeelessons.dict.client.DictionaryApplication;
 import com.cherokeelessons.dict.engine.Affixes.AffixResult;
@@ -29,6 +31,7 @@ import com.cherokeelessons.dict.events.AnalyzeEvent;
 import com.cherokeelessons.dict.events.ClearResultsEvent;
 import com.cherokeelessons.dict.events.ResetInputEvent;
 import com.cherokeelessons.dict.events.UiEnableEvent;
+import com.cherokeelessons.dict.shared.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -38,17 +41,19 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
+
 import commons.lang3.StringUtils;
 
 public class DoAnalysis {
 	
-	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+	private final Logger logger = Log.getGwtLogger(new ConsoleLogHandler2(), this.getClass().getSimpleName());
 	
 	protected interface DoAnalysisBinder extends EventBinder<DoAnalysis> {
 		public final DoAnalysisBinder binder_analyzer = GWT.create(DoAnalysisBinder.class);
 	}
 
 	public DoAnalysis() {
+		
 		DoAnalysisBinder.binder_analyzer.bindEventHandlers(this, DictEntryPoint.eventBus);
 		logger.info("#" + String.valueOf(DoAnalysisBinder.binder_analyzer));
 	}

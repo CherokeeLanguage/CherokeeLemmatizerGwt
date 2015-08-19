@@ -1,11 +1,14 @@
 package com.cherokeelessons.dict.ui.widgets;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
 import org.gwtbootstrap3.client.ui.Modal;
 
+import com.cherokeelessons.dict.client.ConsoleLogHandler2;
+import com.cherokeelessons.dict.shared.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -17,7 +20,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class MustWaitDialog extends Composite {
 	
-	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+	private final Logger logger = Log.getGwtLogger(new ConsoleLogHandler2(), this.getClass().getSimpleName());
 
 	private static DialogBoxUiBinder uiBinder = GWT
 			.create(DialogBoxUiBinder.class);

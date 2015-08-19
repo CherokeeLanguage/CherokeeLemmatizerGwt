@@ -1,23 +1,24 @@
 package com.cherokeelessons.dict.ui;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.cherokeelessons.dict.client.ConsoleLogHandler2;
 import com.cherokeelessons.dict.client.DictEntryPoint;
 import com.cherokeelessons.dict.events.MessageEvent;
 import com.cherokeelessons.dict.events.MustWaitEvent;
 import com.cherokeelessons.dict.events.MustWaitEventDismiss;
+import com.cherokeelessons.dict.shared.Log;
 import com.cherokeelessons.dict.ui.widgets.MessageDialog;
 import com.cherokeelessons.dict.ui.widgets.MustWaitDialog;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
 
 public class DialogManager {
 	
-	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+	private final Logger logger = Log.getGwtLogger(new ConsoleLogHandler2(), this.getClass().getSimpleName());
 
 	interface DialogEventBinder extends EventBinder<DialogManager> {};
 	private final DialogEventBinder binder_dialog = GWT.create(DialogEventBinder.class);
