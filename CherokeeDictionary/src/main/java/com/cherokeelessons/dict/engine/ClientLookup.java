@@ -11,13 +11,15 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import com.cherokeelessons.dict.shared.Syllabary;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
-import com.google.gwt.core.shared.GWT;
 import commons.lang3.StringUtils;
 
 public class ClientLookup {
+	
+	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
 	public ClientLookup() {
 	}
@@ -27,7 +29,7 @@ public class ClientLookup {
 			String syllabary = StringUtils.strip(data[0]);
 			String definition = StringUtils.strip(data[1]);
 			if (StringUtils.isBlank(syllabary)) {
-				GWT.log("BAD PARSE? " + Arrays.toString(data));
+				logger.info("BAD PARSE? " + Arrays.toString(data));
 				continue;
 			}
 			String prev = StringUtils.defaultString(this.words.get(syllabary));
@@ -277,7 +279,7 @@ public class ClientLookup {
 		for (String word : defixedlist) {
 			//see if it might be stored with a "Ꮣ", "Ꮥ", "Ꮧ", "Ꮤ", "Ꮨ", ... in front in the dictionary
 			for (String prefix: new String[]{"", "Ꮣ", "Ꮥ", "Ꮧ", "Ꮤ", "Ꮦ", "Ꮨ", "Ꮹ", "Ꮺ", "Ꮻ", "Ꮎ", "Ꮑ", "Ꮒ", "Ꮕ"}) {
-				GWT.log("lookup: "+prefix+word);
+				logger.info("lookup: "+prefix+word);
 				definition = _guessed(prefix+word);
 				if (!StringUtils.isBlank(definition)) {
 					definition += " {" + word + "}";

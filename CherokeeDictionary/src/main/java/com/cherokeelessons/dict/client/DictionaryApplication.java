@@ -1,5 +1,7 @@
 package com.cherokeelessons.dict.client;
 
+import java.util.logging.Logger;
+
 import com.cherokeelessons.dict.engine.DoAnalysis;
 import com.cherokeelessons.dict.events.AppLocationHandler;
 import com.cherokeelessons.dict.events.MessageEvent;
@@ -14,17 +16,18 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.web.bindery.event.shared.EventBus;
 
 public class DictionaryApplication implements ScheduledCommand {
 
 	public static final int WIDTH = 800;
+	
+	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
 	private Timer doResizeTimer;
 	private final ResizeHandler resize = new ResizeHandler() {
 		@Override
 		public void onResize(ResizeEvent event) {
-			GWT.log("onResize");
+			logger.info("onResize");
 			if (doResizeTimer != null) {
 				doResizeTimer.cancel();
 			}
@@ -39,10 +42,8 @@ public class DictionaryApplication implements ScheduledCommand {
 
 	};
 
-	private final EventBus eventBus;
-
 	private void doResize() {
-		GWT.log("doResize");
+		logger.info("doResize");
 		float width = Window.getClientWidth();
 		float wanted = WIDTH;
 		float scaleby = width / wanted;
@@ -55,21 +56,24 @@ public class DictionaryApplication implements ScheduledCommand {
 		style.setProperty("minHeight", ((int) (height / scaleby) - 10) + "px");
 	}
 
-	public DictionaryApplication(EventBus eventBus) {
-		this.eventBus=eventBus;
-		
-		RootPanel.get().clear(true);
-		rp = RootPanel.get();
-		
-		new AppLocationHandler(rp, eventBus);
-		new DoAnalysis(eventBus);
-		new DialogManager(rp, eventBus);
+	public DictionaryApplication() {
 	}
 
 	private RootPanel rp;
 
 	@Override
 	public void execute() {
+		
+		rp = RootPanel.get();
+		
+		new AppLocationHandler(rp);
+		new DoAnalysis();
+		new DialogManager(rp);
+		
+		History.addValueChangeHandler(new HistoryChangeHandler());
+		doResize();
+		Window.addResizeHandler(resize);
+		History.fireCurrentHistoryState();
 		
 		Style style = rp.getElement().getStyle();
 		String[] engines = new String[] { "", "webkit", "ms", "Moz", "O",
@@ -86,10 +90,6 @@ public class DictionaryApplication implements ScheduledCommand {
 		style.setProperty("padding", "5px");
 		style.setProperty("border", "none");
 		
-		History.addValueChangeHandler(new HistoryChangeHandler(eventBus));
-		doResize();
-		Window.addResizeHandler(resize);
-		History.fireCurrentHistoryState();
 		BuildInfo info = GWT.create(BuildInfo.class);
 		StringBuilder sb = new StringBuilder();
 		sb.append("By using this application you agree you understand the following:\n\n");
@@ -102,6 +102,6 @@ public class DictionaryApplication implements ScheduledCommand {
 		sb.append("7) This software will most certainly provide WRONG work breakdowns.\n\n");
 		sb.append("This software was last udpated: ");
 		sb.append(DateTimeFormat.getFormat("MMM dd, yyyy - HH:mm:ss a zzz").format(info.getBuildTimestamp()));
-		eventBus.fireEvent(new MessageEvent("ᎠᎪᎵᏰᏙᏗ ᏣᎳᎩ ᎦᏬᏂᎯᏍᏗ",sb.toString().replace("\n", "<br/>")));
+		DictEntryPoint.eventBus.fireEvent(new MessageEvent("ᎠᎪᎵᏰᏙᏗ ᏣᎳᎩ ᎦᏬᏂᎯᏍᏗ",sb.toString().replace("\n", "<br/>")));
 	}
 }

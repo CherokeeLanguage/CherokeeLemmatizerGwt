@@ -5,18 +5,21 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 public enum VerbStemAffix {
 	/**
 	 * These entries are order dependent and are listed from word END to ROOT
 	 * ending start order!
 	 */
-			AboutTo(), IntendTo(), WentTo(AboutTo, IntendTo),
-			CameFor(AboutTo, IntendTo), Around(CameFor, WentTo), ToForᏏ(Around), ToFor(
-			Around), Completely(ToFor, ToForᏏ), AptTo(Completely), ByAccident(
-			AptTo), Causative(AptTo), OverAndOver(Causative, ByAccident), Again(
-			OverAndOver);
-			
+	AboutTo(), IntendTo(), WentTo(AboutTo, IntendTo), CameFor(AboutTo, IntendTo), Around(
+			CameFor, WentTo), ToForᏏ(Around), ToFor(Around), Completely(ToFor,
+			ToForᏏ), AptTo(Completely), ByAccident(AptTo), Causative(AptTo), OverAndOver(
+			Causative, ByAccident), Again(OverAndOver);
+
+	private final Logger logger = Logger.getLogger(this.getClass()
+			.getSimpleName());
+
 	private VerbStemAffix(VerbStemAffix... affixs) {
 		if (affixs == null) {
 			return;
@@ -48,8 +51,8 @@ public enum VerbStemAffix {
 					list.add(iaffix.next());
 				}
 				while (iaffix.hasNext()) {
-					List<VerbStemAffix> copy = new ArrayList<VerbStemAffix>(list.subList(0,
-							list.size() - 1));
+					List<VerbStemAffix> copy = new ArrayList<VerbStemAffix>(
+							list.subList(0, list.size() - 1));
 					copy.add(iaffix.next());
 					lists.add(copy);
 				}

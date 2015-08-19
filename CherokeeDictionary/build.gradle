@@ -59,14 +59,14 @@ gwt {
 	minHeapSize = "16M";
 	maxHeapSize = "2048M";
 
-	gwtVersion='2.8.0-SNAPSHOT'
+	gwtVersion='2.7.0'
 
 	modules 'com.cherokeelessons.dict.DictModule'
 	
 	jsInteropMode = "JS"
 	
 	compiler {
-		saveSource = true;
+		saveSource = false;
 		//disableAggressiveOptimization = true; //not in 2.8.0
 		disableCastChecking = false;		
 		disableClassMetadata = false;
@@ -98,7 +98,7 @@ configurations {
 dependencies {
 	providedCompile 'javax.servlet:javax.servlet-api:3.0.1'
 	providedCompile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
-	providedCompile 'com.google.gwt:gwt-servlet:2.8.0-SNAPSHOT'
+	providedCompile 'com.google.gwt:gwt-servlet:2.7.0'
 	gwt 'org.fusesource.restygwt:restygwt:2.0.3'
 	gwt 'org.gwtbootstrap3:gwtbootstrap3:0.9.1'
 	gwt ('com.google.gwt.eventbinder:eventbinder:1.1.0') {

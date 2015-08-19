@@ -6,14 +6,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import com.cherokeelessons.dict.shared.Syllabary;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
-import com.google.gwt.core.shared.GWT;
 import commons.lang3.StringUtils;
 
 public abstract class Affixes {
 
+	protected final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+	
 	protected boolean completiveStem = true;
 
 	private static final Map<String, String> vowelSets;
@@ -237,7 +239,7 @@ public abstract class Affixes {
 				
 			}
 			String oform = Syllabary.changeForm(root, Vowel.Ꭳ)+"Ꭲ";
-			GWT.log("OFORM: "+oform);
+			logger.info("OFORM: "+oform);
 			match.stem=oform;
 			return match;
 		}

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;
@@ -57,13 +58,14 @@ import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
 import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
 import commons.lang3.StringUtils;
 
 public class AnalysisView extends Composite {
+	
+	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
 	protected interface AnalysisViewEventBinder extends
 			EventBinder<AnalysisView> {
@@ -97,13 +99,13 @@ public class AnalysisView extends Composite {
 
 	@EventHandler
 	public void setText(ReplaceTextInputEvent event) {
-		GWT.log(this.getClass().getSimpleName() + "#Event#setText");
+		logger.info(this.getClass().getSimpleName() + "#Event#setText");
 		textArea.setValue(event.text);
 	}
 
 	@EventHandler
 	public void enable(UiEnableEvent event) {
-		GWT.log(this.getClass().getSimpleName() + "#Event#enable");
+		logger.info(this.getClass().getSimpleName() + "#Event#enable");
 		btn_analyze.setEnabled(event.enable);
 		btn_search.setEnabled(event.enable);
 		btn_reset.setEnabled(event.enable);
@@ -117,7 +119,7 @@ public class AnalysisView extends Composite {
 
 	@EventHandler
 	public void onClearResults(ClearResultsEvent event) {
-		GWT.log(this.getClass().getSimpleName() + "#Event#onClearResults");
+		logger.info(this.getClass().getSimpleName() + "#Event#onClearResults");
 		Iterator<Panel> ip = panels.iterator();
 		while (ip.hasNext()) {
 			Panel next = ip.next();
@@ -129,8 +131,8 @@ public class AnalysisView extends Composite {
 
 	@EventHandler
 	public void onCompletion(AnalysisCompleteEvent event) {
-		GWT.log(this.getClass().getSimpleName() + "#Event#onCompletion");
-		eventBus.fireEvent(new UiEnableEvent(true));
+		logger.info(this.getClass().getSimpleName() + "#Event#onCompletion");
+		DictEntryPoint.eventBus.fireEvent(new UiEnableEvent(true));
 	}
 
 	private static MainMenuUiBinder uiBinder = GWT
@@ -140,14 +142,13 @@ public class AnalysisView extends Composite {
 	}
 
 	private final RootPanel rp;
-	private final EventBus eventBus;
 
 	private KeyPressHandler keypress = new KeyPressHandler() {
 		@Override
 		public void onKeyPress(KeyPressEvent event) {
 			if (event.isControlKeyDown() && event.isAltKeyDown()
 					&& event.getCharCode() == 's') {
-				eventBus.fireEvent(new EnableSearchEvent(!btn_search
+				DictEntryPoint.eventBus.fireEvent(new EnableSearchEvent(!btn_search
 						.isVisible()));
 			}
 		}
@@ -161,8 +162,8 @@ public class AnalysisView extends Composite {
 	protected void onLoad() {
 		super.onLoad();
 		reg = AnalysisViewEventBinder.binder_analysisView.bindEventHandlers(
-				this, eventBus);
-		GWT.log("onLoad#"
+				this, DictEntryPoint.eventBus);
+		logger.info("onLoad#"
 				+ String.valueOf(AnalysisViewEventBinder.binder_analysisView));
 		prevTitle = Document.get().getTitle();
 		Document.get().setTitle("ᎤᎪᎵᏰᏗ - ᏣᎳᎩ ᏗᏕᏠᏆᏙᏗ");
@@ -172,15 +173,14 @@ public class AnalysisView extends Composite {
 	protected void onUnload() {
 		super.onUnload();
 		reg.removeHandler();
-		GWT.log("onUnload#"
+		logger.info("onUnload#"
 				+ String.valueOf(AnalysisViewEventBinder.binder_analysisView));
 		Document.get().setTitle(prevTitle);
 	}
 
-	public AnalysisView(EventBus eventBus, RootPanel rp) {
+	public AnalysisView(RootPanel rp) {
 		initWidget(uiBinder.createAndBindUi(this));
 		this.rp = rp;
-		this.eventBus = eventBus;
 		addDomHandler(keypress, KeyPressEvent.getType());
 		textArea.getElement().getStyle().setProperty("marginLeft", "auto");
 		textArea.getElement().getStyle().setProperty("marginRight", "auto");
@@ -189,21 +189,21 @@ public class AnalysisView extends Composite {
 
 	@UiHandler("btn_reset")
 	public void onResetAll(final ClickEvent event) {
-		eventBus.fireEvent(new ClearResultsEvent());
-		eventBus.fireEvent(new ResetInputEvent());
+		DictEntryPoint.eventBus.fireEvent(new ClearResultsEvent());
+		DictEntryPoint.eventBus.fireEvent(new ResetInputEvent());
 		String token = StringUtils.substringAfter(Location.getHref(), "#");
 		token = token.replaceAll("&text=[^&]*", "");
-		eventBus.fireEvent(new HistoryTokenEvent(token));
+		DictEntryPoint.eventBus.fireEvent(new HistoryTokenEvent(token));
 	}
 
 	@UiHandler("btn_clear")
 	public void onClearResults(final ClickEvent event) {
-		eventBus.fireEvent(new ClearResultsEvent());
+		DictEntryPoint.eventBus.fireEvent(new ClearResultsEvent());
 	}
 
 	@EventHandler
 	public void onResetInput(ResetInputEvent event) {
-		GWT.log(this.getClass().getSimpleName() + "#Event#resetInput");
+		logger.info(this.getClass().getSimpleName() + "#Event#resetInput");
 		textArea.setValue("");
 	}
 
@@ -216,7 +216,7 @@ public class AnalysisView extends Composite {
 		btn_analyze.state().loading();
 		final String value = textArea.getValue();
 		if (StringUtils.isBlank(value)) {
-			eventBus.fireEvent(new MessageEvent("ERROR", "NOTHING TO ANALYZE."));
+			DictEntryPoint.eventBus.fireEvent(new MessageEvent("ERROR", "NOTHING TO ANALYZE."));
 			btn_analyze.state().reset();
 			return;
 		}
@@ -224,11 +224,11 @@ public class AnalysisView extends Composite {
 		token = token.replaceAll("&text=[^&]*", "");
 		token = token + "&text=" + value;
 		final String h = token;
-		GWT.log("1 fire#history " + h);
-		eventBus.fireEvent(new HistoryTokenEvent(h));
-		GWT.log("2 fire#analyze " + value);
-		eventBus.fireEvent(new AnalyzeEvent(value));
-		GWT.log("3 fire#done");
+		logger.info("1 fire#history " + h);
+		DictEntryPoint.eventBus.fireEvent(new HistoryTokenEvent(h));
+		logger.info("2 fire#analyze " + value);
+		DictEntryPoint.eventBus.fireEvent(new AnalyzeEvent(value));
+		logger.info("3 fire#done");
 	}
 
 	@UiHandler("btn_search")
@@ -238,7 +238,7 @@ public class AnalysisView extends Composite {
 		btn_search.state().loading();
 		String value = textArea.getValue();
 		if (StringUtils.isBlank(value)) {
-			eventBus.fireEvent(new MessageEvent("ERROR",
+			DictEntryPoint.eventBus.fireEvent(new MessageEvent("ERROR",
 					"EMPTY SEARCHES ARE NOT ALLOWED."));
 			btn_search.state().reset();
 			return;
@@ -246,14 +246,14 @@ public class AnalysisView extends Composite {
 		String token = StringUtils.substringAfter(Location.getHref(), "#");
 		token = token.replaceAll("&text=[^&]*", "");
 		token = token + "&text=" + value;
-		eventBus.fireEvent(new HistoryTokenEvent(token));
-		eventBus.fireEvent(new UiEnableEvent(false));
+		DictEntryPoint.eventBus.fireEvent(new HistoryTokenEvent(token));
+		DictEntryPoint.eventBus.fireEvent(new UiEnableEvent(false));
 		DictEntryPoint.api.syll(StringUtils.strip(value), display_it);
 	}
 
 	@EventHandler
 	public void onEnableSearch(EnableSearchEvent event) {
-		GWT.log(this.getClass().getSimpleName() + "#Event#enableSearch");
+		logger.info(this.getClass().getSimpleName() + "#Event#enableSearch");
 		if (event.enable) {
 			btn_search.setVisible(true);
 		} else {
@@ -263,7 +263,7 @@ public class AnalysisView extends Composite {
 
 	@EventHandler
 	public void removePanel(RemovePanelEvent event) {
-		GWT.log(this.getClass().getSimpleName() + "#Event#removePanel");
+		logger.info(this.getClass().getSimpleName() + "#Event#removePanel");
 		Panel p = event.p;
 		p.clear();
 		p.removeFromParent();
@@ -271,31 +271,31 @@ public class AnalysisView extends Composite {
 
 	@EventHandler
 	public void addPanel(AddAnalysisPanelEvent event) {
-		GWT.log(this.getClass().getSimpleName() + "#Event#addPanel(analysis)");
+		logger.info(this.getClass().getSimpleName() + "#Event#addPanel(analysis)");
 		rp.add(event.p);
 		panels.add(event.p);
 	}
 
 	@EventHandler
 	public void addPanel(AddSearchResultPanelEvent event) {
-		GWT.log(this.getClass().getSimpleName() + "#Event#addPanel");
+		logger.info(this.getClass().getSimpleName() + "#Event#addPanel");
 		rp.add(event.p);
 		panels.add(event.p);
 	}
 
 	@EventHandler
 	public void process(SearchResponseEvent event) {
-		GWT.log(this.getClass().getSimpleName() + "#Event#process");
+		logger.info(this.getClass().getSimpleName() + "#Event#process");
 		int dupes = 0;
 		Set<Integer> already = new HashSet<>();
 		Set<Integer> duplicates = new HashSet<>();
 		SearchResponse sr = event.response;
-		GWT.log("COUNT: " + sr.data.size());
+		logger.info("COUNT: " + sr.data.size());
 		Iterator<DictEntry> isr = sr.data.iterator();
 		while (isr.hasNext()) {
 			DictEntry entry = isr.next();
 			if (already.contains(entry.id)) {
-				GWT.log("DUPLICATE RECORD IN RESPONSE: " + entry.id);
+				logger.info("DUPLICATE RECORD IN RESPONSE: " + entry.id);
 				dupes++;
 				duplicates.add(entry.id);
 				isr.remove();
@@ -329,7 +329,7 @@ public class AnalysisView extends Composite {
 			dismiss.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					eventBus.fireEvent(new RemovePanelEvent(p));
+					DictEntryPoint.eventBus.fireEvent(new RemovePanelEvent(p));
 				}
 			});
 			PanelFooter pf = new PanelFooter();
@@ -339,22 +339,22 @@ public class AnalysisView extends Composite {
 			p.add(pf);
 
 			pb.add(hp);
-			eventBus.fireEvent(new AddSearchResultPanelEvent(p));
+			DictEntryPoint.eventBus.fireEvent(new AddSearchResultPanelEvent(p));
 		}
 		if (dupes > 0) {
-			eventBus.fireEvent(new MessageEvent("ERROR", dupes
+			DictEntryPoint.eventBus.fireEvent(new MessageEvent("ERROR", dupes
 					+ " DUPES IN RESPONSE!"));
 		}
-		eventBus.fireEvent(new UiEnableEvent(true));
+		DictEntryPoint.eventBus.fireEvent(new UiEnableEvent(true));
 	}
 
 	private MethodCallback<SearchResponse> display_it = new MethodCallback<SearchResponse>() {
 		@Override
 		public void onFailure(Method method, Throwable exception) {
 			btn_search.state().reset();
-			eventBus.fireEvent(new MessageEvent("FAILURE",
+			DictEntryPoint.eventBus.fireEvent(new MessageEvent("FAILURE",
 					"onFailure: ᎤᏲᏳ!<br/>" + exception.getMessage()));
-			eventBus.fireEvent(new UiEnableEvent(true));
+			DictEntryPoint.eventBus.fireEvent(new UiEnableEvent(true));
 			throw new RuntimeException(exception);
 		}
 
@@ -362,13 +362,13 @@ public class AnalysisView extends Composite {
 		public void onSuccess(Method method, final SearchResponse sr) {
 			btn_search.state().reset();
 			if (sr == null) {
-				eventBus.fireEvent(new MessageEvent("FAILURE",
+				DictEntryPoint.eventBus.fireEvent(new MessageEvent("FAILURE",
 						"ᎤᏲᏳ! SearchResponse is NULL"));
 				return;
 			}
-			GWT.log("SearchResponse: " + sr.data.size());
-			eventBus.fireEvent(new ClearResultsEvent());
-			eventBus.fireEvent(new SearchResponseEvent(sr));
+			logger.info("SearchResponse: " + sr.data.size());
+			DictEntryPoint.eventBus.fireEvent(new ClearResultsEvent());
+			DictEntryPoint.eventBus.fireEvent(new SearchResponseEvent(sr));
 		}
 	};
 

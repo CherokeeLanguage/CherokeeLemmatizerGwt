@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.Label;
@@ -18,6 +19,7 @@ import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.gwt.HTMLPanel;
 
 import com.cherokeelessons.dict.client.ClientDictionary;
+import com.cherokeelessons.dict.client.DictEntryPoint;
 import com.cherokeelessons.dict.client.DictionaryApplication;
 import com.cherokeelessons.dict.engine.Affixes.AffixResult;
 import com.cherokeelessons.dict.events.AbortEvent;
@@ -34,42 +36,41 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
 import commons.lang3.StringUtils;
 
 public class DoAnalysis {
-	private final EventBus eventBus;
+	
+	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 	
 	protected interface DoAnalysisBinder extends EventBinder<DoAnalysis> {
 		public final DoAnalysisBinder binder_analyzer = GWT.create(DoAnalysisBinder.class);
 	}
 
-	public DoAnalysis(EventBus eventBus) {
-		this.eventBus = eventBus;
-		DoAnalysisBinder.binder_analyzer.bindEventHandlers(this, this.eventBus);
-		GWT.log("#" + String.valueOf(DoAnalysisBinder.binder_analyzer));
+	public DoAnalysis() {
+		DoAnalysisBinder.binder_analyzer.bindEventHandlers(this, DictEntryPoint.eventBus);
+		logger.info("#" + String.valueOf(DoAnalysisBinder.binder_analyzer));
 	}
 
 	@EventHandler
 	public void abort(AbortEvent event) {
-		GWT.log(this.getClass().getSimpleName()+"#Event#abort");
+		logger.info(this.getClass().getSimpleName()+"#Event#abort");
 	}
 
 	@EventHandler
 	public void analyze(final AnalyzeEvent event) {
-		GWT.log(this.getClass().getSimpleName()+"#Event#analyze");
+		logger.info(this.getClass().getSimpleName()+"#Event#analyze");
 		String value = StringUtils.strip(event.query);
 		value = value.replaceAll("[^Ꭰ-Ᏼ0-9]", " ");
 		value = value.replaceAll(" +", " ");
 		if (StringUtils.isBlank(value)) {
-			eventBus.fireEvent(new ResetInputEvent());
-			eventBus.fireEvent(new UiEnableEvent(true));
+			DictEntryPoint.eventBus.fireEvent(new ResetInputEvent());
+			DictEntryPoint.eventBus.fireEvent(new UiEnableEvent(true));
 			return;
 		}
-		eventBus.fireEvent(new UiEnableEvent(false));
-		eventBus.fireEvent(new ClearResultsEvent());
+		DictEntryPoint.eventBus.fireEvent(new UiEnableEvent(false));
+		DictEntryPoint.eventBus.fireEvent(new ClearResultsEvent());
 		final List<ScheduledCommand> cmds = new ArrayList<>();
 		List<String> words = new ArrayList<>(Arrays.asList(StringUtils
 				.split(value)));
@@ -164,28 +165,18 @@ public class DoAnalysis {
 
 					HTMLPanel hp = new HTMLPanel(affixedStemHtml.toSafeHtml());
 
-					// PanelFooter pf = new PanelFooter();
-					// Button dismiss = new Button("DISMISS");
-					// dismiss.addClickHandler(new ClickHandler() {
-					// @Override
-					// public void onClick(ClickEvent event) {
-					// eventBus.fireEvent(new RemovePanelEvent(p));
-					// }
-					// });
-					// pf.add(dismiss);
 					p.add(ph);
 					p.add(pb);
-					// p.add(pf);
 
 					pb.add(hp);
-					eventBus.fireEvent(new AddAnalysisPanelEvent(p));
+					DictEntryPoint.eventBus.fireEvent(new AddAnalysisPanelEvent(p));
 				}
 			});
 		}
 		cmds.add(new ScheduledCommand() {
 			@Override
 			public void execute() {
-				eventBus.fireEvent(new AnalysisCompleteEvent());
+				DictEntryPoint.eventBus.fireEvent(new AnalysisCompleteEvent());
 			}
 		});
 		Scheduler.get().scheduleFinally(new ScheduledCommand() {

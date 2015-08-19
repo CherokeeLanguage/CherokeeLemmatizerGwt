@@ -5,13 +5,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.cherokeelessons.dict.engine.ClientLookup;
-import com.google.gwt.core.client.GWT;
 import com.opencsv.CSVParser;
 
 public enum ClientDictionary {
 	INSTANCE;
+	
+	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 	
 	private final  ClientLookup lookup;
 	
@@ -21,7 +23,7 @@ public enum ClientDictionary {
 		loadCED();
 		loadRaven();
 		
-		GWT.log("ClientDictionary: ᎣᏍᏛ "+lookup.guess("ᎣᏍᏛ"));
+		logger.info("ClientDictionary: ᎣᏍᏛ "+lookup.guess("ᎣᏍᏛ"));
 	}
 	
 	public String guess(String syllabaryWord) {

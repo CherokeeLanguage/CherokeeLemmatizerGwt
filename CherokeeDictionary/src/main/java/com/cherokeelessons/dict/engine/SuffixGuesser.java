@@ -2,6 +2,7 @@ package com.cherokeelessons.dict.engine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.cherokeelessons.dict.engine.Affixes.AboutTo;
 import com.cherokeelessons.dict.engine.Affixes.Accidental;
@@ -38,6 +39,8 @@ public enum SuffixGuesser {
 	public static enum Stem {
 		Present, Past, Progressive, Immediate, Deverbal
 	}
+	
+	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
 	private SuffixGuesser() {
 	}

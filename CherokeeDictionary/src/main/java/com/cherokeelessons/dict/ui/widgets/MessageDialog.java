@@ -1,5 +1,7 @@
 package com.cherokeelessons.dict.ui.widgets;
 
+import java.util.logging.Logger;
+
 import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
 import org.gwtbootstrap3.client.ui.Modal;
@@ -16,6 +18,8 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class MessageDialog extends Composite {
+	
+	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
 	private static DialogBoxUiBinder uiBinder = GWT
 			.create(DialogBoxUiBinder.class);
@@ -30,9 +34,10 @@ public class MessageDialog extends Composite {
 	protected Modal modal;
 	
 	public void show(){
-		GWT.log(this.getClass().getSimpleName()+"#rp.add(this)");
+		logger.info(this.getClass().getSimpleName()+"#rp.add(this)");
 		rp.add(this);
-		GWT.log(this.getClass().getSimpleName()+"#modal.show");
+		logger.info(this.getClass().getSimpleName()+"#modal.show");
+		modal.setVisible(true);
 		modal.show();
 	}
 	

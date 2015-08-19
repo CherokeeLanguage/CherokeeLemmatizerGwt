@@ -7,11 +7,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.cherokeelessons.dict.client.ClientResources;
 import com.cherokeelessons.dict.shared.Syllabary;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.regexp.shared.MatchResult;
 import com.google.gwt.regexp.shared.RegExp;
 import com.opencsv.CSVParser;
@@ -21,7 +21,7 @@ public enum BoundPronounsMunger {
 	INSTANCE;
 	
 	final private List<RegExp> patterns = new ArrayList<>();
-	
+	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 	public List<String> munge(String word) {
 		List<String> list = new ArrayList<String>();
 		list.add(word);
@@ -111,7 +111,7 @@ public enum BoundPronounsMunger {
 				pattern = pattern.replace("Ꮿ͓", "[ᏯᏰᏱᏲᏳᏴ]");
 				pattern = pattern.replace("Ꭿ͓", "[ᎭᎮᎯᎰᎱᎲ]");
 				if (pattern.contains(Syllabary.UnderX)){
-					GWT.log("BAD PATTERN: "+pattern);
+					logger.info("BAD PATTERN: "+pattern);
 				}
 				pattern = "^(Ꭲ?" + pattern + ")(.*?)$";
 				RegExp p = RegExp.compile(pattern);
