@@ -3,7 +3,6 @@ package com.cherokeelessons.dict.client;
 import com.cherokeelessons.dict.engine.DoAnalysis;
 import com.cherokeelessons.dict.events.AppLocationHandler;
 import com.cherokeelessons.dict.events.MessageEvent;
-import com.cherokeelessons.dict.shared.RestApi;
 import com.cherokeelessons.dict.ui.DialogManager;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -20,13 +19,6 @@ import com.google.web.bindery.event.shared.EventBus;
 public class DictionaryApplication implements ScheduledCommand {
 
 	public static final int WIDTH = 800;
-	public static final EventBus eventBus;
-	public static final RestApi api;
-
-	static {
-		api = GWT.create(RestApi.class);
-		eventBus = new MyEventBus();
-	}
 
 	private Timer doResizeTimer;
 	private final ResizeHandler resize = new ResizeHandler() {
@@ -47,6 +39,8 @@ public class DictionaryApplication implements ScheduledCommand {
 
 	};
 
+	private final EventBus eventBus;
+
 	private void doResize() {
 		GWT.log("doResize");
 		float width = Window.getClientWidth();
@@ -61,7 +55,9 @@ public class DictionaryApplication implements ScheduledCommand {
 		style.setProperty("minHeight", ((int) (height / scaleby) - 10) + "px");
 	}
 
-	public DictionaryApplication() {
+	public DictionaryApplication(EventBus eventBus) {
+		this.eventBus=eventBus;
+		
 		RootPanel.get().clear(true);
 		rp = RootPanel.get();
 		

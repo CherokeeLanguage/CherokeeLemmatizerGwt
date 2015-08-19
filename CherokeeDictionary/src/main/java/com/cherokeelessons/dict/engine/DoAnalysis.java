@@ -24,7 +24,6 @@ import com.cherokeelessons.dict.events.AbortEvent;
 import com.cherokeelessons.dict.events.AddAnalysisPanelEvent;
 import com.cherokeelessons.dict.events.AnalysisCompleteEvent;
 import com.cherokeelessons.dict.events.AnalyzeEvent;
-import com.cherokeelessons.dict.events.Binders;
 import com.cherokeelessons.dict.events.ClearResultsEvent;
 import com.cherokeelessons.dict.events.ResetInputEvent;
 import com.cherokeelessons.dict.events.UiEnableEvent;
@@ -36,16 +35,21 @@ import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.web.bindery.event.shared.EventBus;
+import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
 import commons.lang3.StringUtils;
 
 public class DoAnalysis {
 	private final EventBus eventBus;
+	
+	protected interface DoAnalysisBinder extends EventBinder<DoAnalysis> {
+		public final DoAnalysisBinder binder_analyzer = GWT.create(DoAnalysisBinder.class);
+	}
 
 	public DoAnalysis(EventBus eventBus) {
 		this.eventBus = eventBus;
-		Binders.binder_analyzer.bindEventHandlers(this, this.eventBus);
-		GWT.log("#" + String.valueOf(Binders.binder_analyzer));
+		DoAnalysisBinder.binder_analyzer.bindEventHandlers(this, this.eventBus);
+		GWT.log("#" + String.valueOf(DoAnalysisBinder.binder_analyzer));
 	}
 
 	@EventHandler

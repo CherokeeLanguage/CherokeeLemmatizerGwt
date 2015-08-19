@@ -47,16 +47,19 @@ gretty {
 repositories {
     jcenter()
 	mavenCentral()
+	maven {
+        	url = "https://oss.sonatype.org/content/repositories/google-snapshots/"
+    	}
 	mavenLocal()
 }
 
 gwt {
 	logLevel = 'INFO'
 
-	minHeapSize = "2048M";
+	minHeapSize = "16M";
 	maxHeapSize = "2048M";
 
-	gwtVersion='2.7.0'
+	gwtVersion='2.8.0-SNAPSHOT'
 
 	modules 'com.cherokeelessons.dict.DictModule'
 	
@@ -64,12 +67,12 @@ gwt {
 	
 	compiler {
 		saveSource = true;
-		disableAggressiveOptimization = true;
+		//disableAggressiveOptimization = true; //not in 2.8.0
 		disableCastChecking = false;		
 		disableClassMetadata = false;
 		enableClosureCompiler = false;
-		enforceStrictResources = false;
-		overlappingSourceWarnings = false;
+		//enforceStrictResources = false; //not in 2.8.0
+		//overlappingSourceWarnings = false; //not in 2.8.0
 		localWorkers = 5;
 		//fragmentCount = 4;
 		strict = true;
@@ -95,10 +98,10 @@ configurations {
 dependencies {
 	providedCompile 'javax.servlet:javax.servlet-api:3.0.1'
 	providedCompile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
-	providedCompile 'com.google.gwt:gwt-servlet:2.7.0'
+	providedCompile 'com.google.gwt:gwt-servlet:2.8.0-SNAPSHOT'
 	gwt 'org.fusesource.restygwt:restygwt:2.0.3'
 	gwt 'org.gwtbootstrap3:gwtbootstrap3:0.9.1'
-	gwt ('com.google.gwt.eventbinder:eventbinder:1.1.1-SNAPSHOT') {
+	gwt ('com.google.gwt.eventbinder:eventbinder:1.1.0') {
 		exclude module: 'gwt-user'
 	}
 }

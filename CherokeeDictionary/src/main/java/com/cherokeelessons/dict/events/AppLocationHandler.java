@@ -8,9 +8,14 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.web.bindery.event.shared.EventBus;
+import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
 
 public class AppLocationHandler {
+	
+	protected interface AppLocationEventBinder extends	EventBinder<AppLocationHandler> {
+		public final AppLocationEventBinder binder_applocation=GWT.create(AppLocationEventBinder.class);
+	}
 
 	private final RootPanel rp;
 	private final EventBus eventBus;
@@ -18,8 +23,8 @@ public class AppLocationHandler {
 	public AppLocationHandler(RootPanel rp, EventBus eventBus) {
 		this.rp = rp;
 		this.eventBus = eventBus;
-		Binders.binder_applocation.bindEventHandlers(this, this.eventBus);
-		GWT.log("#" + String.valueOf(Binders.binder_applocation));
+		AppLocationEventBinder.binder_applocation.bindEventHandlers(this, this.eventBus);
+		GWT.log("#" + String.valueOf(AppLocationEventBinder.binder_applocation));
 	}
 
 	private AppLocation current = null;

@@ -23,12 +23,12 @@ import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.gwt.HTMLPanel;
 
+import com.cherokeelessons.dict.client.DictEntryPoint;
 import com.cherokeelessons.dict.client.DictionaryApplication;
 import com.cherokeelessons.dict.events.AddAnalysisPanelEvent;
 import com.cherokeelessons.dict.events.AddSearchResultPanelEvent;
 import com.cherokeelessons.dict.events.AnalysisCompleteEvent;
 import com.cherokeelessons.dict.events.AnalyzeEvent;
-import com.cherokeelessons.dict.events.Binders;
 import com.cherokeelessons.dict.events.ClearResultsEvent;
 import com.cherokeelessons.dict.events.EnableSearchEvent;
 import com.cherokeelessons.dict.events.HistoryTokenEvent;
@@ -42,8 +42,6 @@ import com.cherokeelessons.dict.shared.DictEntry;
 import com.cherokeelessons.dict.shared.FormattedEntry;
 import com.cherokeelessons.dict.shared.SearchResponse;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
@@ -61,10 +59,17 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.web.bindery.event.shared.EventBus;
 import com.google.web.bindery.event.shared.HandlerRegistration;
+import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
 import commons.lang3.StringUtils;
 
 public class AnalysisView extends Composite {
+
+	protected interface AnalysisViewEventBinder extends
+			EventBinder<AnalysisView> {
+		public final AnalysisViewEventBinder binder_analysisView = GWT
+				.create(AnalysisViewEventBinder.class);
+	};
 
 	// @UiField
 	// protected PageHeader pageHeader;
@@ -155,8 +160,10 @@ public class AnalysisView extends Composite {
 	@Override
 	protected void onLoad() {
 		super.onLoad();
-		reg = Binders.binder_analysisView.bindEventHandlers(this, eventBus);
-		GWT.log("onLoad#" + String.valueOf(Binders.binder_analysisView));
+		reg = AnalysisViewEventBinder.binder_analysisView.bindEventHandlers(
+				this, eventBus);
+		GWT.log("onLoad#"
+				+ String.valueOf(AnalysisViewEventBinder.binder_analysisView));
 		prevTitle = Document.get().getTitle();
 		Document.get().setTitle("ᎤᎪᎵᏰᏗ - ᏣᎳᎩ ᏗᏕᏠᏆᏙᏗ");
 	}
@@ -165,7 +172,8 @@ public class AnalysisView extends Composite {
 	protected void onUnload() {
 		super.onUnload();
 		reg.removeHandler();
-		GWT.log("onUnload#" + String.valueOf(Binders.binder_analysisView));
+		GWT.log("onUnload#"
+				+ String.valueOf(AnalysisViewEventBinder.binder_analysisView));
 		Document.get().setTitle(prevTitle);
 	}
 
@@ -203,32 +211,24 @@ public class AnalysisView extends Composite {
 
 	@UiHandler("btn_analyze")
 	public void onAnalyze(final ClickEvent event) {
-		Scheduler.get().scheduleFinally(new ScheduledCommand() {
-			@Override
-			public void execute() {
-				// this.pageHeader.setVisible(false);
-				formLabel.setVisible(false);
-				btn_analyze.state().loading();
-				final String value = textArea.getValue();
-				if (StringUtils.isBlank(value)) {
-					eventBus.fireEvent(new MessageEvent("ERROR",
-							"NOTHING TO ANALYZE."));
-					btn_analyze.state().reset();
-					return;
-				}
-				String token = StringUtils.substringAfter(Location.getHref(),
-						"#");
-				token = token.replaceAll("&text=[^&]*", "");
-				token = token + "&text=" + value;
-				final String h = token;
-				GWT.log("1 fire#history " + h);
-				eventBus.fireEvent(new HistoryTokenEvent(h));
-				GWT.log("2 fire#analyze " + value);
-				eventBus.fireEvent(new AnalyzeEvent(value));
-				GWT.log("3 fire#done");
-			}
-
-		});
+		// this.pageHeader.setVisible(false);
+		formLabel.setVisible(false);
+		btn_analyze.state().loading();
+		final String value = textArea.getValue();
+		if (StringUtils.isBlank(value)) {
+			eventBus.fireEvent(new MessageEvent("ERROR", "NOTHING TO ANALYZE."));
+			btn_analyze.state().reset();
+			return;
+		}
+		String token = StringUtils.substringAfter(Location.getHref(), "#");
+		token = token.replaceAll("&text=[^&]*", "");
+		token = token + "&text=" + value;
+		final String h = token;
+		GWT.log("1 fire#history " + h);
+		eventBus.fireEvent(new HistoryTokenEvent(h));
+		GWT.log("2 fire#analyze " + value);
+		eventBus.fireEvent(new AnalyzeEvent(value));
+		GWT.log("3 fire#done");
 	}
 
 	@UiHandler("btn_search")
@@ -248,7 +248,7 @@ public class AnalysisView extends Composite {
 		token = token + "&text=" + value;
 		eventBus.fireEvent(new HistoryTokenEvent(token));
 		eventBus.fireEvent(new UiEnableEvent(false));
-		DictionaryApplication.api.syll(StringUtils.strip(value), display_it);
+		DictEntryPoint.api.syll(StringUtils.strip(value), display_it);
 	}
 
 	@EventHandler

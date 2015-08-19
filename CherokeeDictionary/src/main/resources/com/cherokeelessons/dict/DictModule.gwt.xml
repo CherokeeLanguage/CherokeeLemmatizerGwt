@@ -31,9 +31,9 @@
 	<!-- precompress into gzip -->
 	<inherits name="com.google.gwt.precompress.Precompress" />
 
+<!-- 	<set-property name="user.agent" value="safari,gecko1_8,ie10"/> ,safari" /> -->
 	<!-- Fallback User Agent for use by CRAWLERS -->
 	<set-property-fallback name="user.agent" value="safari" /> 
-<!-- 	    value="gecko1_8" /> value="safari"/> -->
 
 	<stylesheet src="css/cherokeelessons.css" />
 
@@ -44,4 +44,6 @@
 	<generate-with class="com.cherokeelessons.builders.BuildInfoGenerator">
 		<when-type-assignable class="com.cherokeelessons.dict.client.BuildInfo" />
 	</generate-with>
+	
+	<set-property name="webApiUsage" value="stable"/>
 </module>
