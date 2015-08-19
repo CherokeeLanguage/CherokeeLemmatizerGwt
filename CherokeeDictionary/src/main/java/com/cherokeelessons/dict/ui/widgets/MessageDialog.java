@@ -34,10 +34,7 @@ public class MessageDialog extends Composite {
 	protected Modal modal;
 	
 	public void show(){
-		logger.info(this.getClass().getSimpleName()+"#rp.add(this)");
 		rp.add(this);
-		logger.info(this.getClass().getSimpleName()+"#modal.show");
-		modal.setVisible(true);
 		modal.show();
 	}
 	
@@ -60,6 +57,7 @@ public class MessageDialog extends Composite {
 		this.modal.addHiddenHandler(new ModalHiddenHandler() {
 			@Override
 			public void onHidden(ModalHiddenEvent evt) {
+				logger.info("removing from parent: "+modal.getTitle());
 				MessageDialog.this.removeFromParent();
 			}
 		});

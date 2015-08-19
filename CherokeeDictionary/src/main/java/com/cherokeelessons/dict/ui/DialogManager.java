@@ -9,6 +9,8 @@ import com.cherokeelessons.dict.events.MustWaitEventDismiss;
 import com.cherokeelessons.dict.ui.widgets.MessageDialog;
 import com.cherokeelessons.dict.ui.widgets.MustWaitDialog;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.web.bindery.event.shared.binder.EventBinder;
 import com.google.web.bindery.event.shared.binder.EventHandler;
@@ -17,7 +19,7 @@ public class DialogManager {
 	
 	private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
-	public interface DialogEventBinder extends EventBinder<DialogManager> {};
+	interface DialogEventBinder extends EventBinder<DialogManager> {};
 	private final DialogEventBinder binder_dialog = GWT.create(DialogEventBinder.class);
 	
 	private final RootPanel rp;
@@ -25,16 +27,13 @@ public class DialogManager {
 	public DialogManager(RootPanel rp) {
 		this.rp=rp;
 		binder_dialog.bindEventHandlers(this, DictEntryPoint.eventBus);
-		logger.info("onLoad#" + String.valueOf(binder_dialog));
 	}
 
 	@EventHandler
-	public void onMessageEvent(MessageEvent event) {
-		logger.info(this.getClass().getSimpleName()+"#Event#onMessageEvent");
-		MessageDialog messageDialog = new MessageDialog(rp, event.title, event.message);
-		logger.info(this.getClass().getSimpleName()+"#messageDialog");
-		messageDialog.show();
-		logger.info(this.getClass().getSimpleName()+"#messageDialog#show");
+	public void onMessageEvent(final MessageEvent event) {
+		final MessageDialog messageDialog = new MessageDialog(rp, event.title, event.message);
+			logger.info("Showing: "+event.title);
+			messageDialog.show();
 	}
 	
 	private MustWaitDialog mwDialog=null;
