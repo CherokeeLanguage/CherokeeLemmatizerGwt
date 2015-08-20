@@ -1,6 +1,5 @@
 package com.cherokeelessons.dict.events;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.cherokeelessons.dict.client.ConsoleLogHandler2;
@@ -9,8 +8,6 @@ import com.cherokeelessons.dict.client.HistoryChangeHandler.AppLocation;
 import com.cherokeelessons.dict.shared.Log;
 import com.cherokeelessons.dict.ui.AnalysisView;
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.web.bindery.event.shared.binder.EventBinder;
