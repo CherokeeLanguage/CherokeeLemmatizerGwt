@@ -67,11 +67,11 @@ public class AppLocationHandler {
 	@EventHandler
 	public void saveState(HistoryTokenEvent event) {
 		if (event.replace) {
-			replaceState("#" + URL.encode(event.hash), Document.get()
-					.getTitle());
+//			replaceState("#" + URL.encode(event.hash), Document.get()
+//					.getTitle());
 			History.replaceItem(event.hash, false);
 		} else {
-			pushState("#" + URL.encode(event.hash), Document.get().getTitle());
+//			pushState("#" + URL.encode(event.hash), Document.get().getTitle());
 			History.newItem(event.hash, false);
 		}
 		if (event.trigger) {
@@ -80,35 +80,35 @@ public class AppLocationHandler {
 		logger.info(this.getClass().getSimpleName()+"#Event#saveState#done [trigger="+event.trigger+"]");
 	}
 
-	public static native boolean hasState()/*-{
-		try {
-			return $wnd.history && $wnd.history.pushState;
-		} catch (e) {
-		}
-		return false;
-	}-*/;
+//	public static native boolean hasState()/*-{
+//		try {
+//			return $wnd.history && $wnd.history.pushState;
+//		} catch (e) {
+//		}
+//		return false;
+//	}-*/;
 
 	/**
 	 * Modern Chrome's do not obey location requests anymore?
 	 */
-	public static native void replaceState(String hash, String title)/*-{
-		try {
-			$wnd.history.replaceState(hash, title, hash);
-		} catch (e) {
-			$wnd.console.log(e);
-		}
-
-	}-*/;
+//	public static native void replaceState(String hash, String title)/*-{
+//		try {
+//			$wnd.history.replaceState(hash, title, hash);
+//		} catch (e) {
+//			$wnd.console.log(e);
+//		}
+//
+//	}-*/;
 
 	/**
 	 * Modern Chrome's do not obey location requests anymore?
 	 */
-	public static native void pushState(String hash, String title)/*-{
-		try {
-			$wnd.history.pushState(hash, title, hash);
-		} catch (e) {
-			$wnd.console.log(e);
-		}
-
-	}-*/;
+//	public static native void pushState(String hash, String title)/*-{
+//		try {
+//			$wnd.history.pushState(hash, title, hash);
+//		} catch (e) {
+//			$wnd.console.log(e);
+//		}
+//
+//	}-*/;
 }
