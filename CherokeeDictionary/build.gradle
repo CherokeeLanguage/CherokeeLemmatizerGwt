@@ -70,7 +70,7 @@ gwt {
 		//disableAggressiveOptimization = true; //not in 2.8.0
 		disableCastChecking = false;
 		disableClassMetadata = false;
-		enableClosureCompiler = false;
+		enableClosureCompiler = true;
 		//enforceStrictResources = false; //not in 2.8.0
 		//overlappingSourceWarnings = false; //not in 2.8.0
 		localWorkers = 5;
