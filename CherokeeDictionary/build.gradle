@@ -100,7 +100,7 @@ dependencies {
 	providedCompile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
 	providedCompile 'com.google.gwt:gwt-servlet:2.7.0'
 	gwt 'org.fusesource.restygwt:restygwt:2.0.3'
-	gwt 'org.gwtbootstrap3:gwtbootstrap3:1.0-SNAPSHOT'
+	gwt 'org.gwtbootstrap3:gwtbootstrap3:0.9.1'
 	gwt ('com.google.gwt.eventbinder:eventbinder:1.1.0') {
 		exclude module: 'gwt-user'
 	}
@@ -134,7 +134,7 @@ eclipse {
 	project {
 		name = 'CherokeeDictionary'
 		comment = 'Cherokee Dictionary GWT based font-end'
-		referencedProjects 'eventbinder'
+		//referencedProjects 'eventbinder'
 		//referencedProjects 'ResearcherInstituteApi', 'ResearcherInstituteDao', 'ResearcherInstituteShared', 'SHARED-POJOS', 'SHARED-SERVER' 
 		natures 'org.springsource.ide.eclipse.gradle.core.nature'
 		webAppDirName = 'src/main/webapp'
