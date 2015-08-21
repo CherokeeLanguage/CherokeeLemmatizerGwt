@@ -68,7 +68,7 @@ gwt {
 	compiler {
 		saveSource = false;
 		//disableAggressiveOptimization = true; //not in 2.8.0
-		disableCastChecking = false;		
+		disableCastChecking = false;
 		disableClassMetadata = false;
 		enableClosureCompiler = false;
 		//enforceStrictResources = false; //not in 2.8.0
@@ -76,7 +76,7 @@ gwt {
 		localWorkers = 5;
 		//fragmentCount = 4;
 		strict = true;
-		style = "PRETTY";
+		style = "OBF";
 	}
 	
 	superDev {
