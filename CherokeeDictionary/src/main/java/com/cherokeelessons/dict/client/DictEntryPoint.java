@@ -12,47 +12,42 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
 import com.google.gwt.core.client.Scheduler;
 import com.google.web.bindery.event.shared.EventBus;
-import com.google.web.bindery.event.shared.SimpleEventBus;
 
 public class DictEntryPoint implements EntryPoint {
 
 	public static RestApi api = GWT.create(RestApi.class);
-	
-	public static EventBus eventBus=new SimpleEventBus(){
-		public void fireEvent(final com.google.web.bindery.event.shared.Event<?> event) {
-			super.fireEvent(event);
-		};
-	};
-	
-	
+
+	public static final EventBus eventBus = new DeferredEventBus();
+
 	private final Logger logger = Log.getGwtLogger(new ConsoleLogHandler2(), this.getClass().getSimpleName());
-	
+
 	public DictEntryPoint() {
-		
+
 	}
-	
+
 	static {
 		Defaults.setRequestTimeout(120 * 1000);
 	}
 
 	private UncaughtExceptionHandler handler = new UncaughtExceptionHandler() {
 		private final Logger logger = Log.getGwtLogger(new ConsoleLogHandler2(), this.getClass().getSimpleName());
+
 		@Override
 		public void onUncaughtException(Throwable e) {
-			if (e!=null) {
+			if (e != null) {
 				logger.log(Level.SEVERE, "onUncaughtException", e);
 			}
 			logger.log(Level.SEVERE, "onUncaughtException: NULL!");
 		}
 	};
-	
+
 	private native void error(String message) /*-{
-    	$wnd.console.error(message);
-  	}-*/;
+												$wnd.console.error(message);
+												}-*/;
 
 	@Override
 	public void onModuleLoad() {
-//		GWT.setUncaughtExceptionHandler(handler);
+		// GWT.setUncaughtExceptionHandler(handler);
 		logger.log(Level.INFO, "DictionaryApplication#");
 		DictionaryApplication app = new DictionaryApplication();
 		Scheduler.get().scheduleDeferred(app);

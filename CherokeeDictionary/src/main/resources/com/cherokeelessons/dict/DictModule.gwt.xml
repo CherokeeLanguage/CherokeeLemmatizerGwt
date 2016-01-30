@@ -16,11 +16,6 @@
 	<set-configuration-property name="user.agent.runtimeWarning" value="false"/>
 	<set-property-fallback name="user.agent" value="gecko1_8" />
 	
-	<generate-with class="com.cherokeelessons.builders.BuildInfoGenerator">
-		<when-type-assignable class="com.cherokeelessons.dict.client.BuildInfo" />
-	</generate-with>
-
-<!-- 	<inherits name="com.google.gwt.precompress.Precompress" /> -->
 	<inherits name="commons.Commons" />
 	<inherits name="com.OpenCSV" />
 	

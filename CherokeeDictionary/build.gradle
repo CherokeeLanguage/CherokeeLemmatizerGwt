@@ -1,20 +1,17 @@
-//CherokeeDictionary (GWT Fontend)
-
 apply plugin: 'java'
-apply plugin: 'gwt'
 apply plugin: 'war'
-apply plugin: 'org.akhikhl.gretty'
+apply plugin: 'gwt'
 apply plugin: 'eclipse'
 apply plugin: 'eclipse-wtp'
+apply plugin: 'org.akhikhl.gretty'
+
+version = '20160129'
 
 sourceCompatibility = 1.7
 compileJava.options.encoding = 'UTF-8'
 
-version = '1.0'
-
 farm {
   webapp ':'
-  //webapp 'com.google.gwt.eventbinder:eventbinder-sample:1.1.1-SNAPSHOT'
 }
 
 def RTJAR = '/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rt.jar';
@@ -25,10 +22,12 @@ if (new File(RTJAR).exists()) {
 buildscript {
 	repositories {
         jcenter()
+        maven { url 'http://repo.spring.io/plugins-release' }
     }
     dependencies {
-        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:+'
         classpath 'org.akhikhl.gretty:gretty:+'
+        //classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.6'
     }
 }
 
@@ -41,40 +40,33 @@ gretty {
 	port = 8080;
 	servletContainer = 'tomcat7'
 	managedClassReload = true
+	reloadOnClassChange = false
 	extraResourceBase 'build/gwt/out'
 }
 
 repositories {
     jcenter()
-	mavenCentral()
 	maven {
-        	url = "https://oss.sonatype.org/content/repositories/google-snapshots/"
-    	}
-	mavenLocal()
+		url "https://oss.sonatype.org/content/repositories/google-snapshots/"
+	}
+	maven {
+		url "http://oss.sonatype.org/content/repositories/snapshots"
+	}
 }
 
 gwt {
 	logLevel = 'INFO'
 
-	minHeapSize = "16M";
-	maxHeapSize = "2048M";
+	minHeapSize = "256M";
+	maxHeapSize = "1024M";
 
-	gwtVersion='2.7.0'
+	gwtVersion='2.8.0-beta1'
 
 	modules 'com.cherokeelessons.dict.DictModule'
 	
-	jsInteropMode = "JS"
-	
 	compiler {
-		saveSource = false;
-		//disableAggressiveOptimization = true; //not in 2.8.0
-		disableCastChecking = false;
 		disableClassMetadata = false;
-		enableClosureCompiler = true;
-		//enforceStrictResources = false; //not in 2.8.0
-		//overlappingSourceWarnings = false; //not in 2.8.0
-		localWorkers = 5;
-		//fragmentCount = 4;
+		enableClosureCompiler = false;
 		strict = true;
 		style = "OBF";
 	}
@@ -86,7 +78,7 @@ gwt {
 	}
 	
 	eclipse {
-		addGwtContainer = true;
+		addGwtContainer = false;
 	}
 }
 
@@ -96,14 +88,28 @@ configurations {
 }
 
 dependencies {
-	providedCompile 'javax.servlet:javax.servlet-api:3.0.1'
-	providedCompile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
-	providedCompile 'com.google.gwt:gwt-servlet:2.7.0'
-	gwt 'org.fusesource.restygwt:restygwt:2.0.3'
-	gwt 'org.gwtbootstrap3:gwtbootstrap3:0.9.1'
+	compile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
+	providedCompile 'com.google.gwt:gwt-servlet:'+gwt.gwtVersion
+	gwt 'com.google.gwt:gwt-user:'+gwt.gwtVersion
+	gwt 'com.google.gwt:gwt-elemental:'+gwt.gwtVersion	
+	gwt 'com.googlecode.gwtquery:gwtquery:1.4.4-20160104.180003-16'
 	gwt ('com.google.gwt.eventbinder:eventbinder:1.1.0') {
 		exclude module: 'gwt-user'
 	}
+	gwt 'org.fusesource.restygwt:restygwt:2.1.1' //2.1.1
+	compile "com.fasterxml.jackson.core:jackson-annotations:2.7.0" //to make Eclipse happy with Gradle + restygwt 2.1.1
+	compile('javax.validation:validation-api:1.0.0.GA') {
+		artifact {
+			name = 'validation-api'
+			type = 'jar'
+		}
+		artifact {
+			name = 'validation-api'
+			type = 'jar'
+			classifier = 'sources'
+		}
+	}
+	gwt 'org.gwtbootstrap3:gwtbootstrap3:0.9.2'
 }
  
 sourceSets {
@@ -134,15 +140,9 @@ eclipse {
 	project {
 		name = 'CherokeeDictionary'
 		comment = 'Cherokee Dictionary GWT based font-end'
-		//referencedProjects 'eventbinder'
-		//referencedProjects 'ResearcherInstituteApi', 'ResearcherInstituteDao', 'ResearcherInstituteShared', 'SHARED-POJOS', 'SHARED-SERVER' 
 		natures 'org.springsource.ide.eclipse.gradle.core.nature'
 		webAppDirName = 'src/main/webapp'
 	}
-
-	//classpath {
-	//	plusConfigurations += [configurations.provided]
-	//}
 
 	jdt {
 		sourceCompatibility=1.7
@@ -177,8 +177,4 @@ project.afterEvaluate {
 			}
 		}
 	}
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.6'
 }
