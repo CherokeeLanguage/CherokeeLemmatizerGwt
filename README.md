@@ -1,4 +1,4 @@
 # CherokeeDictionary
-GWT Based Fontend for the CherokeeDictionary.net Project
+GWT Based Cherokee Language Analizer
 
 THIS IS A GRADLE PROJECT.
