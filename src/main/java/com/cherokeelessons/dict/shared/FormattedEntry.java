@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+
 import commons.lang3.StringUtils;
 
 public class FormattedEntry {

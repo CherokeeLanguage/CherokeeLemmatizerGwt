@@ -32,6 +32,7 @@ import com.cherokeelessons.dict.engine.Affixes.YesYes;
 import com.cherokeelessons.dict.shared.Log;
 import com.cherokeelessons.dict.shared.Syllabary;
 import com.cherokeelessons.dict.shared.Syllabary.Vowel;
+
 import commons.lang3.StringUtils;
 
 public enum SuffixGuesser {

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
+import commons.lang3.StringUtils;
 
 
 @SuppressWarnings("serial")
@@ -12,8 +12,8 @@ public class Card implements Serializable, Comparable<Card> {
 	private static final boolean debug = false;
 	public int id;
 
-	public List<String> challenge = new ArrayList<String>();
-	public List<String> answer = new ArrayList<String>();
+	public List<String> challenge = new ArrayList<>();
+	public List<String> answer = new ArrayList<>();
 	public String key;
 	public String pgroup;
 	public String vgroup;
@@ -23,12 +23,12 @@ public class Card implements Serializable, Comparable<Card> {
 	}
 
 	public Card(Card card) {
-		this.answer.addAll(card.answer);
-		this.challenge.addAll(card.challenge);
-		this.id = card.id;
-		this.key = card.key;
-		this.pgroup = card.pgroup;
-		this.vgroup = card.vgroup;
+		answer.addAll(card.answer);
+		challenge.addAll(card.challenge);
+		id = card.id;
+		key = card.key;
+		pgroup = card.pgroup;
+		vgroup = card.vgroup;
 	}
 
 	@Override
