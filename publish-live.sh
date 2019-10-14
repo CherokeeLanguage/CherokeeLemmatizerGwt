@@ -7,7 +7,7 @@ trap 'echo "error!"; read a' ERR
 cd "$(dirname "$0")"
 cwd="$(pwd)"
 
-BIN="CherokeeDictionary"
+BIN="CherokeeLemmatizerGwt"
 WAR="${BIN}.war"
 
 cd ~/git
