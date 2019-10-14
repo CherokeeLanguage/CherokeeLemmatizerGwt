@@ -3,32 +3,27 @@ apply plugin: 'war'
 apply plugin: 'gwt'
 apply plugin: 'eclipse'
 apply plugin: 'eclipse-wtp'
-apply plugin: 'org.akhikhl.gretty'
-apply plugin: 'maven'
+//apply plugin: 'maven'
+apply from: 'https://raw.github.com/gretty-gradle-plugin/gretty/master/pluginScripts/gretty.plugin'
 
 group = "com.github.CherokeeLanguage"
-version = '20160129'
+version = '20191014'
 
-sourceCompatibility = 1.7
+sourceCompatibility = 1.8
 compileJava.options.encoding = 'UTF-8'
 
 farm {
   webapp ':'
 }
 
-def RTJAR = '/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/rt.jar';
-if (new File(RTJAR).exists()) {
-	compileJava.options.bootClasspath=RTJAR
-}
-
 buildscript {
 	repositories {
         jcenter()
-        maven { url 'http://repo.spring.io/plugins-release' }
+        //maven { url 'http://repo.spring.io/plugins-release' }
     }
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:+'
-        classpath 'org.akhikhl.gretty:gretty:+'
+        classpath 'org.gretty:gretty:+'
         //classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.6'
     }
 }
@@ -38,13 +33,13 @@ war {
 }
 
 
-gretty {
+/*gretty {
 	port = 8080;
 	servletContainer = 'tomcat7'
 	managedClassReload = true
 	reloadOnClassChange = false
 	extraResourceBase 'build/gwt/out'
-}
+}*/
 
 repositories {
     jcenter()
@@ -60,9 +55,9 @@ gwt {
 	logLevel = 'INFO'
 
 	minHeapSize = "256M";
-	maxHeapSize = "1024M";
+	maxHeapSize = "2048M";
 
-	gwtVersion='2.8.0-beta1'
+	gwtVersion='2.8.2'
 
 	modules 'com.cherokeelessons.dict.DictModule'
 	
@@ -94,7 +89,7 @@ dependencies {
 	providedCompile 'com.google.gwt:gwt-servlet:'+gwt.gwtVersion
 	gwt 'com.google.gwt:gwt-user:'+gwt.gwtVersion
 	gwt 'com.google.gwt:gwt-elemental:'+gwt.gwtVersion	
-	gwt 'com.googlecode.gwtquery:gwtquery:1.4.4-20160104.180003-16'
+	gwt 'com.googlecode.gwtquery:gwtquery:+'
 	gwt ('com.google.gwt.eventbinder:eventbinder:1.1.0') {
 		exclude module: 'gwt-user'
 	}
@@ -114,7 +109,7 @@ dependencies {
 	gwt 'org.gwtbootstrap3:gwtbootstrap3:0.9.2'
 }
  
-sourceSets {
+/*sourceSets {
   main {
     compileClasspath += configurations.provided
   }
@@ -122,21 +117,21 @@ sourceSets {
     compileClasspath += configurations.provided
     runtimeClasspath += configurations.provided
   }
-}
+}*/
 
-task "create-dirs" << {
+/*task "create-dirs" << {
 	sourceSets*.java.srcDirs*.each { it.mkdirs() }
 	sourceSets*.resources.srcDirs*.each { it.mkdirs() }
-}
+}*/
 
-eclipseJdt << {
+/*eclipseJdt << {
     File f = file('.settings/org.eclipse.core.resources.prefs')
     f.write('eclipse.preferences.version=1\n')
     f.append('encoding/<project>=utf-8')
     f = file('.settings/org.eclipse.core.runtime.prefs')
     f.write('eclipse.preferences.version=1\n')
     f.append('line.separator=\\n\n')
-}
+}*/
 
 eclipse {
 	project {
@@ -147,14 +142,14 @@ eclipse {
 	}
 
 	jdt {
-		sourceCompatibility=1.7
-		targetCompatibility=1.7
+		sourceCompatibility=1.8
+		targetCompatibility=1.8
 	}
 
 	wtp {
 		facet {
 			facets = []
-			facet name: 'jst.java', version: '1.7'
+			facet name: 'jst.java', version: '1.8'
 			facet name: 'jst.web', version: '3.0'
 		}
 	}
