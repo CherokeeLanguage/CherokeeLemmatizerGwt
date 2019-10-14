@@ -285,6 +285,7 @@ public class StringUtils {
 	 * @deprecated Use the clearer named {@link #trimToEmpty(String)}. Method
 	 *             will be removed in Commons Lang 3.0.
 	 */
+	@Deprecated
 	public static String clean(String str) {
 		return str == null ? EMPTY : str.trim();
 	}
@@ -2675,6 +2676,7 @@ public class StringUtils {
 	 *             {@link #substringBetween(String, String)}. Method will be
 	 *             removed in Commons Lang 3.0.
 	 */
+	@Deprecated
 	public static String getNestedString(String str, String tag) {
 		return substringBetween(str, tag, tag);
 	}
@@ -2713,6 +2715,7 @@ public class StringUtils {
 	 *             {@link #substringBetween(String, String, String)}. Method
 	 *             will be removed in Commons Lang 3.0.
 	 */
+	@Deprecated
 	public static String getNestedString(String str, String open, String close) {
 		return substringBetween(str, open, close);
 	}
@@ -3599,6 +3602,7 @@ public class StringUtils {
 	 * @deprecated Use the better named {@link #join(Object[])} instead. Method
 	 *             will be removed in Commons Lang 3.0.
 	 */
+	@Deprecated
 	public static String concatenate(Object[] array) {
 		return join(array, null);
 	}
@@ -4031,6 +4035,7 @@ public class StringUtils {
 	 * @deprecated Use the better localized {@link #deleteWhitespace(String)}.
 	 *             Method will be removed in Commons Lang 3.0.
 	 */
+	@Deprecated
 	public static String deleteSpaces(String str) {
 		if (str == null) {
 			return null;
@@ -4884,6 +4889,7 @@ public class StringUtils {
 	 * @deprecated Use better named {@link #overlay(String, String, int, int)}
 	 *             instead. Method will be removed in Commons Lang 3.0.
 	 */
+	@Deprecated
 	public static String overlayString(String text, String overlay, int start,
 			int end) {
 		return new StringBuffer(start + overlay.length() + text.length() - end
@@ -5072,6 +5078,7 @@ public class StringUtils {
 	 * @deprecated Use {@link #chomp(String)} instead. Method will be removed in
 	 *             Commons Lang 3.0.
 	 */
+	@Deprecated
 	public static String chompLast(String str) {
 		return chompLast(str, "\n");
 	}
@@ -5091,6 +5098,7 @@ public class StringUtils {
 	 * @deprecated Use {@link #chomp(String,String)} instead. Method will be
 	 *             removed in Commons Lang 3.0.
 	 */
+	@Deprecated
 	public static String chompLast(String str, String sep) {
 		if (str.length() == 0) {
 			return str;
@@ -5119,6 +5127,7 @@ public class StringUtils {
 	 *             (although this doesn't include the separator) Method will be
 	 *             removed in Commons Lang 3.0.
 	 */
+	@Deprecated
 	public static String getChomp(String str, String sep) {
 		int idx = str.lastIndexOf(sep);
 		if (idx == str.length() - sep.length()) {
@@ -5146,6 +5155,7 @@ public class StringUtils {
 	 * @deprecated Use {@link #substringAfter(String,String)} instead. Method
 	 *             will be removed in Commons Lang 3.0.
 	 */
+	@Deprecated
 	public static String prechomp(String str, String sep) {
 		int idx = str.indexOf(sep);
 		if (idx == -1) {
@@ -5171,6 +5181,7 @@ public class StringUtils {
 	 *             this doesn't include the separator). Method will be removed
 	 *             in Commons Lang 3.0.
 	 */
+	@Deprecated
 	public static String getPrechomp(String str, String sep) {
 		int idx = str.indexOf(sep);
 		if (idx == -1) {
@@ -5242,6 +5253,7 @@ public class StringUtils {
 	 * @deprecated Use {@link #chomp(String)} instead. Method will be removed in
 	 *             Commons Lang 3.0.
 	 */
+	@Deprecated
 	public static String chopNewline(String str) {
 		int lastIdx = str.length() - 1;
 		if (lastIdx <= 0) {
@@ -6022,6 +6034,7 @@ public class StringUtils {
 	 * @deprecated Use the standardly named {@link #capitalize(String)}. Method
 	 *             will be removed in Commons Lang 3.0.
 	 */
+	@Deprecated
 	public static String capitalise(String str) {
 		return capitalize(str);
 	}
@@ -6073,6 +6086,7 @@ public class StringUtils {
 	 * @deprecated Use the standardly named {@link #uncapitalize(String)}.
 	 *             Method will be removed in Commons Lang 3.0.
 	 */
+	@Deprecated
 	public static String uncapitalise(String str) {
 		return uncapitalize(str);
 	}
@@ -6750,6 +6764,7 @@ public class StringUtils {
 	 *             Method will be removed in Commons Lang 3.0.
 	 *
 	 */
+	@Deprecated
 	public static String reverseDelimitedString(String str,
 			String separatorChars) {
 		if (str == null) {

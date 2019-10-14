@@ -247,7 +247,8 @@ import java.util.Set;
         * @return true if equal
         * @since 2.0
         */
-       public boolean equals(Object obj) {
+       @Override
+	public boolean equals(Object obj) {
            if (obj == this) {
                return true;
            }
@@ -263,7 +264,8 @@ import java.util.Set;
         * @return a suitable hashCode
         * @since 2.0
         */
-       public int hashCode() {
+       @Override
+	public int hashCode() {
            return 89 + set.hashCode();
        }
        /**
@@ -271,7 +273,8 @@ import java.util.Set;
         *
         * @return string representation of the set
         */
-       public String toString() {
+       @Override
+	public String toString() {
            return set.toString();
        }
    }

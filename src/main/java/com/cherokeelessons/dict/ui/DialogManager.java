@@ -1,6 +1,5 @@
 package com.cherokeelessons.dict.ui;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.cherokeelessons.dict.client.ConsoleLogHandler2;

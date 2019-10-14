@@ -18,7 +18,7 @@ public class BuildInfoGenerator extends Generator {
 	public String generate(TreeLogger logger, GeneratorContext context,
 			String typeName) throws UnableToCompleteException {
 		TypeOracle typeOracle = context.getTypeOracle();
-		assert (typeOracle != null);
+		assert typeOracle != null;
 
 		JClassType classType = typeOracle.findType(typeName);
 		if (classType == null) {
@@ -36,12 +36,14 @@ public class BuildInfoGenerator extends Generator {
 		composerFactory.addImplementedInterface(BuildInfo.class.getName());
 
 		PrintWriter printWriter = context.tryCreate(logger, packageName, simpleName);
-		if (printWriter == null)
+		if (printWriter == null) {
 			return qualifiedClassName;
+		}
 
 		SourceWriter sourceWriter = composerFactory.createSourceWriter(context,	printWriter);
-		if (sourceWriter == null)
+		if (sourceWriter == null) {
 			return qualifiedClassName;
+		}
 
 		// write the method body of getBuildTimestamp
 		sourceWriter.println("public java.util.Date getBuildTimestamp() {");

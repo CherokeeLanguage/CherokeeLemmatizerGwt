@@ -33,13 +33,13 @@ war {
 }
 
 
-gretty {
+/*gretty {
 	port = 8080;
 	servletContainer = 'tomcat9'
 	managedClassReload = true
 	reloadOnClassChange = false
 	extraResourceBase 'build/gwt/out'
-}
+}*/
 
 repositories {
     jcenter()

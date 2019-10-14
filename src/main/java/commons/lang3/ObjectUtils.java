@@ -243,6 +243,7 @@ public class ObjectUtils {
 	 * @deprecated The design of this method is bad - see LANG-360. Instead, use
 	 *             identityToString(StringBuffer, Object).
 	 */
+	@Deprecated
 	public static StringBuffer appendIdentityToString(StringBuffer buffer,
 			Object object) {
 		if (object == null) {

@@ -1,6 +1,5 @@
 package com.cherokeelessons.dict.ui.widgets;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.gwtbootstrap3.client.shared.event.ModalHiddenEvent;

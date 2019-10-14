@@ -221,7 +221,8 @@ import java.util.NoSuchElementException;
         * @param obj  the object to compare to
         * @return true if equal
         */
-       public boolean equals(Object obj) {
+       @Override
+	public boolean equals(Object obj) {
            if (obj == this) {
                return true;
            }
@@ -236,7 +237,8 @@ import java.util.NoSuchElementException;
         * 
         * @return a suitable hashCode
         */
-       public int hashCode() {
+       @Override
+	public int hashCode() {
            return 83 + start + 7 * end + (negated ? 1 : 0);
        }
        /**
@@ -244,7 +246,8 @@ import java.util.NoSuchElementException;
         * 
         * @return string representation of this range
         */
-       public String toString() {
+       @Override
+	public String toString() {
            if (iToString == null) {
                StringBuffer buf = new StringBuffer(4);
                if (isNegated()) {
@@ -328,7 +331,8 @@ import java.util.NoSuchElementException;
             *
             * @return <code>true</code> if the iterator has yet to reach the character date
             */
-           public boolean hasNext() {
+           @Override
+		public boolean hasNext() {
                return hasNext;
            }
            /**
@@ -336,7 +340,8 @@ import java.util.NoSuchElementException;
             *
             * @return <code>Character</code> for the next character
             */
-           public Object next() {
+           @Override
+		public Object next() {
                if (hasNext == false) {
                    throw new NoSuchElementException();
                }
@@ -350,7 +355,8 @@ import java.util.NoSuchElementException;
             * @throws UnsupportedOperationException
             * @see java.util.Iterator#remove()
             */
-           public void remove() {
+           @Override
+		public void remove() {
                throw new UnsupportedOperationException();
            }
        }

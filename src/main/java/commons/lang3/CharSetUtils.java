@@ -65,7 +65,8 @@ package commons.lang3;
         * @deprecated Use {@link CharSet#getInstance(String[])}.
         *             Method will be removed in Commons Lang 3.0.
         */
-       public static CharSet evaluateSet(String[] set) {
+       @Deprecated
+	public static CharSet evaluateSet(String[] set) {
            if (set == null) {
                return null;
            }
@@ -353,7 +354,8 @@ package commons.lang3;
         *  than 'replaceChars'. CharSetUtils#translate will use the last char of the replacement
         *  string whereas StringUtils#replaceChars will delete
         */
-       public static String translate(String str, String searchChars, String replaceChars) {
+       @Deprecated
+	public static String translate(String str, String searchChars, String replaceChars) {
            if (StringUtils.isEmpty(str)) {
                return str;
            }
