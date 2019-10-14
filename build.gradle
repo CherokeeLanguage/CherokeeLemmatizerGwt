@@ -33,13 +33,13 @@ war {
 }
 
 
-/*gretty {
+gretty {
 	port = 8080;
-	servletContainer = 'tomcat7'
+	servletContainer = 'tomcat9'
 	managedClassReload = true
 	reloadOnClassChange = false
 	extraResourceBase 'build/gwt/out'
-}*/
+}
 
 repositories {
     jcenter()
@@ -75,7 +75,7 @@ gwt {
 	}
 	
 	eclipse {
-		addGwtContainer = false;
+		addGwtContainer = true;
 	}
 }
 
@@ -135,9 +135,8 @@ dependencies {
 
 eclipse {
 	project {
-		name = 'CherokeeDictionary'
-		comment = 'Cherokee Dictionary GWT based font-end'
-		natures 'org.eclipse.buildship.core.gradleprojectnature'
+		name = 'CherokeeLemmatizerGwt'
+		comment = 'Cherokee Lemmatizer - GWT based'
 		webAppDirName = 'src/main/webapp'
 	}
 

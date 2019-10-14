@@ -14,11 +14,11 @@ cd ~/git
 #bash git-pull-all.sh
 
 cd "${cwd}"
-gradle clean build -xtest
-#copy to TEMP file to keep tomcat from trying to unpack it before the transfer finishes
-scp build/libs/"${WAR}" muksihs@www.cherokeedictionary.net:/opt/tomcat/webapps/"${WAR}".tmp
-#now let tomcat have the file
-ssh muksihs@www.cherokeedictionary.net "cd /opt/tomcat/webapps/ && mv -v \"${WAR}\".tmp \"${WAR}\""
+./gradlew clean build -xtest
+#copy to TEMP file to keep tomcat9 from trying to unpack it before the transfer finishes
+scp build/libs/"${WAR}" clcom@www.cherokeelessons.com:/var/lib/tomcat9/webapps/"${WAR}".tmp
+#now let tomcat9 have the file
+ssh clcom@www.cherokeelessons.com "cd /var/lib/tomcat9/webapps/ && mv -v \"${WAR}\".tmp \"${WAR}\""
 
 echo "DONE."
 sleep 1
