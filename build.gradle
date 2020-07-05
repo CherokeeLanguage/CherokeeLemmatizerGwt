@@ -1,36 +1,39 @@
 apply plugin: 'java'
-apply plugin: 'war'
 apply plugin: 'gwt'
-apply plugin: 'eclipse'
+apply plugin: 'war'
+apply plugin: 'org.gretty'
 apply plugin: 'eclipse-wtp'
-//apply plugin: 'maven'
-apply from: 'https://raw.github.com/gretty-gradle-plugin/gretty/master/pluginScripts/gretty.plugin'
+apply plugin: 'maven'
+apply plugin: 'net.ltgt.apt-eclipse'
 
 group = "com.github.CherokeeLanguage"
 version = '20191014'
 
 sourceCompatibility = 1.8
 compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
 
 farm {
   webapp ':'
 }
 
 buildscript {
-	repositories {
+		repositories {
         jcenter()
-        //maven { url 'http://repo.spring.io/plugins-release' }
+        maven { url 'https://repo.spring.io/plugins-release' }
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:+'
-        classpath 'org.gretty:gretty:+'
-        //classpath 'org.springframework.build.gradle:propdeps-plugin:0.0.6'
+        classpath 'org.wisepersist:gwt-gradle-plugin:1.+'
+        classpath "gradle.plugin.org.gretty:gretty:2.3.1"
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.21"
     }
 }
 
-war {
+/*war {
 	archiveName 'CherokeeLemmatizerGwt.war'
-}
+}*/
 
 
 /*gretty {
@@ -42,14 +45,9 @@ war {
 }*/
 
 repositories {
-    jcenter()
-    mavenCentral()
-	maven {
-		url "https://oss.sonatype.org/content/repositories/google-snapshots/"
-	}
-	maven {
-		url "http://oss.sonatype.org/content/repositories/snapshots"
-	}
+   		jcenter()
+		maven { url 'https://jitpack.io' }
+		maven { url 'http://oss.sonatype.org/content/repositories/snapshots' }
 }
 
 gwt {
@@ -64,7 +62,6 @@ gwt {
 	
 	compiler {
 		disableClassMetadata = false;
-		enableClosureCompiler = false;
 		strict = true;
 		style = "OBF";
 	}
@@ -76,7 +73,7 @@ gwt {
 	}
 	
 	eclipse {
-		addGwtContainer = false;
+		addGwtContainer = true;
 	}
 }
 
@@ -85,19 +82,24 @@ configurations {
   provided
 }
 
+war {
+	archiveName 'CherokeeLemmatizerGwt.war'
+	rootSpec.exclude('WEB-INF/classes/com/newsrx/client/**/*.class')
+}
+
 dependencies {
-	providedCompile 'javax.ws.rs:javax.ws.rs-api:2.0.1'
-	providedCompile 'com.google.gwt:gwt-servlet:'+gwt.gwtVersion
-	providedCompile 'com.google.gwt:gwt-user:'+gwt.gwtVersion
-	providedCompile 'com.google.gwt:gwt-dev:'+gwt.gwtVersion
-	providedCompile 'com.google.gwt:gwt-elemental:'+gwt.gwtVersion	
-	providedCompile 'com.googlecode.gwtquery:gwtquery:2.0.0-SNAPSHOT'
-	providedCompile ('com.google.gwt.eventbinder:eventbinder:1.1.0') {
+	gwt 'javax.ws.rs:javax.ws.rs-api:2.0.1'
+	gwt 'com.google.gwt:gwt-servlet:'+gwt.gwtVersion
+	gwt 'com.google.gwt:gwt-user:'+gwt.gwtVersion
+	gwt 'com.google.gwt:gwt-dev:'+gwt.gwtVersion
+	gwt 'com.google.gwt:gwt-elemental:'+gwt.gwtVersion	
+	gwt 'com.googlecode.gwtquery:gwtquery:2.0.0-SNAPSHOT'
+	gwt ('com.google.gwt.eventbinder:eventbinder:1.1.0') {
 		exclude module: 'gwt-user'
 	}
-	providedCompile 'org.fusesource.restygwt:restygwt:2.2.6' //2.1.1
-	providedCompile "com.fasterxml.jackson.core:jackson-annotations:2.7.0" //to make Eclipse happy with Gradle + restygwt 2.1.1
-	providedCompile('javax.validation:validation-api:1.0.0.GA') {
+	gwt 'org.fusesource.restygwt:restygwt:2.2.6' //2.1.1
+	gwt "com.fasterxml.jackson.core:jackson-annotations:2.7.0" //to make Eclipse happy with Gradle + restygwt 2.1.1
+	gwt('javax.validation:validation-api:1.0.0.GA') {
 		artifact {
 			name = 'validation-api'
 			type = 'jar'
@@ -108,32 +110,10 @@ dependencies {
 			classifier = 'sources'
 		}
 	}
-	providedCompile 'org.gwtbootstrap3:gwtbootstrap3:0.9.2'
+	gwt 'org.gwtbootstrap3:gwtbootstrap3:0.9.2'
 }
  
-/*sourceSets {
-  main {
-    compileClasspath += configurations.provided
-  }
-  test {
-    compileClasspath += configurations.provided
-    runtimeClasspath += configurations.provided
-  }
-}*/
 
-/*task "create-dirs" << {
-	sourceSets*.java.srcDirs*.each { it.mkdirs() }
-	sourceSets*.resources.srcDirs*.each { it.mkdirs() }
-}*/
-
-/*eclipseJdt << {
-    File f = file('.settings/org.eclipse.core.resources.prefs')
-    f.write('eclipse.preferences.version=1\n')
-    f.append('encoding/<project>=utf-8')
-    f = file('.settings/org.eclipse.core.runtime.prefs')
-    f.write('eclipse.preferences.version=1\n')
-    f.append('line.separator=\\n\n')
-}*/
 
 eclipse {
 	project {
@@ -156,23 +136,3 @@ eclipse {
 	}
 }
 
-//ENFORCE JAVA VERSION IN ECLIPSE TO MATCH VERSION SET IN GRADLE
-project.afterEvaluate {
-	// use jre lib matching version used by project, not the workspace default
-	if (sourceCompatibility != null) {
-		def target = project.sourceCompatibility.toString()
-		def containerPrefix = "org.eclipse.jdt.launching.JRE_CONTAINER"
-		def containerSuffix
-		if (target =~ /1.[4-5]/) {
-			containerSuffix = '/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-' + target
-		} else if (target =~ /1.[6-8]/) {
-			containerSuffix = '/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-' + target
-		}
-		if (containerSuffix != null) {
-			project.eclipse.classpath {
-				containers.removeAll { it.startsWith(containerPrefix) }
-				containers.add(containerPrefix + containerSuffix)
-			}
-		}
-	}
-}
