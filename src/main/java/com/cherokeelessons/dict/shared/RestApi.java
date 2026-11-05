@@ -7,7 +7,7 @@ import org.fusesource.restygwt.client.JSONP;
 import org.fusesource.restygwt.client.MethodCallback;
 import org.fusesource.restygwt.client.RestService;
 
-@Path("http://www.cherokeedictionary.net/jsonsearch/")
+@Path("jsonsearch/")
 public interface RestApi extends RestService {
 	@Path("syll/{query}?regex=true")
 	@JSONP(callbackParam="callback", failureCallbackParam="failure")
