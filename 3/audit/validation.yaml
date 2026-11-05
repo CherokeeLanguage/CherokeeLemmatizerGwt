@@ -25,3 +25,13 @@ spec:
         item: Impact claimed post-fix dev-mode behavior equals "the same hollow-endpoint state today's build has" — false: the pre-fix absolute `@Path` replaces the module base in dev mode, so dev-mode search hits the live www endpoint today and hits the dev-mode server's nonexistent route post-fix
         remediation: Impact risk item rewritten to state the dev-mode behavior change honestly (developer-workflow surface change; not a runtime change on any stack-deployed serving surface)
     outcome: revised in place; re-validation round 2 dispatched
+  - round: 2
+    date: 2026-11-05
+    reviewer: fresh-context dispatch (general sub-agent)
+    verdict: FAIL
+    findings:
+      - id: R2-F1
+        class: fabricated-claims (method/inventory mismatch in a current-state assertion) + cross-reference sufficiency
+        item: the Facts sweep stated "grep over src/main/java" unfiltered but its inventory covered only the `*.java` hits — the `.ui.xml` UiBinder DOCTYPE lines (`http://dl.google.com/gwt/DTD/xhtml.ent`, three files) match the unfiltered method and were unaccounted; the operative negation (no other runtime host constant) survives
+        remediation: sweep statement scoped to `*.java` sources (the inventory's actual match) and the `.ui.xml` DOCTYPE hits disclosed with their non-runtime classification
+    outcome: revised in place; re-validation round 3 dispatched

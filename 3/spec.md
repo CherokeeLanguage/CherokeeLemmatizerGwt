@@ -87,11 +87,15 @@ All repo facts at HEAD `865866e` (2026-11-05, read-only clone inspection):
     empty base path → `.resolve("jsonsearch/")` → `/jsonsearch` → the method
     path resolves to the final URI
     `/jsonsearch/{kind}/{query}?regex=true` — root-relative, host-free.
-- Sweep (2026-11-05, grep over `src/main/java`): no other runtime
-  `http(s)://` host constant exists in the org's own client code — the
-  remaining hits are comment/javadoc text in vendored commons and opencsv
+- Sweep (2026-11-05, grep over `src/main/java` `*.java` sources): no other
+  runtime `http(s)://` host constant exists in the org's own client code —
+  the remaining hits are comment/javadoc text in vendored commons and opencsv
   classes (`commons/lang3`, `commons/codec`, `com/opencsv`) and in the org's
-  own `ConsoleLogHandler2.java` comment block. `RestApi` is the module's only
+  own `ConsoleLogHandler2.java` comment block. (`*.ui.xml` UiBinder files
+  carry `<!DOCTYPE ... SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">`
+  lines — compile-time DTD system identifiers, no runtime network use,
+  outside the runtime-constant surface this sweep reports.) `RestApi` is the
+  module's only
   `RestService` interface, so the module-global service root has no other
   consumer.
 - The endpoint consumer: the dictionary application serves
