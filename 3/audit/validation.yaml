@@ -35,3 +35,13 @@ spec:
         item: the Facts sweep stated "grep over src/main/java" unfiltered but its inventory covered only the `*.java` hits — the `.ui.xml` UiBinder DOCTYPE lines (`http://dl.google.com/gwt/DTD/xhtml.ent`, three files) match the unfiltered method and were unaccounted; the operative negation (no other runtime host constant) survives
         remediation: sweep statement scoped to `*.java` sources (the inventory's actual match) and the `.ui.xml` DOCTYPE hits disclosed with their non-runtime classification
     outcome: revised in place; re-validation round 3 dispatched
+  - round: 3
+    date: 2026-11-05
+    reviewer: fresh-context dispatch (general sub-agent)
+    verdict: FAIL
+    findings:
+      - id: R3-F1
+        class: fabricated-claims (current-state assertion not derivable from the artifact it describes)
+        item: the Facts parenthetical illustrated the module-base default as `…/CherokeeAnalyzer/` — not derivable from the repo (`rename-to="gwt"` + `gwt/gwt.nocache.js` make it `…/gwt/`; the context segment rides the deploy-time war rename)
+        remediation: parenthetical corrected to the derivable `…/gwt/` value with the module-descriptor and host-page basis; the deployment context noted as the #15 research record's documented rename
+    outcome: revised in place; re-validation round 4 dispatched

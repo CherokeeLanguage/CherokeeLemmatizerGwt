@@ -65,7 +65,11 @@ All repo facts at HEAD `865866e` (2026-11-05, read-only clone inspection):
   (`Defaults.java`, `Resource.java`, `RestServiceClassCreator.java`,
   `JsonpMethod.java`):
   - `Defaults.serviceRoot` defaults to `GWT.getModuleBaseURL()` (here:
-    `…/CherokeeAnalyzer/`).
+    `…/gwt/` — the module descriptor
+    `src/main/resources/com/cherokeelessons/dict/DictModule.gwt.xml` carries
+    `<module rename-to="gwt">` and the host page loads
+    `gwt/gwt.nocache.js`; the deployed context segment rides the
+    deploy-time war rename the devops#15 research record documents).
   - The generated proxy builds its base lazily, inside `getResource()`, on
     first use — `new Resource(Defaults.getServiceRoot()).resolve(<interface
     @Path>)` — so a service-root value set during class initialization takes
