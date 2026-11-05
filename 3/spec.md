@@ -108,8 +108,23 @@ All repo facts at HEAD `865866e` (2026-11-05, read-only clone inspection):
   `/jsonsearch` to the dictionary container on every serving surface of the
   new host — the dev tier today, the apex from the zone flip onward.
 - Build: Gradle wrapper 4.10.3; the `war` plugin produces the deployable
-  artifact; GWT 2.8.2, restygwt 2.2.6, `sourceCompatibility` 1.8 — none
-  changed by this fix.
+  artifact; GWT 2.8.2, restygwt 2.2.6, `sourceCompatibility` 1.8.
+- **Build-repair facts (verified 2026-11-05, live network checks) — the trunk
+  build is broken before this fix.** `./gradlew war` (wrapper 4.10.3) fails at
+  build-script configuration: `gradle.plugin.org.gretty:gretty:2.3.1` requires
+  `org.gretty:gretty-core:2.3.1`, which resolves from no live repository —
+  `repo.spring.io/plugins-release` returns 401 (portal locked), Maven Central
+  has no gretty-core before 3.0.5, jitpack 404s, and jcenter/bintray is
+  sunset. Additionally the project repositories reference `jcenter()` (sunset)
+  and a sonatype snapshots URL for `gwtquery:2.0.0-SNAPSHOT`, which exists
+  nowhere (sonatype snapshots 404, jitpack 404, Central ends at 1.5-beta1) and
+  is unused by all client sources (exhaustive grep, 2026-11-05 — zero
+  `com.google.gwt.query`/`GQuery` imports). Gretty's published system
+  requirements (gretty-3.x branch README, verified 2026-11-05): since 3.0.0
+  gretty requires Gradle 5.0+; the 3.1.x line supports JDK8/11; gretty 3.1.9
+  and gwt-gradle-plugin up to 1.1.19 are on Maven Central. The daemon crash
+  under the system JDK 25 (SIGSEGV, native frame) is daemon-specific and
+  avoided by running the pinned JDK 8 with `--no-daemon`.
 
 ## Developer-statement traceability
 
@@ -157,11 +172,17 @@ All repo facts at HEAD `865866e` (2026-11-05, read-only clone inspection):
   recorded network log shows the request URL in the root-relative form
   against the page's origin (not `www.cherokeedictionary.net`), the JSONP
   callback fires, and the page renders the decoded results.
-- **R-4 — Build integrity.** The Gradle build (`./gradlew war`, wrapper
-  4.10.3) completes exit 0 and produces the deployable war carrying the
-  rebuilt permutation bundle; the dependency and toolchain pins (GWT 2.8.2,
-  restygwt 2.2.6, the Gradle wrapper, Java 8) are unchanged — the change
-  set's surface is the fix itself.
+- **R-4 — Build integrity (amended 2026-11-05, developer directive: "use the
+  correct version of gretty that matches the build requirements").** The
+  Gradle build completes exit 0 and produces the deployable war carrying the
+  rebuilt permutation bundle. The build repair is in scope because the trunk
+  build is broken (Facts): gretty moves from the unresolvable 2.3.1 to 3.1.9
+  (the Gradle-5-compatible line's current release on Maven Central), the
+  Gradle wrapper moves 4.10.3 → 5.6.4 (gretty ≥3.0.0 requires Gradle 5.0+),
+  the dead `jcenter()`/spring plugin-repo references become Maven Central,
+  and the unresolvable, unused `gwtquery:2.0.0-SNAPSHOT` dependency is
+  dropped. The application dependency pins that matter stay unchanged: GWT
+  2.8.2, restygwt 2.2.6, `sourceCompatibility` 1.8, Java 8 runtime.
 
 ## Success criteria
 
@@ -169,12 +190,14 @@ All repo facts at HEAD `865866e` (2026-11-05, read-only clone inspection):
 |---|---|---|---|
 | SC-1 | The client's runtime sources carry no hard-coded endpoint host or scheme: zero `cherokeedictionary.net` occurrences under `src/main/java/com/cherokeelessons`; the `RestApi` interface `@Path` is a path-only value; the service-root setting is the root anchor, placed so it precedes the first API call | structural | source grep over `src/main/java/com/cherokeelessons` (zero hits) + inspection of `RestApi.java` and the service-root initialization site |
 | SC-2 | The rebuilt client's JSONP request is host-relative and same-origin: the issued request URL is `/jsonsearch/{kind}/{query}?regex=true` resolved against the serving page's origin; the callback fires and the page renders results | behavioral | headless-browser run against the locally served rebuilt war with a stub same-origin `/jsonsearch` endpoint; the recorded network log shows the request URL and the render observation |
-| SC-3 | The build produces the deployable artifact with the pins unchanged: `./gradlew war` exits 0; the war contains the rebuilt GWT bundle; `build.gradle` and the wrapper pin are unchanged in the change set | structural | build run recorded (exit 0) + war contents inspection + change-set diff review |
+| SC-3 | The build produces the deployable artifact: `./gradlew war` exits 0; the war contains the rebuilt GWT bundle; the change set's application pins are unchanged (GWT 2.8.2, restygwt 2.2.6, sourceCompatibility 1.8) while the build repair's surface (gretty version, Gradle wrapper, repository URLs, dropped gwtquery) is exactly the amended R-4 list | structural | build run recorded (exit 0) + war contents inspection + change-set diff review |
 
 ## Scope
 
 In scope: the `RestApi` interface `@Path` value; the client-initialization
-service-root setting; the rebuilt war as the verification artifact. Out of
+service-root setting; the rebuilt war as the verification artifact; the build
+repair the amended R-4 enumerates (gretty 3.1.9, Gradle wrapper 5.6.4,
+Maven-Central repository references, dropped gwtquery snapshot). Out of
 scope: the analyzer's container image and its deployment
 (cherokeelanguage-devops#15's flow — including its R-6 image-source election
 and R-8 ordering gate, whose recorded rationale this fix supersedes; the

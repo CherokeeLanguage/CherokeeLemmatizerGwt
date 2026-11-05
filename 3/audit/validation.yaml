@@ -86,3 +86,9 @@ plan:
     reviewer: fresh-context dispatch (general sub-agent)
     verdict: PASS
     findings: []
+
+spec-amendment:
+  - date: 2026-11-05
+    trigger: implementation-blocker discovery (verified build failure at trunk 865866e)
+    directive: developer — "use the correct version of gretty that matches the build requirements"
+    change: R-4/SC-3/Scope amended — build repair in scope (gretty 2.3.1→3.1.9, wrapper 4.10.3→5.6.4, jcenter/spring→Maven Central, dropped unused unresolvable gwtquery 2.0.0-SNAPSHOT); GWT/restygwt/Java-8 pins unchanged
