@@ -63,8 +63,10 @@ All repo facts at HEAD `865866e` (2026-11-05, read-only clone inspection):
     `…/CherokeeAnalyzer/`).
   - The generated proxy builds its base lazily, inside `getResource()`, on
     first use — `new Resource(Defaults.getServiceRoot()).resolve(<interface
-    @Path>)` — so a service-root value set at client initialization takes
-    effect: the first search call is user-triggered, long after module load.
+    @Path>)` — so a service-root value set during class initialization takes
+    effect: the static block runs when the entry-point class initializes,
+    before `onModuleLoad` and any callback it schedules, and the first API
+    invocation cannot precede that.
   - `Resource.resolve(path)` strips a leading `/` from the resolved path and
     concatenates it onto the base; only a `http:`/`https:`/`file:` prefix
     replaces the base. A root-relative request URL is therefore not
@@ -178,8 +180,8 @@ Second edit: the service root set to the root anchor at client initialization
 safety rests on the verified lazy-resolution fact — the generated proxy reads
 `Defaults.getServiceRoot()` inside `getResource()` at the first method call,
 not at `GWT.create` time — so the static block's position relative to the
-`api` field initializer is immaterial, and it precedes `onModuleLoad`'s first
-scheduled search regardless. Rejected alternative, recorded: computing an
+`api` field initializer is immaterial: class initialization completes before
+`onModuleLoad` runs and before any callback it schedules. Rejected alternative, recorded: computing an
 absolute origin URL at runtime (a `Window.Location`-composed
 `protocol//host/` string) as the service root — it produces an absolute URL
 string whose host is runtime-derived rather than a host-relative URL, adds a
