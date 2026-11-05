@@ -1,0 +1,230 @@
+<!-- SPDX-FileCopyrightText: 2026 Michael Conrad -->
+<!-- SPDX-License-Identifier: MIT -->
+
+# Spec — same-origin JSONP endpoint: root-relative `/jsonsearch/` URL (the hard-coded `www.cherokeedictionary.net` base removed)
+
+> DRAFT — pending fresh-context validation and the developer approval gate.
+> Repository: CherokeeLanguage/CherokeeLemmatizerGwt (public; trunk `main`).
+> Ticket: CherokeeLemmatizerGwt#3 (remote-assigned; the local record lives at
+> `.issues/3/`). Filed 2026-11-05 from the developer's directives recorded in
+> the developer-statement traceability section. Consumer coupling: the
+> analyzer's deployment phase (cherokeelanguage-devops#15) consumes this
+> fix's rebuilt artifact; the coupling's disposition rides #15's own
+> revision, not this ticket.
+
+## Problem
+
+The analyzer client's only server call — its JSONP search API — is hard-coded
+to an absolute URL: `src/main/java/com/cherokeelessons/dict/shared/RestApi.java`
+line 10 carries the interface-level restygwt annotation
+`@Path("http://www.cherokeedictionary.net/jsonsearch/")` (verified at HEAD
+`865866e`, 2026-11-05; the deployed bundle carries the same constant —
+cherokeelanguage-devops#15's research record, verified 2026-10-31). Three
+consequences:
+
+1. The client cannot be exercised against any serving surface other than the
+   apex host: a page served at `dev.cherokeedictionary.net` (the migration
+   sequence's dev-first verification tier) still sends its search calls to
+   `www.cherokeedictionary.net` — pre-cutover that hostname resolves to the
+   old host, so a dev-tier deployment exercises the analyzer shell but never
+   the stack it would actually depend on post-cutover.
+2. The hard-coded `http://` scheme on an `https://` page relies on browsers'
+   mixed-content auto-promotion — a behavior verified at smoke time
+   (devops#15 SC-3 carries exactly this open verification) rather than a
+   property the client guarantees.
+3. The client is bound to one hostname for any future host move — precisely
+   the coupling class the migration sequence is removing from every other
+   application in the org.
+
+The developer directed the fix: the analyzer must not hard-code
+`www.cherokeedictionary.net`; the JSONP endpoint must use a proper relative
+URL — absolute path, relative host (the statements below).
+
+## Facts (verified, dated)
+
+All repo facts at HEAD `865866e` (2026-11-05, read-only clone inspection):
+
+- `RestApi.java` — a restygwt 2.2.6 `RestService` interface; the
+  interface-level `@Path("http://www.cherokeedictionary.net/jsonsearch/")` is
+  the request base; three methods — `syll/{query}?regex=true`,
+  `chr/{query}?regex=true`, `en/{query}?regex=true` — each
+  `@JSONP(callbackParam="callback", failureCallbackParam="failure")`.
+  `DictEntryPoint.api = GWT.create(RestApi.class)` is the proxy's single
+  construction site; `AnalysisView` (line 254 and its siblings) invokes the
+  three methods.
+- No `Defaults.setServiceRoot(...)` call exists anywhere in the client; the
+  only `Defaults` use is `Defaults.setRequestTimeout(120 * 1000)` in
+  `DictEntryPoint`'s static block.
+- **RestyGWT 2.2.6 URL resolution** — source-verified 2026-11-05 against tag
+  `restygwt-project-2.2.6` of github.com/resty-gwt/resty-gwt
+  (`Defaults.java`, `Resource.java`, `RestServiceClassCreator.java`,
+  `JsonpMethod.java`):
+  - `Defaults.serviceRoot` defaults to `GWT.getModuleBaseURL()` (here:
+    `…/CherokeeAnalyzer/`).
+  - The generated proxy builds its base lazily, inside `getResource()`, on
+    first use — `new Resource(Defaults.getServiceRoot()).resolve(<interface
+    @Path>)` — so a service-root value set at client initialization takes
+    effect: the first search call is user-triggered, long after module load.
+  - `Resource.resolve(path)` strips a leading `/` from the resolved path and
+    concatenates it onto the base; only a `http:`/`https:`/`file:` prefix
+    replaces the base. A root-relative request URL is therefore not
+    producible by the annotation value alone — the service root must carry
+    the root anchor.
+  - `JsonpMethod.send(...)` passes `resource.getUri()` directly into GWT
+    core's `JsonpRequestBuilder.requestObject(...)`: the URL string is
+    injected as a script `src`, and a host-relative string (no scheme, no
+    host) is resolved by the browser against the serving page's own origin.
+    Same-origin JSONP needs no CORS machinery.
+  - Composition check, derived from the verified semantics:
+    `Defaults.setServiceRoot("/")` → `new Resource("/")` normalizes to the
+    empty base path → `.resolve("jsonsearch/")` → `/jsonsearch` → the method
+    path resolves to the final URI
+    `/jsonsearch/{kind}/{query}?regex=true` — root-relative, host-free.
+- Sweep (2026-11-05, grep over `src/main/java`): no other runtime
+  `http(s)://` host constant exists in the org's own client code — every
+  other hit is javadoc/comment text inside vendored commons classes
+  (`commons/lang3`, `commons/codec`). `RestApi` is the module's only
+  `RestService` interface, so the module-global service root has no other
+  consumer.
+- The endpoint consumer: the dictionary application serves
+  `/jsonsearch/{chr,en,syll}` at the site root (devops#15 research,
+  live-verified 2026-10-31), and the serving stack's Caddy catch-all routes
+  `/jsonsearch` to the dictionary container on every serving surface of the
+  new host — the dev tier today, the apex from the zone flip onward.
+- Build: Gradle wrapper 4.10.3; the `war` plugin produces the deployable
+  artifact; GWT 2.8.2, restygwt 2.2.6, `sourceCompatibility` 1.8 — none
+  changed by this fix.
+
+## Developer-statement traceability
+
+- Statement A (2026-11-05, this session, verbatim): "the analyzer should
+  *NOT* be hard-coded to use www.cherokeedictionary.net; it should be able
+  to use a proper relative url for the jsonp" — the fix mandate (R-1, R-2).
+- Statement B (2026-11-05, this session, verbatim): "use absolute path but
+  relative host is acceptable" — the URL-form decision: the request path is
+  absolute (`/jsonsearch/…`), the host is relative (taken from the serving
+  page's origin at runtime) (R-1).
+- Consumer context: cherokeelanguage-devops#15 (phase 6, the analyzer's
+  deployment spec) records the hard-coded URL as the analyzer's one runtime
+  dependency, and carries the R-8 ordering gate and the SC-3 mixed-content
+  verification that dependency forced. This fix removes the dependency's
+  host-coupling; what changes on the #15 side is recorded by #15's own
+  revision — this ticket executes none of #15's work.
+
+## Requirements
+
+- **R-1 — Host-relative JSONP base.** The implementer changes the client's
+  JSONP request base from the hard-coded absolute URL to the root-relative
+  form: the request URL the client issues is
+  `/jsonsearch/{kind}/{query}?regex=true` — no scheme, no host — resolved by
+  the browser against the serving page's own origin. The mechanism (restygwt
+  2.2.6; semantics verified in Facts): the `RestApi` interface `@Path`
+  becomes the path-only value `jsonsearch/`, and the client initialization
+  sets the restygwt service root to the root anchor —
+  `Defaults.setServiceRoot("/")` at the same initialization site that
+  already carries `Defaults.setRequestTimeout`. The three method paths, the
+  `{query}` substitution, the `?regex=true` query string, and the `@JSONP`
+  callback contract (`callback`/`failure` params) stay byte-identical. No
+  dependency, GWT-module, or build-wiring change rides this fix.
+- **R-2 — Zero hard-coded endpoint hosts.** The org's client runtime sources
+  carry no hard-coded endpoint host or scheme after the fix: zero
+  `cherokeedictionary.net` occurrences under
+  `src/main/java/com/cherokeelessons` (javadoc/comment text inside the
+  vendored `commons/` tree is not client runtime code and is outside this
+  requirement's surface). The rebuilt artifact inherits the property — the
+  constant no longer exists to compile into the bundle.
+- **R-3 — Same-origin behavior, proven.** The rebuilt client, served from a
+  host root, executes a search whose JSONP request resolves against the
+  serving page's own origin — proven with executable evidence independent of
+  any deployment: the rebuilt war served locally against a stub same-origin
+  `/jsonsearch` endpoint; a headless browser executes one search; the
+  recorded network log shows the request URL in the root-relative form
+  against the page's origin (not `www.cherokeedictionary.net`), the JSONP
+  callback fires, and the page renders the decoded results.
+- **R-4 — Build integrity.** The Gradle build (`./gradlew war`, wrapper
+  4.10.3) completes exit 0 and produces the deployable war carrying the
+  rebuilt permutation bundle; the dependency and toolchain pins (GWT 2.8.2,
+  restygwt 2.2.6, the Gradle wrapper, Java 8) are unchanged — the change
+  set's surface is the fix itself.
+
+## Success criteria
+
+| ID | Criterion | Class | Instrument |
+|---|---|---|---|
+| SC-1 | The client's runtime sources carry no hard-coded endpoint host or scheme: zero `cherokeedictionary.net` occurrences under `src/main/java/com/cherokeelessons`; the `RestApi` interface `@Path` is a path-only value; the service-root setting is the root anchor, placed so it precedes the first API call | structural | source grep over `src/main/java/com/cherokeelessons` (zero hits) + inspection of `RestApi.java` and the service-root initialization site |
+| SC-2 | The rebuilt client's JSONP request is host-relative and same-origin: the issued request URL is `/jsonsearch/{kind}/{query}?regex=true` resolved against the serving page's origin; the callback fires and the page renders results | behavioral | headless-browser run against the locally served rebuilt war with a stub same-origin `/jsonsearch` endpoint; the recorded network log shows the request URL and the render observation |
+| SC-3 | The build produces the deployable artifact with the pins unchanged: `./gradlew war` exits 0; the war contains the rebuilt GWT bundle; `build.gradle` and the wrapper pin are unchanged in the change set | structural | build run recorded (exit 0) + war contents inspection + change-set diff review |
+
+## Scope
+
+In scope: the `RestApi` interface `@Path` value; the client-initialization
+service-root setting; the rebuilt war as the verification artifact. Out of
+scope: the analyzer's container image and its deployment
+(cherokeelanguage-devops#15's flow — including its R-6 image-source election
+and R-8 ordering gate, whose recorded rationale this fix supersedes; the
+election is #15's revision's to record); the #15 spec revision itself;
+GWT/restygwt version changes; any other URL, reference, or comment cleanup in
+the repository; the dictionary application's `/jsonsearch` endpoint behavior
+(the consumer side).
+
+## Approach
+
+Two edits, one build, one proof. First edit: `RestApi`'s interface `@Path`
+from `http://www.cherokeedictionary.net/jsonsearch/` to the path-only
+`jsonsearch/` — the method paths and the `@JSONP` annotations untouched.
+Second edit: the service root set to the root anchor at client initialization
+(`Defaults.setServiceRoot("/")` alongside the existing
+`Defaults.setRequestTimeout` in `DictEntryPoint`'s static block). Placement
+safety rests on the verified lazy-resolution fact — the generated proxy reads
+`Defaults.getServiceRoot()` inside `getResource()` at the first method call,
+not at `GWT.create` time — so the static block's position relative to the
+`api` field initializer is immaterial, and it precedes `onModuleLoad`'s first
+scheduled search regardless. Rejected alternative, recorded: computing an
+absolute origin URL at runtime (a `Window.Location`-composed
+`protocol//host/` string) as the service root — it produces an absolute URL
+string whose host is runtime-derived rather than a host-relative URL, adds a
+`Window.Location` dependency, and buys nothing over the root-relative form
+the developer specified. The proof instrument: serve the exploded rebuilt war
+locally with a stub `/jsonsearch` route returning a canned JSONP payload
+(derived at implementation from the `SearchResponse` DTO's decode surface),
+run a headless browser (the sanctioned vendored browser tooling), execute one
+search, and record the network log (request URL + initiating origin) and the
+rendered result. The dev-tier end-to-end run against the real endpoint rides
+devops#15's revised flow — this ticket's in-repo proof stands on its own, so
+the fix's correctness never depends on a deployment window.
+
+## Impact
+
+Consumers: the analyzer client on every serving surface — the dev tier
+immediately (this fix is what makes dev-first analyzer testing possible at
+all), the apex from the zone flip onward, and any future host (the coupling
+class this fix removes). The old-host deployed analyzer is untouched — the
+old build keeps its hard-coded URL until devops#15's replacement deploys the
+rebuilt artifact. Blast radius: one source file (`RestApi.java`), the
+entry-point initialization line, and the rebuilt war's bundle bytes (a
+strong-name change is expected — content-hash naming). No dependency, no CI,
+no data movement. Risks, each with containment: the service root is
+module-global — the sweep fact (a single `RestService` interface) bounds its
+effect to `RestApi`; a GWT dev-mode run would point `/jsonsearch` at the
+dev-mode server — the same hollow-endpoint state today's build has in dev
+mode, not a regression. Failure modes are reversible by revert; no state, no
+data, no credentials involved.
+
+## Gap list
+
+1. Stub payload fidelity: the canned JSONP payload must satisfy
+   `SearchResponse`'s decode surface — derived from the DTO's field set at
+   implementation (the recorded live response shape in devops#15's research
+   record is the reference form).
+
+## Traceability mapping
+
+| Source | Requirement | Criteria |
+|---|---|---|
+| Statement A (no hard-coded host; proper relative URL) | R-1, R-2 | SC-1, SC-2 |
+| Statement B (absolute path, relative host) | R-1 | SC-2 |
+| Facts — restygwt resolution semantics (the mechanism's basis) and the single-`RestService` sweep (the bound on the global service root) | R-1 (mechanism), R-2 (sweep) | SC-1, SC-2 |
+| Consumer context — devops#15's dependency record and its SC-3 mixed-content verification | R-1 (the coupling this fix removes) | SC-2 |
+| Build integrity (the deliverable must be producible and deployable-shaped) | R-4 | SC-3 |
+
+🤖 Co-authored with AI: OpenCode (huggingface/zai-org/GLM-5.3-Flash)
