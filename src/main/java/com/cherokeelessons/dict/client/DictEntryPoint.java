@@ -26,6 +26,7 @@ public class DictEntryPoint implements EntryPoint {
 	}
 
 	static {
+		Defaults.setServiceRoot("/");
 		Defaults.setRequestTimeout(120 * 1000);
 	}
 
