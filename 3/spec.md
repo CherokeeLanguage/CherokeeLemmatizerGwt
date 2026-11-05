@@ -4,7 +4,7 @@
 # Spec — same-origin JSONP endpoint: root-relative `/jsonsearch/` URL (the hard-coded `www.cherokeedictionary.net` base removed)
 
 > DRAFT — pending fresh-context validation and the developer approval gate.
-> Repository: CherokeeLanguage/CherokeeLemmatizerGwt (public; trunk `main`).
+> Repository: CherokeeLanguage/CherokeeLemmatizerGwt (public; trunk `master`).
 > Ticket: CherokeeLemmatizerGwt#3 (remote-assigned; the local record lives at
 > `.issues/3/`). Filed 2026-11-05 from the developer's directives recorded in
 > the developer-statement traceability section. Consumer coupling: the
@@ -50,8 +50,13 @@ All repo facts at HEAD `865866e` (2026-11-05, read-only clone inspection):
   `chr/{query}?regex=true`, `en/{query}?regex=true` — each
   `@JSONP(callbackParam="callback", failureCallbackParam="failure")`.
   `DictEntryPoint.api = GWT.create(RestApi.class)` is the proxy's single
-  construction site; `AnalysisView` (line 254 and its siblings) invokes the
-  three methods.
+  construction site. The client source contains exactly one API invocation:
+  `DictEntryPoint.api.syll(...)` at
+  `src/main/java/com/cherokeelessons/dict/ui/AnalysisView.java:254`; the
+  `chr` and `en` methods have zero call sites in `src/main/java` (exhaustive
+  grep, 2026-11-05). The fix rides the interface base, so all three methods
+  inherit it; the dead `chr`/`en` declarations are untouched (no unrelated
+  refactoring).
 - No `Defaults.setServiceRoot(...)` call exists anywhere in the client; the
   only `Defaults` use is `Defaults.setRequestTimeout(120 * 1000)` in
   `DictEntryPoint`'s static block.
@@ -83,9 +88,10 @@ All repo facts at HEAD `865866e` (2026-11-05, read-only clone inspection):
     path resolves to the final URI
     `/jsonsearch/{kind}/{query}?regex=true` — root-relative, host-free.
 - Sweep (2026-11-05, grep over `src/main/java`): no other runtime
-  `http(s)://` host constant exists in the org's own client code — every
-  other hit is javadoc/comment text inside vendored commons classes
-  (`commons/lang3`, `commons/codec`). `RestApi` is the module's only
+  `http(s)://` host constant exists in the org's own client code — the
+  remaining hits are comment/javadoc text in vendored commons and opencsv
+  classes (`commons/lang3`, `commons/codec`, `com/opencsv`) and in the org's
+  own `ConsoleLogHandler2.java` comment block. `RestApi` is the module's only
   `RestService` interface, so the module-global service root has no other
   consumer.
 - The endpoint consumer: the dictionary application serves
@@ -207,10 +213,15 @@ entry-point initialization line, and the rebuilt war's bundle bytes (a
 strong-name change is expected — content-hash naming). No dependency, no CI,
 no data movement. Risks, each with containment: the service root is
 module-global — the sweep fact (a single `RestService` interface) bounds its
-effect to `RestApi`; a GWT dev-mode run would point `/jsonsearch` at the
-dev-mode server — the same hollow-endpoint state today's build has in dev
-mode, not a regression. Failure modes are reversible by revert; no state, no
-data, no credentials involved.
+effect to `RestApi`; the fix changes GWT dev-mode behavior — the pre-fix
+build's absolute `@Path` replaces the module base in dev mode too, so
+dev-mode search hits the live `www.cherokeedictionary.net` endpoint today,
+while post-fix dev-mode search hits the dev-mode server's nonexistent
+`/jsonsearch` route and fails there: a developer-workflow change on a
+non-deployment surface, not a runtime behavior change on any serving surface
+the stack deploys (the recorded surfaces — host-local, dev tier, apex — all
+serve `/jsonsearch` from the stack itself). Failure modes are reversible by
+revert; no state, no data, no credentials involved.
 
 ## Gap list
 

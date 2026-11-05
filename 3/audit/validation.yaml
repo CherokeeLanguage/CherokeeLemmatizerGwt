@@ -1,0 +1,27 @@
+# Validation record — CherokeeLemmatizerGwt#3 (spec)
+
+criteria_source: .opencode/skills/spec/references/validation-standards.md (cherokeelanguage-devops deck copy)
+
+spec:
+  - round: 1
+    date: 2026-11-05
+    reviewer: fresh-context dispatch (general sub-agent)
+    verdict: FAIL
+    findings:
+      - id: F1
+        class: fabricated-claims (current-state assertion misstating fact)
+        item: header stated trunk `main`; the repository's trunk is `master` (git symref + GitHub API verified)
+        remediation: header corrected to `master` in place
+      - id: F2
+        class: fabricated-claims (current-state assertion never verified against the code)
+        item: Facts claimed `AnalysisView` "line 254 and its siblings" invokes the three methods; the code has exactly one invocation site (`ui/AnalysisView.java:254`, `api.syll` only) and `chr`/`en` have zero call sites
+        remediation: Facts bullet rewritten to the verified single-invocation fact; dead `chr`/`en` noted as untouched (no unrelated refactoring)
+      - id: F3
+        class: fabricated-claims (inventory misstated)
+        item: sweep claim said every other hit was vendored commons comment text; the actual remaining hits include vendored `com/opencsv` comments and the org's own `ConsoleLogHandler2.java` comment block
+        remediation: sweep fact corrected to the full hit inventory; the operative conclusion (no other runtime host constant; single `RestService`) unchanged and re-verified
+      - id: F4
+        class: blast-radius (impact enumeration mischaracterized an affected consumer) + fabricated-claims
+        item: Impact claimed post-fix dev-mode behavior equals "the same hollow-endpoint state today's build has" — false: the pre-fix absolute `@Path` replaces the module base in dev mode, so dev-mode search hits the live www endpoint today and hits the dev-mode server's nonexistent route post-fix
+        remediation: Impact risk item rewritten to state the dev-mode behavior change honestly (developer-workflow surface change; not a runtime change on any stack-deployed serving surface)
+    outcome: revised in place; re-validation round 2 dispatched
