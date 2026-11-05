@@ -172,17 +172,32 @@ All repo facts at HEAD `865866e` (2026-11-05, read-only clone inspection):
   recorded network log shows the request URL in the root-relative form
   against the page's origin (not `www.cherokeedictionary.net`), the JSONP
   callback fires, and the page renders the decoded results.
-- **R-4 — Build integrity (amended 2026-11-05, developer directive: "use the
-  correct version of gretty that matches the build requirements").** The
-  Gradle build completes exit 0 and produces the deployable war carrying the
-  rebuilt permutation bundle. The build repair is in scope because the trunk
-  build is broken (Facts): gretty moves from the unresolvable 2.3.1 to 3.1.9
-  (the Gradle-5-compatible line's current release on Maven Central), the
-  Gradle wrapper moves 4.10.3 → 5.6.4 (gretty ≥3.0.0 requires Gradle 5.0+),
-  the dead `jcenter()`/spring plugin-repo references become Maven Central,
-  and the unresolvable, unused `gwtquery:2.0.0-SNAPSHOT` dependency is
-  dropped. The application dependency pins that matter stay unchanged: GWT
-  2.8.2, restygwt 2.2.6, `sourceCompatibility` 1.8, Java 8 runtime.
+- **R-4 — Build integrity (amended 2026-11-05, developer directives: "use the
+  correct version of gretty that matches the build requirements"; "anything
+  eclipse related needs to be purged").** The Gradle build completes exit 0
+  and produces the deployable war carrying the rebuilt permutation bundle.
+  The build repair is in scope because the trunk build is broken (Facts):
+  gretty moves from the unresolvable 2.3.1 to 3.1.9 (the actively maintained
+  Gradle-6-compatible line's current release on Maven Central), the Gradle
+  wrapper moves 4.10.3 → 6.9.4 (gretty 3.1.x's task classes use the Gradle
+  6.6+ `ExecOperations` API, and gwt-gradle-plugin 1.1.x uses the Gradle 6.4+
+  `JavaExecSpec.getMainClass` Property API — both verified empirically during
+  the build repair), the dead `jcenter()`/spring plugin-repo references become
+  Maven Central, and the unresolvable, unused `gwtquery:2.0.0-SNAPSHOT`
+  dependency is dropped. The application dependency pins that matter stay
+  unchanged: GWT 2.8.2, restygwt 2.2.6, `sourceCompatibility` 1.8, Java 8
+  runtime.
+- **R-5 — Eclipse purge (added 2026-11-05, developer directive: "anything
+  eclipse related needs to be purged. add an SC to handle that").** The
+  repository carries no Eclipse-related build wiring or Eclipse IDE residue:
+  the `eclipse-wtp` and `net.ltgt.apt-eclipse` plugin applications, the
+  gradle-apt-plugin classpath entry that exists to serve them, and the
+  `eclipse { }` DSL block are removed from `build.gradle`; the untracked
+  Eclipse workspace artifacts (`.project`, `.classpath`, `.settings/`, the
+  ignored `bin/` output) are deleted from the workspace. Nothing in the
+  build's artifact production depends on any of it (the apt-eclipse plugin
+  only configures Eclipse IDE metadata; no annotation processing is used by
+  any source).
 
 ## Success criteria
 
@@ -191,13 +206,15 @@ All repo facts at HEAD `865866e` (2026-11-05, read-only clone inspection):
 | SC-1 | The client's runtime sources carry no hard-coded endpoint host or scheme: zero `cherokeedictionary.net` occurrences under `src/main/java/com/cherokeelessons`; the `RestApi` interface `@Path` is a path-only value; the service-root setting is the root anchor, placed so it precedes the first API call | structural | source grep over `src/main/java/com/cherokeelessons` (zero hits) + inspection of `RestApi.java` and the service-root initialization site |
 | SC-2 | The rebuilt client's JSONP request is host-relative and same-origin: the issued request URL is `/jsonsearch/{kind}/{query}?regex=true` resolved against the serving page's origin; the callback fires and the page renders results | behavioral | headless-browser run against the locally served rebuilt war with a stub same-origin `/jsonsearch` endpoint; the recorded network log shows the request URL and the render observation |
 | SC-3 | The build produces the deployable artifact: `./gradlew war` exits 0; the war contains the rebuilt GWT bundle; the change set's application pins are unchanged (GWT 2.8.2, restygwt 2.2.6, sourceCompatibility 1.8) while the build repair's surface (gretty version, Gradle wrapper, repository URLs, dropped gwtquery) is exactly the amended R-4 list | structural | build run recorded (exit 0) + war contents inspection + change-set diff review |
+| SC-4 | The repository carries no Eclipse-related build wiring or workspace residue: `build.gradle` contains no `eclipse-wtp` or `net.ltgt.apt-eclipse` plugin application, no gradle-apt-plugin classpath entry serving them, and no `eclipse { }` DSL block (a dependency-comment mention of Eclipse is prose, not wiring, and is outside R-5's surface); the Eclipse workspace artifacts (`.project`, `.classpath`, `.settings/`) are absent from the workspace; the build still exits 0 without them | structural | grep over `build.gradle` for plugin/DSL/classpath eclipse patterns (zero hits) + workspace file-existence check + the SC-3 build run's exit code |
 
 ## Scope
 
 In scope: the `RestApi` interface `@Path` value; the client-initialization
 service-root setting; the rebuilt war as the verification artifact; the build
-repair the amended R-4 enumerates (gretty 3.1.9, Gradle wrapper 5.6.4,
-Maven-Central repository references, dropped gwtquery snapshot). Out of
+repair the amended R-4 enumerates (gretty 3.1.9, Gradle wrapper 6.9.4,
+Maven-Central repository references, dropped gwtquery snapshot) and the
+Eclipse purge R-5 enumerates. Out of
 scope: the analyzer's container image and its deployment
 (cherokeelanguage-devops#15's flow — including its R-6 image-source election
 and R-8 ordering gate, whose recorded rationale this fix supersedes; the

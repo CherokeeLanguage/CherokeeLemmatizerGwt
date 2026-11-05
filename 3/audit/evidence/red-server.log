@@ -1,0 +1,14 @@
+[harness] "GET /index.html HTTP/1.1" 200 -
+[harness] "GET /index.html HTTP/1.1" 200 -
+[harness] "GET /gwt/gwt.nocache.js HTTP/1.1" 200 -
+[harness] "GET /gwt/gwt/clean/clean.css HTTP/1.1" 200 -
+[harness] "GET /gwt/css/bootstrap-3.3.5.min.cache.css HTTP/1.1" 200 -
+[harness] "GET /gwt/css/font-awesome-4.4.0.min.cache.css HTTP/1.1" 200 -
+[harness] "GET /gwt/css/cherokeelessons.css HTTP/1.1" 200 -
+[harness] "GET /gwt/D6ADEDC78BA2B351C7CD705B418680FC.cache.js HTTP/1.1" 200 -
+[harness] "GET /gwt/fonts/freeserif.woff HTTP/1.1" 200 -
+[harness] code 404, message File not found
+[harness] "GET /favicon.ico HTTP/1.1" 404 -
+[harness] code 404, message File not found
+[harness] "GET /favicon.ico HTTP/1.1" 404 -
+[harness] "GET /gwt/fonts/freeserifbold.woff HTTP/1.1" 200 -

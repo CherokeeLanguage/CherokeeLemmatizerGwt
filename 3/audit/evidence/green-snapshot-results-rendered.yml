@@ -1,0 +1,20 @@
+- generic [active] [ref=e1]:
+  - iframe
+  - iframe
+  - form [ref=e14]:
+    - group [ref=e15]:
+      - generic [ref=e16]:
+        - textbox "Input Cherokee Syllabary Text" [ref=e18]: ᎣᏏᏲ
+        - button "ANALYZE" [ref=e19] [cursor=pointer]
+        - button "SEARCH" [ref=e20] [cursor=pointer]
+        - button "CLEAR RESULTS" [ref=e21] [cursor=pointer]
+        - button "RESET ALL" [ref=e22] [cursor=pointer]
+  - iframe
+  - generic [ref=e23]:
+    - generic [ref=e24]:
+      - heading "STUB-DEFINITION-HELLO [12345]" [level=5] [ref=e25]: STUB-DEFINITION-HELLO[12345]
+      - generic [ref=e26]: "[stub]"
+    - list [ref=e29]:
+      - listitem [ref=e30]: ᎣᏏᏲ
+      - listitem [ref=e31]: "[hé:llow] (null) “STUB-DEFINITION-HELLO”"
+    - button "DISMISS" [ref=e33] [cursor=pointer]

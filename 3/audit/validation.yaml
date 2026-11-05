@@ -92,3 +92,43 @@ spec-amendment:
     trigger: implementation-blocker discovery (verified build failure at trunk 865866e)
     directive: developer — "use the correct version of gretty that matches the build requirements"
     change: R-4/SC-3/Scope amended — build repair in scope (gretty 2.3.1→3.1.9, wrapper 4.10.3→5.6.4, jcenter/spring→Maven Central, dropped unused unresolvable gwtquery 2.0.0-SNAPSHOT); GWT/restygwt/Java-8 pins unchanged
+
+plan (post-spec-amendment revalidation):
+  - round: 5
+    date: 2026-11-05
+    reviewer: fresh-context dispatch (general sub-agent)
+    verdict: FAIL
+    findings:
+      - id: PV-4
+        class: internal-inconsistency / untestable-item
+        item: Item 2 RED unexecutable at its sequence point
+        remediation: RED window made explicit (post-Item-0/pre-Item-1, observation taken from Item 0's build)
+    outcome: revised in place; round 6
+  - round: 6
+    date: 2026-11-05
+    reviewer: fresh-context dispatch (general sub-agent)
+    verdict: FAIL
+    findings:
+      - id: PV-5
+        class: internal-inconsistency / feasibility (Item 3 RED surface "clean trunk checkout" infeasible — trunk build broken)
+        remediation: RED surface named as trunk 865866e sources + Item 0's repaired build files
+    outcome: revised in place; round 7
+  - round: 7
+    date: 2026-11-05
+    reviewer: fresh-context dispatch (general sub-agent)
+    verdict: PASS
+    findings: []
+  - round: 8
+    date: 2026-11-05
+    reviewer: fresh-context dispatch (general sub-agent)
+    verdict: FAIL
+    findings:
+      - id: PV-6
+        class: unreal-instrument / internal-inconsistency (Item 0's zero-eclipse-grep defeated by a surviving dependency comment)
+        remediation: grep scoped to R-5 wiring patterns; comment declared prose outside R-5's surface; SC-4 instrument aligned in spec
+    outcome: revised in place; round 9
+  - round: 9
+    date: 2026-11-05
+    reviewer: fresh-context dispatch (general sub-agent)
+    verdict: PASS
+    findings: []

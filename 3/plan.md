@@ -6,6 +6,43 @@
 Source spec: `.issues/3/spec.md` (CherokeeLemmatizerGwt#3). Every item traces to
 that spec's SCs; no item exists without one.
 
+## Item 0 — Build repair + Eclipse purge (SC-3 and SC-4, from amended R-4 and R-5)
+
+- **Deliverable:** a buildable, Eclipse-free project —
+  1. `build.gradle`'s buildscript and project repositories point at Maven
+     Central (`jcenter()`/spring references replaced); the gretty buildscript
+     classpath moves from the unresolvable `gradle.plugin.org.gretty:gretty:2.3.1`
+     to `org.gretty:gretty:3.1.9`; the Gradle wrapper moves 4.10.3 → 6.9.4
+     (gretty 3.1.x needs the Gradle 6.6+ `ExecOperations` API; gwt-gradle-plugin
+     1.1.x needs the Gradle 6.4+ `JavaExecSpec.getMainClass` Property API —
+     both verified empirically); the unused, unresolvable
+     `gwtquery:2.0.0-SNAPSHOT` dependency is dropped.
+  2. Eclipse purge (R-5): `eclipse-wtp` and `net.ltgt.apt-eclipse` plugin
+     applications removed, the gradle-apt-plugin classpath entry serving them
+     removed, the `eclipse { }` DSL block removed, the gwt plugin's
+     IDE-only `eclipse { addGwtContainer }` sub-block removed (a
+     Gradle-5-empirics casualty of the DSL change), and the untracked Eclipse
+     workspace artifacts (`.project`, `.classpath`, `.settings/`, ignored
+     `bin/`) deleted. No annotation processing exists in the sources, so no
+     apt functionality is lost.
+  Application pins untouched: GWT 2.8.2, restygwt 2.2.6,
+  `sourceCompatibility` 1.8.
+- **RED:** the recorded build failure — `./gradlew war` (wrapper 4.10.3) fails
+  at configuration: `Could not resolve org.gretty:gretty-core:2.3.1 …
+  Received status code 401` (executed output, 2026-11-05; live repo checks:
+  spring 401, Central/jitpack 404 for 2.x gretty-core, jcenter sunset). The
+  purge-side RED: `grep -in eclipse build.gradle` hits the plugin
+  applications and the `eclipse { }` block today.
+- **GREEN:** the build-file edits above.
+- **Instrument (SC-3, partial + SC-4):** `./gradlew war` (JDK 8, `--no-daemon`
+  — the 4.10.3 daemon SIGSEGVs under the system JDK 25) exits 0; the
+  change-set review shows only the enumerated build surfaces touched;
+  a grep over `build.gradle` for the R-5 wiring patterns (plugin
+  applications `eclipse-wtp`/`net.ltgt.apt-eclipse`, the gradle-apt-plugin
+  classpath entry, `eclipse {` DSL lines) returns zero hits — a surviving
+  dependency-comment mention of Eclipse is prose outside R-5's surface —
+  and `.project`, `.classpath`, `.settings/` are absent from the workspace.
+
 ## Item 1 — Host-relative JSONP base (SC-1, from R-1/R-2)
 
 - **Deliverable:** two source edits — `RestApi.java` interface `@Path` becomes
@@ -28,14 +65,19 @@ that spec's SCs; no item exists without one.
 
 - **Deliverable:** `./gradlew war` exits 0 and produces
   `build/libs/CherokeeLemmatizerGwt.war` carrying the rebuilt GWT bundle.
-- **RED:** against current behavior the war's bundle embeds the absolute URL
-  constant — the built JS carries `cherokeedictionary.net`.
+- **RED (executed in the post-Item-0/pre-Item-1 window):** the war Item 0's
+  build produces — the build repaired, the source fix not yet applied — is
+  inspected: its GWT bundle's JS carries the absolute URL constant
+  (`cherokeedictionary.net`). This is the pre-fix observation the GREEN
+  removes; it is obtainable only from the Item-0 build, since Item 2 itself
+  runs after Item 1.
 - **GREEN:** after Item 1, the rebuild bakes only the host-relative base.
 - **Instrument (SC-3):** recorded build output (exit 0); inspection that the
   rebuilt bundle's JS no longer contains `cherokeedictionary.net`;
-  `git diff --stat`-equivalent review showing the change set touches only
-  `RestApi.java` and `DictEntryPoint.java` (no `build.gradle`, no wrapper, no
-  dependency-pin file).
+  change-set review showing the change set touches `RestApi.java`,
+  `DictEntryPoint.java`, and exactly the build-repair surface Item 0
+  enumerates (gretty, wrapper, repository URLs, dropped gwtquery, eclipse
+  purge — the amended R-4 list plus R-5; no other build or dependency change).
 
 ## Item 3 — Same-origin JSONP behavior, proven (SC-2, from R-3)
 
@@ -44,16 +86,18 @@ that spec's SCs; no item exists without one.
   a headless browser (the vendored browser tooling the `playwright-cli` card
   provides) loads the page, executes one search, and the run records the
   network log and the rendered result.
-- **RED (baseline run, executed at Item 3's start from a clean trunk
-  checkout):** the harness is
+- **RED (baseline run, executed at Item 3's start against pre-fix source
+  content — trunk `865866e` sources with Item 0's repaired build files
+  applied, since trunk's own build cannot run):** the harness is
   executed once against the pre-fix build — the war built from unmodified
   trunk HEAD (`865866e`) by the same `./gradlew war` — and records the JSONP
   request going to the absolute `www.cherokeedictionary.net` URL (or failing
   on the unresolvable host) — the host-coupled behavior the fix removes. This
   baseline run is scheduled as Item 3's RED execution step, performed at
-  Item 3's start from a clean trunk checkout (pre-fix source content,
-  independent of the working branch's post-Item-1 state), so the pre-fix
-  artifact exists and the RED is failable at its sequence point.
+  Item 3's start against pre-fix source content (trunk `865866e` sources with
+  Item 0's repaired build files applied — independent of the working branch's
+  post-Item-1 source state), so the pre-fix artifact exists and the RED is
+  failable at its sequence point.
 - **GREEN:** the rebuilt bundle issues `/jsonsearch/syll/{query}?regex=true`
   against the serving page's own origin; the stub's canned payload is decoded
   and the page renders the result rows.
@@ -70,11 +114,17 @@ that spec's SCs; no item exists without one.
 
 ## Dependency order
 
-Item 1 → Item 2 → Item 3: the build consumes the source edits; the behavioral
-proof consumes the built artifact. Each item's instrument runs on the prior
-item's verified state — with one carve-out: Item 3's RED (the pre-fix baseline
+Item 0 → Item 1 → Item 2 → Item 3: the build repair comes first (nothing
+builds without it); the build consumes the source edits; the behavioral proof
+consumes the built artifact. Each item's instrument runs on the prior item's
+verified state — with two carve-outs: Item 2's RED (the bundle-constant
+observation) is taken from the war Item 0's build produces, in the
+post-Item-0/pre-Item-1 window; and Item 3's RED (the pre-fix baseline
 harness run) runs against pre-fix trunk source content — executed at Item 3's
-start from a clean trunk checkout, not against Item 2's verified state.
+start against trunk `865866e` sources with Item 0's repaired build files
+applied (trunk's own build cannot run), not against Item 2's verified state.
+The baseline war is the repaired build over pre-fix source — the source fix,
+not the build repair, is what the baseline demonstrates.)
 
 ## Verification notes
 
