@@ -51,3 +51,38 @@ spec:
     verdict: PASS
     findings: []
     outcome: zero-finding verdict; spec validated, awaiting the developer approval gate (plan/implement not yet authorized)
+
+plan:
+  - round: 1
+    date: 2026-11-05
+    reviewer: fresh-context dispatch (general sub-agent)
+    verdict: FAIL
+    findings:
+      - id: PV-1
+        class: internal-inconsistency / untestable-item
+        item: Item 3 RED — the RED described a "current build" harness run that could not fail at Item 3's sequence point
+        remediation: RED reworded to a concrete pre-fix baseline run (war built from trunk HEAD 865866e, clean trunk checkout)
+    outcome: revised in place; re-validation round 2
+  - round: 2
+    date: 2026-11-05
+    reviewer: fresh-context dispatch (general sub-agent)
+    verdict: FAIL
+    findings:
+      - id: PV-2
+        class: internal-inconsistency (dependency-order section contradicted the new Item-3 RED carve-out)
+        remediation: carve-out added to the Dependency-order section
+    outcome: revised in place; re-validation round 3
+  - round: 3
+    date: 2026-11-05
+    reviewer: fresh-context dispatch (general sub-agent)
+    verdict: FAIL
+    findings:
+      - id: PV-3
+        class: factual misstatement (timing "before Item 1's edits" contradicted the item body's "at Item 3's start")
+        remediation: carve-out and item body aligned to "at Item 3's start from a clean trunk checkout (pre-fix source content)"
+    outcome: revised in place; re-validation round 4
+  - round: 4
+    date: 2026-11-05
+    reviewer: fresh-context dispatch (general sub-agent)
+    verdict: PASS
+    findings: []
