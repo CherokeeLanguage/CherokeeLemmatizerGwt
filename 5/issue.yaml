@@ -1,9 +1,11 @@
 title: 'Spec: standing pre-flight/post-flight container-check gate in this repo''s
   deploy SoP (sibling of devops#56)'
-status: open
+status: closed
 labels:
 - needs-approval
 body: ''
 created_at: '2026-11-10T22:53:05+00:00'
-updated_at: '2026-11-10T22:53:12+00:00'
+updated_at: '2026-11-10T23:13:27+00:00'
 github_url: https://github.com/CherokeeLanguage/CherokeeLemmatizerGwt/issues/5
+closed_at: '2026-11-10T23:13:27+00:00'
+close_reason: completed
